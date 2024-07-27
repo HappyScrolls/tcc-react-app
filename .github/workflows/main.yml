@@ -1,0 +1,59 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    - name: Install dependencies
+      run: yarn install
+
+    - name: Build React app
+      run: yarn build
+
+    - name: Extract build date
+      id: vars
+      run: echo "BUILD_DATE=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+
+    - name: Docker build & push to prod
+      if: contains(github.ref, 'main')
+      run: |
+        docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
+        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/tcc-react-app:${{ env.BUILD_DATE }} .
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/tcc-react-app:${{ env.BUILD_DATE }}
+
+    - name: Checkout deployment repo
+      uses: actions/checkout@v2
+      with:
+        repository: HappyScrolls/config
+        token: ${{ secrets.DEPLOYMENT_REPO_PAT }}
+        path: deployment-repo
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        version: 'v1.20.0'
+
+    - name: Create kubeconfig directory
+      run: mkdir -p $HOME/.kube
+
+    - name: Create kubeconfig
+      run: echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f deployment-repo/k8s/k8s/tcc-react-app-deployment.yaml
+        kubectl set image deployment/tcc-react-app-deployment tcc-react-app=${{ secrets.DOCKER_HUB_USERNAME }}/tcc-react-app:${{ env.BUILD_DATE }}
