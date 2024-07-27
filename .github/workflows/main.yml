@@ -55,5 +55,5 @@ jobs:
 
     - name: Deploy to Kubernetes
       run: |
-        kubectl apply -f deployment-repo/k8s/k8s/tcc-react-app-deployment.yaml
+        kubectl apply -f deployment-repo/k8s/tcc-react-app-deployment.yaml
         kubectl set image deployment/tcc-react-app-deployment tcc-react-app=${{ secrets.DOCKER_HUB_USERNAME }}/tcc-react-app:${{ env.BUILD_DATE }}
