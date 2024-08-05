@@ -4,7 +4,6 @@ import Layout from './components/Layout';
 import Home from './pages/Home';
 import About from './pages/About';
 import KakaoLogin from "./pages/KakaoLogin";
-import axios from "axios/index";
 
 const OAuth2RedirectHandler = () => {
     const location = useLocation();
