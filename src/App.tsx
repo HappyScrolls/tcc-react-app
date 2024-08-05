@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react';
 import {BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Layout from './components/Layout';
 import Home from './pages/Home';
 import About from './pages/About';
 import KakaoLogin from "./pages/KakaoLogin";
@@ -33,14 +32,12 @@ const OAuth2RedirectHandler = () => {
 const App = () => {
     return (
         <Router>
-            <Layout>
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/about" element={<About />} />
-                    <Route path="/login" element={<KakaoLogin/>} />
-                    <Route path="/redirect" element={<OAuth2RedirectHandler/>} />
-                </Routes>
-            </Layout>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/login" element={<KakaoLogin/>} />
+                <Route path="/redirect" element={<OAuth2RedirectHandler/>} />
+            </Routes>
         </Router>
     );
 };
