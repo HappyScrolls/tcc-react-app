@@ -39,9 +39,6 @@ const Home = () => {
         }
     }, []);
 
-    if (!userInfo) {
-        return <div>Loading...</div>;
-    }
     if (userInfo) {
         return (
             <div>
