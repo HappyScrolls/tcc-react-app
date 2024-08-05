@@ -1,27 +1,34 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import About from './pages/About';
 import KakaoLogin from "./pages/KakaoLogin";
-
+import { useNavigate } from 'react-router-dom';
 const OAuth2RedirectHandler = () => {
-    // const location = useLocation();
-    //
-    // // useEffect(() => {
-    // //     const params = new URLSearchParams(location.search);
-    // //     const code = params.get('code');
-    // //     if (code) {
-    // //         // Spring Boot의 /login/oauth2/code/kakao 경로로 리다이렉트
-    // //         window.location.href = `http://localhost:8080/login/oauth2/code/kakao?code=${code}`;
-    // //     }
-    // //
-    // //
-    // //
-    // // }, [location]);
+    const navigate = useNavigate(); // useNavigate 훅 사용
 
+    useEffect(() => {
+        // 현재 URL에서 토큰을 추출합니다.
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
 
-    return <div>Redirecting...</div>;
+        if (token) {
+            // 토큰을 로컬 스토리지에 저장합니다.
+            localStorage.setItem('authToken', token);
+
+            // '/'로 리다이렉트합니다.
+            navigate('/');
+        } else {
+            console.error('Token not found in URL');
+        }
+    }, [navigate]);
+
+    return (
+        <div>
+            <p>Redirecting...</p>
+        </div>
+    );
 };
 const App = () => {
     return (
