@@ -1,10 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
-
-import LandingPage from "./pages/landing/LandingPage";
 import LoginPage from "./pages/login/LoginPage";
 import App from "./App";
 import Redirect from "./pages/login/components/Redirect";
 import SchedulePage from "./pages/schedule/SchedulePage";
+import SignUpPage from "./pages/signup/SignUpPage";
 
 const router = createBrowserRouter([
   {
@@ -13,11 +12,15 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <LandingPage />,
+        element: <LoginPage />,
       },
       {
-        path: "/login",
-        element: <LoginPage />,
+        // path: "/login",
+        // element: <LoginPage />,
+      },
+      {
+        path: "/signup",
+        element: <SignUpPage />,
       },
       {
         path: "/redirect",

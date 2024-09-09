@@ -1,11 +1,10 @@
 import React from "react";
-import KakaoLogin from "./components/KakaoLogin";
-import { Container, Layout } from "../../components/layout/Layout";
+import { Login } from "./components/Login";
 
 const LoginPage = () => {
   return (
     <>
-      <KakaoLogin />
+      <Login />
     </>
   );
 };
