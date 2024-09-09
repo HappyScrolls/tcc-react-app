@@ -26,6 +26,10 @@ const SignUpForm = () => {
             <AgreeBtn />
           </AgreementWrapper>
         </FormDiv>
+        <ButtonWrapper>
+          <CancelButton>이전</CancelButton>
+          <SubmitButton>회원가입 완료</SubmitButton>
+        </ButtonWrapper>
       </FormContainer>
     </>
   );
@@ -38,7 +42,7 @@ const FormContainer = styled(Container)`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  /* padding: 20px; */
 `;
 
 const FormDiv = styled.div`
@@ -46,6 +50,7 @@ const FormDiv = styled.div`
   flex-direction: column;
   align-items: center;
   width: 270px;
+  gap: 10px;
 `;
 
 const Text = styled.div`
@@ -55,11 +60,13 @@ const Text = styled.div`
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 33px;
 `;
 
 const TextInput = styled.input`
-  width: 257px;
-  height: 40px;
+  width: 100%;
   padding: 13px 20px;
   align-items: center;
   flex-shrink: 0;
@@ -81,12 +88,13 @@ const TextInput = styled.input`
 
 const DateInputWrapper = styled.div`
   display: flex;
-  gap: 10px;
+  justify-content: space-between;
+  width: 100%;
   margin-bottom: 20px;
 `;
 
 const DateInput = styled(TextInput)`
-  width: 80px;
+  width: calc(100% / 3 - 5px);
 `;
 
 const ProfileImage = styled.div`
@@ -139,12 +147,47 @@ const AgreementText = styled.div`
   }
 `;
 
-const AgreementWrapper = styled.div``;
+const AgreementWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+`;
 
 const AgreeBtn = styled.div`
   width: 15px;
   height: 15px;
-  flex-shrink: 0;
-  stroke-width: 3px;
-  stroke: var(--Primary, #f14040);
+  background-color: var(--Primary, #f14040);
+  border-radius: 50%;
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  gap: 5px;
+  margin-top: 60px;
+  font-family: SUIT;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+`;
+
+const CancelButton = styled.button`
+  width: 126px;
+  padding: 12px 0px 13px 0px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  color: var(--Black, #3b3634);
+  text-align: center;
+`;
+
+const SubmitButton = styled.button`
+  width: 126px;
+  padding: 12px 0px 13px 0px;
+  border-radius: 10px;
+  background: var(--Primary, #f14040);
+  color: #fff;
+  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
 `;
