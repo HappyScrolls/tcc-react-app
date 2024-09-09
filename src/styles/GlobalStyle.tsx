@@ -4,6 +4,13 @@ import { normalize } from "styled-normalize";
 const GlobalStyle = createGlobalStyle`
   ${normalize}
 
+  @font-face {
+    font-family: "SUIT";
+    src: url("https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/static/woff2/SUIT.css");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
 
   *, *::before, *::after {
     box-sizing: border-box;
@@ -11,14 +18,12 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
   }
 
-
   body {
-    font-family: Pretendard;
+    font-family: "SUIT";
     line-height: 1.6;
     background-color: #f5f5f5;
     color: #333;
   }
-
 
   a {
     color: inherit;
@@ -28,12 +33,10 @@ const GlobalStyle = createGlobalStyle`
     }
   }
 
-
   h1, h2, h3, h4, h5, h6 {
     margin: 0;
     font-weight: normal;
   }
-
 
   ul {
     list-style: none;
@@ -44,6 +47,16 @@ const GlobalStyle = createGlobalStyle`
     cursor: pointer;
     border: none;
     outline: none;
+  }
+
+  input {
+    font-family: inherit;
+    border: none;
+    outline: none;
+
+    &:focus {
+      outline: none;
+    }
   }
 `;
 
