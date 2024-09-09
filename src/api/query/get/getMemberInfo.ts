@@ -8,7 +8,7 @@ interface useGetMemberInfoProps {
 async function getMemberInfo({memberCode}: useGetMemberInfoProps): Promise<IMemberInfo | undefined> {
 
     try {
-        const response = await memberAxiosInstance.get(`/member`, {
+        const response = await memberAxiosInstance.get(`/account-service/member`, {
             headers: {
                 "Member-Code": memberCode, // 헤더에 memberCode 추가
             },
