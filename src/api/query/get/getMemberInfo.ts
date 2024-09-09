@@ -6,7 +6,7 @@ interface useGetMemberInfoProps {
     memberCode: string;
 }
 
-async function useGetMemberInfo({memberCode}: useGetMemberInfoProps): Promise<IMemberInfo | undefined> {
+async function getMemberInfo({memberCode}: useGetMemberInfoProps): Promise<IMemberInfo | undefined> {
 
     try {
         const response = await memberAxiosInstance.get(`/member`, {
@@ -22,4 +22,4 @@ async function useGetMemberInfo({memberCode}: useGetMemberInfoProps): Promise<IM
     }
 }
 
-export default useGetMemberInfo;
+export default getMemberInfo;
