@@ -1,5 +1,4 @@
-import {axiosInstance, memberAxiosInstance} from "../../axios";
-import { ISchedule } from "../../../types/ISchedule";
+import { memberAxiosInstance} from "../../axios";
 import {IMemberInfo} from "../../../types/IMemberInfo";
 
 interface useGetMemberInfoProps {
