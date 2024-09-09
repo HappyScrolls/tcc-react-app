@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {jwtDecode} from "jwt-decode";
-import useGetMemberInfo from "../../../api/query/get/useGetMemberInfo";
+import getMemberInfo from "../../../api/query/get/getMemberInfo";
 
 const Redirect = () => {
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ const Redirect = () => {
       const fetchMemberInfo = async () => {
         try {
           const memberCode = decodedToken["Member-Code"];
-          const memberInfo = await useGetMemberInfo({ memberCode });
+          const memberInfo = await getMemberInfo({ memberCode });
           if (memberInfo?.birthDate === null) {
             navigate("/signup");
           } else {
