@@ -1,23 +1,83 @@
-import React from "react";
+import React, { ChangeEvent, useState } from "react";
 import { Container } from "../../../components/layout/Layout";
 import styled from "styled-components";
 import defaultCat from "../../../images/signup/defaultCat.svg";
-const SignUpForm = () => {
+import { useNavigate } from "react-router-dom";
+import { useMemberInfo } from "../../../hooks/useMemberInfo";
+
+interface SignUpFormProps {
+  memberCode: string;
+}
+
+const SignUpForm: React.FC<SignUpFormProps> = ({ memberCode }) => {
+  const { userInfo, loading } = useMemberInfo(memberCode);
+
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [birthYear, setBirthYear] = useState(
+    userInfo?.birthDate?.split("-")[0] || ""
+  );
+  const [birthMonth, setBirthMonth] = useState(
+    userInfo?.birthDate?.split("-")[1] || ""
+  );
+  const [birthDay, setBirthDay] = useState(
+    userInfo?.birthDate?.split("-")[2] || ""
+  );
+  const navigate = useNavigate();
+
+  const handleCancel = () => {
+    navigate("/");
+  };
+
+  const handleSubmit = () => {
+    navigate("/main");
+  };
+
+  const handleImageFile = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImage(URL.createObjectURL(file));
+    }
+  };
+
+  const profileImage = selectedImage || userInfo?.profilePhoto || defaultCat;
+  console.log(userInfo);
   return (
     <>
       <FormContainer>
         <FormDiv>
           <Text>사용자 정보 입력 </Text>
-          <TextInput placeholder="이름" />
-          <TextInput placeholder="전화번호" />
+          <TextInput value={userInfo?.name || ""} placeholder="이름" readOnly />
+          <TextInput
+            value={userInfo?.email || ""}
+            placeholder="전화번호"
+            readOnly
+          />
           <DateInputWrapper>
-            <DateInput placeholder="생년" />
-            <DateInput placeholder="월" />
-            <DateInput placeholder="일" />
+            <DateInput
+              value={birthYear}
+              onChange={(e) => setBirthYear(e.target.value)}
+              placeholder="생년"
+            />
+            <DateInput
+              value={birthMonth}
+              onChange={(e) => setBirthMonth(e.target.value)}
+              placeholder="월"
+            />
+            <DateInput
+              value={birthDay}
+              onChange={(e) => setBirthDay(e.target.value)}
+              placeholder="일"
+            />
           </DateInputWrapper>
           <ProfileImage>
-            <img src={defaultCat} alt="Profile" />
-            <AddProfile>+</AddProfile>
+            <img src={profileImage} alt="Profile" />
+            <AddProfileLabel htmlFor="profile-upload">+</AddProfileLabel>
+            <AddProfileInput
+              id="profile-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleImageFile}
+            />
           </ProfileImage>
           <AgreementWrapper>
             <AgreementText>
@@ -27,8 +87,8 @@ const SignUpForm = () => {
           </AgreementWrapper>
         </FormDiv>
         <ButtonWrapper>
-          <CancelButton>이전</CancelButton>
-          <SubmitButton>회원가입 완료</SubmitButton>
+          <CancelButton onClick={handleCancel}>이전</CancelButton>
+          <SubmitButton onClick={handleSubmit}>회원가입 완료</SubmitButton>
         </ButtonWrapper>
       </FormContainer>
     </>
@@ -40,7 +100,9 @@ export default SignUpForm;
 const FormContainer = styled(Container)`
   display: flex;
   flex-direction: column;
-  padding: 70px;
+  margin-top: 20px;
+  padding-top: 100px;
+  overflow: hidden;
 `;
 
 const FormDiv = styled.div`
@@ -105,9 +167,16 @@ const ProfileImage = styled.div`
   background: #fff;
 
   box-shadow: 0px 0px 6.8px 0px rgba(0, 0, 0, 0.25);
+
+  img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
 `;
 
-const AddProfile = styled.div`
+const AddProfileLabel = styled.label`
   position: absolute;
   bottom: 0;
   right: 0;
@@ -125,6 +194,11 @@ const AddProfile = styled.div`
   color: #3b3634;
   font-size: 25px;
   font-weight: 700;
+  cursor: pointer;
+`;
+
+const AddProfileInput = styled.input`
+  display: none;
 `;
 
 const AgreementText = styled.div`

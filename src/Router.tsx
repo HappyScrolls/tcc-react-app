@@ -4,6 +4,7 @@ import App from "./App";
 import Redirect from "./pages/login/components/Redirect";
 import SchedulePage from "./pages/schedule/SchedulePage";
 import SignUpPage from "./pages/signup/SignUpPage";
+import MainPage from "./pages/main/MainPage";
 
 const router = createBrowserRouter([
   {
@@ -15,8 +16,8 @@ const router = createBrowserRouter([
         element: <LoginPage />,
       },
       {
-        // path: "/login",
-        // element: <LoginPage />,
+        path: "/main",
+        element: <MainPage />,
       },
       {
         path: "/signup",
