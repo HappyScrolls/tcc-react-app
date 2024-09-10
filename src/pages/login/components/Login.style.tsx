@@ -139,4 +139,5 @@ export const Text3 = styled.div`
 export const ColorContainer = styled(Container)`
   min-height: 100vh;
   background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
 `;
