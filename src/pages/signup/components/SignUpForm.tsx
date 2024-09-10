@@ -10,7 +10,7 @@ interface SignUpFormProps {
 }
 
 const SignUpForm: React.FC<SignUpFormProps> = ({ memberCode }) => {
-  const { userInfo, loading } = useMemberInfo(memberCode);
+  const { userInfo } = useMemberInfo(memberCode);
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [birthYear, setBirthYear] = useState(
