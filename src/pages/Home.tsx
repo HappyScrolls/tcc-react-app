@@ -15,6 +15,7 @@ const Home = () => {
     uid: string;
     thumbnail: string;
     platform: string;
+    "Member-Code": string;
     sub: string;
   }
 

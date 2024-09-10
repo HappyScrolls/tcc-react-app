@@ -39,3 +39,9 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+
+export const memberAxiosInstance = axios.create({
+    baseURL: "http://158.247.198.100:32002",
+    withCredentials: true,
+});
