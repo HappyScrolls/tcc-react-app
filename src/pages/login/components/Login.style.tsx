@@ -26,7 +26,12 @@ export const SocialBtn = styled.button`
 `;
 
 export const LoginBtnWrapper = styled.div`
-  margin-top: 80px;
+  margin-top: auto;
+  margin-bottom: 40px;
+
+  @media (max-width: 768px) {
+    margin-bottom: 20px;
+  }
 `;
 
 export const GoogleBtn = styled(SocialBtn)`
@@ -57,7 +62,11 @@ export const LogoImg = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 138px;
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
 `;
 
 export const LoginText = styled.div`
@@ -67,6 +76,7 @@ export const LoginText = styled.div`
   justify-content: center;
 
   margin-top: 20px;
+  margin-bottom: 40px;
 `;
 
 export const Text1 = styled.div`
@@ -127,7 +137,6 @@ export const Text3 = styled.div`
 `;
 
 export const ColorContainer = styled(Container)`
-  background: rgba(0, 0, 0, 0.3);
-  stroke-width: 2px;
-  stroke: #878678;
+  min-height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
 `;

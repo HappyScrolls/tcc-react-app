@@ -112,9 +112,6 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     font-family: "SUIT";
-    line-height: 1.6;
-    background-color: #f5f5f5;
-    color: #333;
   }
 
   a {

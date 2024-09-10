@@ -5,7 +5,7 @@ import GoogleLogin from "./GoogleLogin";
 import logoImg from "../../../images/logo.svg";
 import logoText from "../../../images/logotext.svg";
 import * as L from "./Login.style";
-
+import BackgroundDesign from "./BackgroundDesign";
 export const Login = () => {
   return (
     <>
@@ -32,6 +32,7 @@ export const Login = () => {
           <NaverLogin />
           <GoogleLogin />
         </L.LoginBtnWrapper>
+        <BackgroundDesign />
       </L.ColorContainer>
     </>
   );
