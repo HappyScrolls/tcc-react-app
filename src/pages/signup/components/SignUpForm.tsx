@@ -11,9 +11,17 @@ interface SignUpFormProps {
 
 const SignUpForm: React.FC<SignUpFormProps> = ({ memberCode }) => {
   const { userInfo, loading } = useMemberInfo(memberCode);
-  console.log(userInfo);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [birthYear, setBirthYear] = useState(
+    userInfo?.birthDate?.split("-")[0] || ""
+  );
+  const [birthMonth, setBirthMonth] = useState(
+    userInfo?.birthDate?.split("-")[1] || ""
+  );
+  const [birthDay, setBirthDay] = useState(
+    userInfo?.birthDate?.split("-")[2] || ""
+  );
   const navigate = useNavigate();
 
   const handleCancel = () => {
@@ -32,7 +40,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ memberCode }) => {
   };
 
   const profileImage = selectedImage || userInfo?.profilePhoto || defaultCat;
-
+  console.log(userInfo);
   return (
     <>
       <FormContainer>
@@ -46,26 +54,30 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ memberCode }) => {
           />
           <DateInputWrapper>
             <DateInput
-              value={userInfo?.birthDate?.split("-")[0] || ""}
+              value={birthYear}
+              onChange={(e) => setBirthYear(e.target.value)}
               placeholder="생년"
-              readOnly
             />
             <DateInput
-              value={userInfo?.birthDate?.split("-")[1] || ""}
+              value={birthMonth}
+              onChange={(e) => setBirthMonth(e.target.value)}
               placeholder="월"
-              readOnly
             />
             <DateInput
-              value={userInfo?.birthDate?.split("-")[2] || ""}
+              value={birthDay}
+              onChange={(e) => setBirthDay(e.target.value)}
               placeholder="일"
-              readOnly
             />
           </DateInputWrapper>
           <ProfileImage>
-            <img src={defaultCat} alt="Profile" />
-            <AddProfile type="file" accept="image/*" onChange={handleImageFile}>
-              +
-            </AddProfile>
+            <img src={profileImage} alt="Profile" />
+            <AddProfileLabel htmlFor="profile-upload">+</AddProfileLabel>
+            <AddProfileInput
+              id="profile-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleImageFile}
+            />
           </ProfileImage>
           <AgreementWrapper>
             <AgreementText>
@@ -90,6 +102,7 @@ const FormContainer = styled(Container)`
   flex-direction: column;
   margin-top: 20px;
   padding-top: 100px;
+  overflow: hidden;
 `;
 
 const FormDiv = styled.div`
@@ -154,9 +167,16 @@ const ProfileImage = styled.div`
   background: #fff;
 
   box-shadow: 0px 0px 6.8px 0px rgba(0, 0, 0, 0.25);
+
+  img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
 `;
 
-const AddProfile = styled.input`
+const AddProfileLabel = styled.label`
   position: absolute;
   bottom: 0;
   right: 0;
@@ -174,6 +194,11 @@ const AddProfile = styled.input`
   color: #3b3634;
   font-size: 25px;
   font-weight: 700;
+  cursor: pointer;
+`;
+
+const AddProfileInput = styled.input`
+  display: none;
 `;
 
 const AgreementText = styled.div`
