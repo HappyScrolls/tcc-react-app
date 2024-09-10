@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import getMemberInfo from "../../../api/query/get/getMemberInfo";
 
 const Redirect = () => {
@@ -18,7 +18,6 @@ const Redirect = () => {
     sub: string;
   }
 
-
   useEffect(() => {
     // 현재 URL에서 토큰을 추출
     const urlParams = new URLSearchParams(window.location.search);
@@ -29,13 +28,12 @@ const Redirect = () => {
       localStorage.setItem("authToken", token);
       const decodedToken = jwtDecode<DecodedToken>(token);
 
-
       const fetchMemberInfo = async () => {
         try {
           const memberCode = decodedToken["Member-Code"];
           const memberInfo = await getMemberInfo({ memberCode });
           if (memberInfo?.birthDate === null) {
-            navigate("/signup");
+            navigate(`/signup?memberCode=${memberCode}`);
           } else {
             navigate("/");
           }

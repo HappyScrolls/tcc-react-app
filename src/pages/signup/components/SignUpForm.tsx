@@ -1,23 +1,71 @@
-import React from "react";
+import React, { ChangeEvent, useState } from "react";
 import { Container } from "../../../components/layout/Layout";
 import styled from "styled-components";
 import defaultCat from "../../../images/signup/defaultCat.svg";
-const SignUpForm = () => {
+import { useNavigate } from "react-router-dom";
+import { useMemberInfo } from "../../../hooks/useMemberInfo";
+
+interface SignUpFormProps {
+  memberCode: string;
+}
+
+const SignUpForm: React.FC<SignUpFormProps> = ({ memberCode }) => {
+  const { userInfo, loading } = useMemberInfo(memberCode);
+  console.log(userInfo);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  const navigate = useNavigate();
+
+  const handleCancel = () => {
+    navigate("/");
+  };
+
+  const handleSubmit = () => {
+    navigate("/main");
+  };
+
+  const handleImageFile = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImage(URL.createObjectURL(file));
+    }
+  };
+
+  const profileImage = selectedImage || userInfo?.profilePhoto || defaultCat;
+
   return (
     <>
       <FormContainer>
         <FormDiv>
           <Text>사용자 정보 입력 </Text>
-          <TextInput placeholder="이름" />
-          <TextInput placeholder="전화번호" />
+          <TextInput value={userInfo?.name || ""} placeholder="이름" readOnly />
+          <TextInput
+            value={userInfo?.email || ""}
+            placeholder="전화번호"
+            readOnly
+          />
           <DateInputWrapper>
-            <DateInput placeholder="생년" />
-            <DateInput placeholder="월" />
-            <DateInput placeholder="일" />
+            <DateInput
+              value={userInfo?.birthDate?.split("-")[0] || ""}
+              placeholder="생년"
+              readOnly
+            />
+            <DateInput
+              value={userInfo?.birthDate?.split("-")[1] || ""}
+              placeholder="월"
+              readOnly
+            />
+            <DateInput
+              value={userInfo?.birthDate?.split("-")[2] || ""}
+              placeholder="일"
+              readOnly
+            />
           </DateInputWrapper>
           <ProfileImage>
             <img src={defaultCat} alt="Profile" />
-            <AddProfile>+</AddProfile>
+            <AddProfile type="file" accept="image/*" onChange={handleImageFile}>
+              +
+            </AddProfile>
           </ProfileImage>
           <AgreementWrapper>
             <AgreementText>
@@ -27,8 +75,8 @@ const SignUpForm = () => {
           </AgreementWrapper>
         </FormDiv>
         <ButtonWrapper>
-          <CancelButton>이전</CancelButton>
-          <SubmitButton>회원가입 완료</SubmitButton>
+          <CancelButton onClick={handleCancel}>이전</CancelButton>
+          <SubmitButton onClick={handleSubmit}>회원가입 완료</SubmitButton>
         </ButtonWrapper>
       </FormContainer>
     </>
@@ -40,7 +88,8 @@ export default SignUpForm;
 const FormContainer = styled(Container)`
   display: flex;
   flex-direction: column;
-  padding: 70px;
+  margin-top: 20px;
+  padding-top: 100px;
 `;
 
 const FormDiv = styled.div`
@@ -107,7 +156,7 @@ const ProfileImage = styled.div`
   box-shadow: 0px 0px 6.8px 0px rgba(0, 0, 0, 0.25);
 `;
 
-const AddProfile = styled.div`
+const AddProfile = styled.input`
   position: absolute;
   bottom: 0;
   right: 0;
