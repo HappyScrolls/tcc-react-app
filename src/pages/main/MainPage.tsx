@@ -17,4 +17,6 @@ const MainPage = () => {
 
 export default MainPage;
 
-const MonthContainer = styled(Container)``;
+const MonthContainer = styled(Container)`
+  gap: 21px;
+`;
