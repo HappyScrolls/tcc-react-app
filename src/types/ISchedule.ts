@@ -6,4 +6,5 @@ export interface ISchedule {
   scheduleStartAt: string;
   scheduleEndAt: string;
   scheduleAt: string;
+  scheduleBusyLevel: "여유" | "보통" | "바쁨";
 }
