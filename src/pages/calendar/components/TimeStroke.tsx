@@ -26,7 +26,6 @@ export default TimeStroke;
 
 const StrokeContainer = styled.div`
   position: absolute;
-  top: 30px;
   left: 0;
   width: 100%;
   height: 1152px;
