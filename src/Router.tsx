@@ -6,6 +6,9 @@ import SchedulePage from "./pages/schedule/SchedulePage";
 import SignUpPage from "./pages/signup/SignUpPage";
 import MainPage from "./pages/main/MainPage";
 import NotificationPage from "./pages/notification/NotificationPage";
+import CalendarPage from "./pages/calendar/CalendarPage";
+import CoupleInfoPage from "./pages/couple/CoupleInfoPage";
+import MyPage from "./pages/mypage/MyPage";
 
 const router = createBrowserRouter([
   {
@@ -33,8 +36,16 @@ const router = createBrowserRouter([
         element: <SchedulePage />,
       },
       {
+        path: "/calendar/:date",
+        element: <CalendarPage />,
+      },
+      {
         path: "/notification",
         element: <NotificationPage />,
+      },
+      {
+        path: "/mypage",
+        element: <MyPage />,
       },
       {
         path: "/couple/info",
