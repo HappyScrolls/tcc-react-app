@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import defaultCat from "../../../images/signup/defaultCat.svg";
-
+import phone from "../../../images/calendar/phone.svg";
 // 일정 데이터 예시
 interface Schedule {
   title: string;
@@ -94,7 +94,41 @@ interface ScheduleItemProps {
   isPartner?: boolean;
 }
 
+type ModalType = "empty" | "schedule" | null;
+
 const TimeTableView: React.FC = () => {
+  const [activeModal, setActiveModal] = useState<ModalType>(null); // 모달 상태
+  const [touchStartY, setTouchStartY] = useState(0); // 터치 시작 위치 저장
+
+  const modalRef = useRef<HTMLDivElement>(null); // 모달을 참조하는 ref
+  // 모달 열기 함수
+  const openModal = (type: ModalType) => {
+    setActiveModal(type);
+  };
+
+  // 모달 닫기 함수
+  const closeModal = () => {
+    setActiveModal(null);
+  };
+  // 바깥을 클릭했을 때 모달 닫기
+  const handleOutsideClick = (e: React.MouseEvent) => {
+    if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+      closeModal();
+    }
+  };
+  // 슬라이드 감지 (터치 시작)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartY(e.touches[0].clientY);
+  };
+
+  // 슬라이드 감지 (터치 끝)
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const touchEndY = e.changedTouches[0].clientY;
+    if (touchEndY - touchStartY > 100) {
+      closeModal();
+    }
+  };
+
   return (
     <>
       <Header>
@@ -118,7 +152,7 @@ const TimeTableView: React.FC = () => {
         </LeftTimeGrid>
 
         <ScheduleContainer>
-          <ScheduleColumn>
+          <ScheduleColumn onClick={() => openModal("empty")}>
             {mySchedule
               .filter((schedule) => !schedule.isCommon)
               .map((schedule, index) => (
@@ -131,6 +165,10 @@ const TimeTableView: React.FC = () => {
                   }
                   backgroundColor={getBusyBackgroundColor(schedule.busyLevel)}
                   isCommon={false} // 내 일정인 경우
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openModal("schedule");
+                  }}
                 >
                   <BusyTag backgroundColor={getBusyColor(schedule.busyLevel)} />
                   {schedule.title}
@@ -173,6 +211,10 @@ const TimeTableView: React.FC = () => {
                   }
                   backgroundColor={getBusyBackgroundColor(schedule.busyLevel)}
                   isPartner={true}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openModal("schedule");
+                  }}
                 >
                   <BusyTag backgroundColor={getBusyColor(schedule.busyLevel)} />
                   {schedule.title}
@@ -188,6 +230,53 @@ const TimeTableView: React.FC = () => {
           ))}
         </RightTimeGrid>
       </TableContainer>
+      {/* 일정 추가 모달 */}
+      {activeModal === "empty" && (
+        <Overlay onClick={handleOutsideClick} onTouchEnd={handleTouchEnd}>
+          <BottomSheet
+            ref={modalRef}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            <SheetContent>
+              <Line />
+              <Button onClick={closeModal}>내 일정 추가</Button>
+              <CommonButton onClick={closeModal}>공통 일정 추가</CommonButton>
+            </SheetContent>
+          </BottomSheet>
+        </Overlay>
+      )}
+
+      {/* 일정 상세 모달 */}
+      {activeModal === "schedule" && (
+        <Overlay onClick={handleOutsideClick} onTouchEnd={handleTouchEnd}>
+          <ScheduleDetailModal
+            ref={modalRef}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            <ScheduleContent>
+              <BlackLine />
+              <ModalWrapper>
+                <BusyTag backgroundColor={getBusyColor("바쁨")} />
+                <Title>(일정 이름)</Title> <Phone src={phone} />
+              </ModalWrapper>
+
+              <TextWrapper>
+                <Text>(장소)</Text>
+                <Text>(사람)</Text>
+                <TimeText>(00:00~00:00)</TimeText>
+                <WeekText>(매주 수요일마다)</WeekText>
+              </TextWrapper>
+              <BtnWrapper>
+                <DeleteButton>일정 삭제</DeleteButton>
+                <ActionButton>일정 수정</ActionButton>
+                <ActionButton>공통 일정으로 변경</ActionButton>
+              </BtnWrapper>
+            </ScheduleContent>
+          </ScheduleDetailModal>
+        </Overlay>
+      )}
     </>
   );
 };
@@ -333,4 +422,171 @@ const BusyTag = styled.div<{ backgroundColor: string }>`
   margin-top: 3px;
   margin-right: 2px;
   background-color: ${({ backgroundColor }) => backgroundColor};
+`;
+
+// 모달
+const BottomSheet = styled.div`
+  position: fixed;
+  bottom: 0;
+  width: 85%;
+  background: #fff;
+  border-radius: 20px 20px 0px 0px;
+  border: 1px solid #f25454;
+  box-shadow: 0px -2px 4px 0px rgba(0, 0, 0, 0.25);
+  padding: 20px;
+  animation: slide-up 0.3s ease-out;
+  z-index: 5;
+  height: 235px;
+`;
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 4;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+`;
+
+const ScheduleDetailModal = styled(BottomSheet)`
+  height: 440px;
+`;
+
+const SheetContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  gap: 12px;
+`;
+
+const Line = styled.div`
+  width: 53px;
+  height: 5px;
+  margin: 0 auto;
+  border-radius: 30px;
+  background: var(--Secondary, #ffcfc7);
+
+  margin-bottom: 40px;
+`;
+
+const BlackLine = styled(Line)`
+  background: #4d3f2c;
+  margin-bottom: 15px;
+`;
+
+const Button = styled.button`
+  padding: 12px 0px 13px 0px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
+
+  color: var(--Black, #3b3634);
+  text-align: center;
+  font-family: SUIT;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+`;
+
+const CommonButton = styled(Button)`
+  background: var(--Secondary, #ffcfc7);
+`;
+
+const ScheduleContent = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Title = styled.div`
+  color: var(--Black, #3b3634);
+  font-family: SUIT;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  width: 90%;
+  margin-left: 12px;
+`;
+
+const Text = styled.div`
+  color: var(--Black, #3b3634);
+  font-family: SUIT;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+`;
+
+const TimeText = styled.div`
+  color: var(--Black, #3b3634);
+
+  font-family: SUIT;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+`;
+
+const WeekText = styled.div`
+  color: var(--Black, #3b3634);
+
+  font-family: SUIT;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+`;
+
+const ActionButton = styled(Button)`
+  border-radius: 10px;
+  background: #fff;
+
+  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
+  color: var(--Black, #3b3634);
+
+  text-align: center;
+  font-family: SUIT;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+
+const DeleteButton = styled(ActionButton)`
+  border-radius: 10px;
+  background: var(--Secondary, #ffcfc7);
+
+  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
+`;
+
+const Phone = styled.img`
+  width: 20.299px;
+  height: 27.463px;
+  flex-shrink: 0;
+`;
+
+const ModalWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const BtnWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 25px;
+  gap: 12px;
+`;
+
+const TextWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+
+  margin-top: 40px;
 `;
