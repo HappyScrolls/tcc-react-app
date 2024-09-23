@@ -59,7 +59,6 @@ const ListView = () => {
     }
   };
 
-  // 완료 상태 토글 함수
   const toggleCompletion = (
     schedules: typeof mySchedules,
     setSchedules: React.Dispatch<React.SetStateAction<typeof mySchedules>>,
@@ -77,9 +76,9 @@ const ListView = () => {
       return schedule;
     });
 
-    // 공통일정이면 상대방의 일정도 업데이트
+    // 공통 일정인 경우에만 상대방 일정 업데이트
     const updatedOtherSchedules = otherSchedules.map((schedule) => {
-      if (schedule.isCommon) {
+      if (schedule.isCommon && schedules[index].isCommon) {
         return {
           ...schedule,
           isCompleted: updatedSchedules[index].isCompleted,
