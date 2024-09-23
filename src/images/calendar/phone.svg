@@ -1,6 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="31" viewBox="0 0 24 31" fill="none">
-  <rect x="4.38818" y="3.19385" width="15.5224" height="23.8806" rx="1.79104" stroke="#3B3634" stroke-width="2.38806"/>
-  <path d="M10.9556 6.77637L13.3436 6.77637" stroke="#3B3634" stroke-width="2.38806" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M9.76123 23.4927H14.5373" stroke="#3B3634" stroke-width="2.38806" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M2 29.4627L22.2985 2" stroke="#3B3634" stroke-width="2.38806" stroke-linecap="round"/>
+<svg width="23" height="33" viewBox="0 0 23 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 1922">
+<rect id="Rectangle 367" x="1.68848" y="1.58398" width="18.9583" height="29.1667" rx="2.1875" stroke="#3B3634" stroke-width="2.91667"/>
+<path id="Vector 687" d="M9.70898 5.95898L12.6257 5.95898" stroke="#3B3634" stroke-width="2.91667" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector 688" d="M8.25098 26.3755H14.0843" stroke="#3B3634" stroke-width="2.91667" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
 </svg>

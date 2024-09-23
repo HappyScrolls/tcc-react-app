@@ -2,7 +2,8 @@ import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import defaultCat from "../../../images/signup/defaultCat.svg";
 import phone from "../../../images/calendar/phone.svg";
-// 일정 데이터 예시
+import { getBusyBackgroundColor, getBusyColor } from "../../../utils/colors";
+
 interface Schedule {
   title: string;
   startTime: string;
@@ -52,33 +53,6 @@ const partnerSchedule: Schedule[] = [
   },
 ];
 
-// 바쁜 정도에 따른 색상 반환
-const getBusyBackgroundColor = (level: string): string => {
-  switch (level) {
-    case "여유":
-      return "rgba(211, 237, 233, 0.50)";
-    case "보통":
-      return "rgba(255, 227, 192, 0.50)";
-    case "바쁨":
-      return "rgba(255, 207, 199, 0.50)";
-    default:
-      return "#fff";
-  }
-};
-
-const getBusyColor = (scheduleBusyLevel: string) => {
-  switch (scheduleBusyLevel) {
-    case "여유":
-      return "#51C7B4";
-    case "보통":
-      return "#FBBB6A";
-    case "바쁨":
-      return "#F14040";
-    default:
-      return "#fff";
-  }
-};
-
 // 시간을 픽셀 단위로 변환 (1시간 = 26px)
 const timeToPosition = (time: string): number => {
   const [hour, minute] = time.split(":").map(Number);
@@ -97,31 +71,31 @@ interface ScheduleItemProps {
 type ModalType = "empty" | "schedule" | null;
 
 const TimeTableView: React.FC = () => {
-  const [activeModal, setActiveModal] = useState<ModalType>(null); // 모달 상태
-  const [touchStartY, setTouchStartY] = useState(0); // 터치 시작 위치 저장
+  const [activeModal, setActiveModal] = useState<ModalType>(null); 
+  const [touchStartY, setTouchStartY] = useState(0); 
 
-  const modalRef = useRef<HTMLDivElement>(null); // 모달을 참조하는 ref
-  // 모달 열기 함수
+  const modalRef = useRef<HTMLDivElement>(null); 
+
   const openModal = (type: ModalType) => {
     setActiveModal(type);
   };
 
-  // 모달 닫기 함수
+
   const closeModal = () => {
     setActiveModal(null);
   };
-  // 바깥을 클릭했을 때 모달 닫기
+
   const handleOutsideClick = (e: React.MouseEvent) => {
     if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
       closeModal();
     }
   };
-  // 슬라이드 감지 (터치 시작)
+
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStartY(e.touches[0].clientY);
   };
 
-  // 슬라이드 감지 (터치 끝)
+
   const handleTouchEnd = (e: React.TouchEvent) => {
     const touchEndY = e.changedTouches[0].clientY;
     if (touchEndY - touchStartY > 100) {
@@ -375,7 +349,6 @@ const CommonScheduleColumn = styled.div`
   align-items: center;
 `;
 
-//  공통일정 표시
 const ScheduleItem = styled.div<ScheduleItemProps>`
   position: absolute;
   top: ${({ top }) => top}px;
