@@ -5,6 +5,9 @@ import Redirect from "./pages/login/components/Redirect";
 import SchedulePage from "./pages/schedule/SchedulePage";
 import SignUpPage from "./pages/signup/SignUpPage";
 import MainPage from "./pages/main/MainPage";
+import CalendarPage from "./pages/calendar/CalendarPage";
+
+import AddMySchedulePage from "./pages/schedule/AddMySchedulePage";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +33,14 @@ const router = createBrowserRouter([
       {
         path: "/schedule/detail",
         element: <SchedulePage />,
+      },
+      {
+        path: "/calendar/:date",
+        element: <CalendarPage />,
+      },
+      {
+        path: "calendar/:date/add",
+        element: <AddMySchedulePage />,
       },
     ],
   },

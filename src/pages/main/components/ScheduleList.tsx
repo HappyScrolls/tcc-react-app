@@ -1,9 +1,21 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import defaultCat from "../../../images/signup/defaultCat.svg";
+import { useNavigate } from "react-router-dom";
 
 const ScheduleList = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const navigate = useNavigate();
+
+  const handleTodaySchedule = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+
+    const formattedDate = `${year}-${month}-${day}`;
+    navigate(`/calendar/${formattedDate}`);
+  };
 
   const scheduleData = [
     {
@@ -82,7 +94,7 @@ const ScheduleList = () => {
         <ArrowRight onClick={handleNext}>{">"}</ArrowRight>
       </ScheduleContainer>
 
-      <Button>오늘의 일정 확인</Button>
+      <Button onClick={handleTodaySchedule}>오늘의 일정 확인</Button>
     </ScheduleBox>
   );
 };
