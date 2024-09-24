@@ -6,7 +6,8 @@ import SchedulePage from "./pages/schedule/SchedulePage";
 import SignUpPage from "./pages/signup/SignUpPage";
 import MainPage from "./pages/main/MainPage";
 import CalendarPage from "./pages/calendar/CalendarPage";
-import ScheduleForm from "./pages/schedule/components/ScheduleForm";
+
+import AddMySchedulePage from "./pages/schedule/AddMySchedulePage";
 
 const router = createBrowserRouter([
   {
@@ -38,14 +39,8 @@ const router = createBrowserRouter([
         element: <CalendarPage />,
       },
       {
-        path: "/form",
-        element: (
-          <ScheduleForm
-            onSave={function (formData: any): void {
-              throw new Error("Function not implemented.");
-            }}
-          />
-        ),
+        path: "calendar/:date/add",
+        element: <AddMySchedulePage />,
       },
     ],
   },

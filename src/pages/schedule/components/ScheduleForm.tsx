@@ -1,120 +1,94 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import phone from "../../../images/calendar/phone.svg";
 import nophone from "../../../images/calendar/nophone.svg";
 import FormProps from "../../../types/IFormProps";
-import { getBusyBackgroundColor, getBusyColor } from "../../../utils/colors";
+import BusyLevelSelector from "./BusyLevelSelector";
+import { ScheduleData } from "../../../types/ISchedule";
 
 const ScheduleForm: React.FC<FormProps> = ({
   onSave,
   initialFormData,
   isCoupleSchedule,
 }) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ScheduleData>({
     busyLevel: "여유",
-    title: "",
-    location: "",
-    person: "",
-    gender: "혼성",
-    startTime: "",
-    endTime: "",
-    repeat: "반복 없음",
-    selectedDays: [] as string[],
-    repeatEnd: "없음",
-    endDate: "",
+    scheduleName: "",
+    scheduleLocation: "",
+    scheduleWith: "",
+    groupGenderType: "혼성",
+    scheduleStartAt: "",
+    scheduleEndAt: "",
+    scheduleAt: "",
+    isCommon: false,
   });
 
-  useEffect(() => {
-    if (initialFormData) {
-      setFormData(initialFormData);
-    }
-  }, [initialFormData]);
+  // 일정 수정 때 사용
+  // useEffect(() => {
+  //   if (initialFormData) {
+  //     setFormData(initialFormData);
+  //   }
+  // }, [initialFormData]);
 
   const daysOfWeek = ["월", "화", "수", "목", "금", "토"];
-
-  const toggleDaySelection = (day: string) => {
-    setFormData((prevData) => {
-      const selectedDays = prevData.selectedDays.includes(day)
-        ? prevData.selectedDays.filter((d) => d !== day)
-        : [...prevData.selectedDays, day];
-      return { ...prevData, selectedDays };
-    });
-  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, gender: e.target.value });
+    const genderValue = e.target.value as "혼성" | "남성" | "여성";
+    setFormData({ ...formData, groupGenderType: genderValue });
   };
 
-  const handleRepeatEndChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, repeatEnd: e.target.value });
-  };
-
-  const handleBusyLevelChange = (level: string) => {
-    setFormData({ ...formData, busyLevel: level });
-  };
+  const currentUrl = window.location.pathname;
+  const date = currentUrl.split("/")[2];
 
   const handleSave = () => {
-    onSave(formData);
+    const requestBody = {
+      ...formData,
+      scheduleStartAt: `${date}T${formData.scheduleStartAt}`,
+      scheduleEndAt: `${date}T${formData.scheduleEndAt}`,
+      scheduleAt: date,
+      isCommon: isCoupleSchedule ? true : false,
+    };
+
+    console.log("입력한 데이터:", requestBody);
+    onSave(requestBody);
   };
 
   return (
     <FormContainer>
-      <ButtonContainer>
-        <BusyButton
-          level="여유"
-          isSelected={formData.busyLevel === "여유"}
-          onClick={() => handleBusyLevelChange("여유")}
-        >
-          <BusyTag level="여유" />
-          여유
-        </BusyButton>
+      <BusyLevelSelector
+        busyLevel={formData.busyLevel}
+        onChange={(level) => setFormData({ ...formData, busyLevel: level })}
+      />
 
-        <BusyButton
-          level="보통"
-          isSelected={formData.busyLevel === "보통"}
-          onClick={() => handleBusyLevelChange("보통")}
-        >
-          <BusyTag level="보통" />
-          보통
-        </BusyButton>
-
-        <BusyButton
-          level="바쁨"
-          isSelected={formData.busyLevel === "바쁨"}
-          onClick={() => handleBusyLevelChange("바쁨")}
-        >
-          <BusyTag level="바쁨" />
-          바쁨
-        </BusyButton>
-      </ButtonContainer>
-      {/* 일정 이름  */}
+      {/* 일정 이름 */}
       <InputContainer>
         <Input
-          name="title"
-          value={formData.title}
+          name="scheduleName"
+          value={formData.scheduleName}
           onChange={handleChange}
           placeholder="일정 이름"
         />
       </InputContainer>
+
       {/* 장소 */}
       <InputContainer>
         <Input
-          name="location"
-          value={formData.location}
+          name="scheduleLocation"
+          value={formData.scheduleLocation}
           onChange={handleChange}
           placeholder="장소"
         />
       </InputContainer>
-      {/* 사람 필드는 커플 일정이 아닌 경우에만 표시 */}
+
       {!isCoupleSchedule && (
         <InputContainer>
           <Input
-            name="person"
-            value={formData.person}
+            name="scheduleWith"
+            value={formData.scheduleWith}
             onChange={handleChange}
             placeholder="사람"
           />
@@ -125,9 +99,9 @@ const ScheduleForm: React.FC<FormProps> = ({
         <RadioWrapper>
           <RadioButton
             type="radio"
-            name="gender"
+            name="groupGenderType"
             value="혼성"
-            checked={formData.gender === "혼성"}
+            checked={formData.groupGenderType === "혼성"}
             onChange={handleRadioChange}
           />
           <SmallLabel> 혼성</SmallLabel>
@@ -135,9 +109,9 @@ const ScheduleForm: React.FC<FormProps> = ({
         <RadioWrapper>
           <RadioButton
             type="radio"
-            name="gender"
+            name="groupGenderType"
             value="여성"
-            checked={formData.gender === "여성"}
+            checked={formData.groupGenderType === "여성"}
             onChange={handleRadioChange}
           />
           <SmallLabel> 여성</SmallLabel>
@@ -146,9 +120,9 @@ const ScheduleForm: React.FC<FormProps> = ({
         <RadioWrapper>
           <RadioButton
             type="radio"
-            name="gender"
+            name="groupGenderType"
             value="남성"
-            checked={formData.gender === "남성"}
+            checked={formData.groupGenderType === "남성"}
             onChange={handleRadioChange}
           />
           <SmallLabel> 남성</SmallLabel>
@@ -160,8 +134,8 @@ const ScheduleForm: React.FC<FormProps> = ({
           <Label>시작</Label>
           <TimeInput
             type="time"
-            name="startTime"
-            value={formData.startTime}
+            name="scheduleStartAt"
+            value={formData.scheduleStartAt}
             onChange={handleChange}
           />
         </Wrapper>
@@ -169,8 +143,8 @@ const ScheduleForm: React.FC<FormProps> = ({
           <Label>끝</Label>
           <TimeInput
             type="time"
-            name="endTime"
-            value={formData.endTime}
+            name="scheduleEndAt"
+            value={formData.scheduleEndAt}
             onChange={handleChange}
           />
         </Wrapper>
@@ -178,91 +152,31 @@ const ScheduleForm: React.FC<FormProps> = ({
       {/* 반복, 요일  */}
       <WeekWrapper>
         <RadioGroup>
-          <RadioButton
-            type="radio"
-            name="repeat"
-            value="반복 없음"
-            checked={formData.repeat === "반복 없음"}
-            onChange={(e) =>
-              setFormData({ ...formData, repeat: e.target.value })
-            }
-          />
+          <RadioButton type="radio" name="repeat" value="반복 없음" />
           <SmallLabel> 반복 없음</SmallLabel>
-          <RadioButton
-            type="radio"
-            name="repeat"
-            value="매주 반복"
-            checked={formData.repeat === "매주 반복"}
-            onChange={(e) =>
-              setFormData({ ...formData, repeat: e.target.value })
-            }
-          />
+          <RadioButton type="radio" name="repeat" value="매주 반복" />
           <SmallLabel> 매주 반복</SmallLabel>
-          <RadioButton
-            type="radio"
-            name="repeat"
-            value="매달 반복"
-            checked={formData.repeat === "매달 반복"}
-            onChange={(e) =>
-              setFormData({ ...formData, repeat: e.target.value })
-            }
-          />
+          <RadioButton type="radio" name="repeat" value="매달 반복" />
           <SmallLabel> 매달 반복</SmallLabel>
         </RadioGroup>
 
         {/* 요일 선택 */}
         <DaySelectionContainer>
           {daysOfWeek.map((day) => (
-            <DayButton
-              key={day}
-              selected={formData.selectedDays.includes(day)}
-              onClick={() => toggleDaySelection(day)}
-            >
-              {day}
-            </DayButton>
+            <DayButton key={day}>{day}</DayButton>
           ))}
         </DaySelectionContainer>
 
         <RepeatEndContainer>
           <RadioGroup>
-            <RadioButton
-              type="radio"
-              name="repeatEnd"
-              value="없음"
-              checked={formData.repeatEnd === "없음"}
-              onChange={handleRepeatEndChange}
-            />
+            <RadioButton type="radio" name="repeatEnd" value="없음" />
             없음
-            <RadioButton
-              type="radio"
-              name="repeatEnd"
-              value="1주 후"
-              checked={formData.repeatEnd === "1주 후"}
-              onChange={handleRepeatEndChange}
-            />
+            <RadioButton type="radio" name="repeatEnd" value="1주 후" />
             1주 후
-            <RadioButton
-              type="radio"
-              name="repeatEnd"
-              value="1달 후"
-              checked={formData.repeatEnd === "1달 후"}
-              onChange={handleRepeatEndChange}
-            />
+            <RadioButton type="radio" name="repeatEnd" value="1달 후" />
             1달 후
-            <RadioButton
-              type="radio"
-              name="repeatEnd"
-              value="1달 후"
-              checked={formData.repeatEnd === "1달 후"}
-              onChange={handleRepeatEndChange}
-            />
-            <DateInput
-              type="date"
-              value={formData.endDate}
-              onChange={(e) =>
-                setFormData({ ...formData, endDate: e.target.value })
-              }
-            />
+            <RadioButton type="radio" name="repeatEnd" value="1달 후" />
+            <DateInput type="date" />
           </RadioGroup>
         </RepeatEndContainer>
       </WeekWrapper>
@@ -280,7 +194,6 @@ const ScheduleForm: React.FC<FormProps> = ({
 };
 
 export default ScheduleForm;
-
 const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -374,32 +287,6 @@ const ButtonContainer = styled.div`
   justify-content: space-around;
 `;
 
-const BusyButton = styled.button<{ level: string; isSelected: boolean }>`
-  display: inline-flex;
-  padding: 3px 16px 2px 12px;
-  align-items: flex-start;
-  gap: 6px;
-  border-radius: 10px;
-  background: ${({ level, isSelected }) =>
-    isSelected ? getBusyBackgroundColor(level) : "#fff"};
-
-  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
-  color: var(--Black, #3b3634);
-  font-family: SUIT;
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  cursor: pointer;
-`;
-
-const BusyTag = styled.div<{ level: string }>`
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: ${({ level }) => getBusyColor(level)};
-`;
-
 const RadioGroup = styled.div`
   display: flex;
   align-items: center;
@@ -479,17 +366,14 @@ const DaySelectionContainer = styled.div`
   justify-content: space-around;
 `;
 
-const DayButton = styled.button<{ selected: boolean }>`
+const DayButton = styled.button`
   padding: 5px 10px;
   justify-content: center;
   align-items: center;
   width: 26px;
   border-radius: 10px;
 
-  background: ${({ selected }) => (selected ? "#F25454" : "#fff")};
   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
-  color: ${({ selected }) => (selected ? "#fff" : "#3B3634")};
-
   text-align: center;
   font-family: SUIT;
   font-size: 8px;

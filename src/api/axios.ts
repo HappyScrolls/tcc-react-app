@@ -1,26 +1,25 @@
 import axios from "axios";
 
-export const axiosInstance = axios.create({
-  baseURL: "http://localhost:8084",
+export const scheduleAxiosInstance = axios.create({
+  baseURL: "http://158.247.198.100:32000",
   withCredentials: true,
+  timeout: 5000,
 });
 
 export const refreshInstance = axios.create({
-  baseURL: "http://localhost:8084",
+  baseURL: "http://158.247.198.100:32002",
   withCredentials: true,
 });
 
 // 요청
-axiosInstance.interceptors.request.use(
+scheduleAxiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("authToken");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+    const memberCode =
+      localStorage.getItem("memberCode") ||
+      "eyJubyI6NSwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9";
 
-    // 임시 Member-Code 작성
-    config.headers["Member-Code"] =
-      "eyJubyI6MSwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9";
+    config.headers["Member-Code"] = memberCode;
+    // config.headers["Content-Type"] = "application/json";
 
     return config;
   },
@@ -30,7 +29,7 @@ axiosInstance.interceptors.request.use(
 );
 
 // 응답
-axiosInstance.interceptors.response.use(
+scheduleAxiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
@@ -40,8 +39,7 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-
 export const memberAxiosInstance = axios.create({
-    baseURL: "http://158.247.198.100:32002",
-    withCredentials: true,
+  baseURL: "http://158.247.198.100:32002",
+  withCredentials: true,
 });

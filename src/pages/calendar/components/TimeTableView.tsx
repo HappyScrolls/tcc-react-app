@@ -3,6 +3,7 @@ import styled from "styled-components";
 import defaultCat from "../../../images/signup/defaultCat.svg";
 import phone from "../../../images/calendar/phone.svg";
 import { getBusyBackgroundColor, getBusyColor } from "../../../utils/colors";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface Schedule {
   title: string;
@@ -71,15 +72,16 @@ interface ScheduleItemProps {
 type ModalType = "empty" | "schedule" | null;
 
 const TimeTableView: React.FC = () => {
-  const [activeModal, setActiveModal] = useState<ModalType>(null); 
-  const [touchStartY, setTouchStartY] = useState(0); 
+  const { date } = useParams<{ date: string }>();
+  const navigate = useNavigate();
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const [touchStartY, setTouchStartY] = useState(0);
 
-  const modalRef = useRef<HTMLDivElement>(null); 
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const openModal = (type: ModalType) => {
     setActiveModal(type);
   };
-
 
   const closeModal = () => {
     setActiveModal(null);
@@ -95,12 +97,16 @@ const TimeTableView: React.FC = () => {
     setTouchStartY(e.touches[0].clientY);
   };
 
-
   const handleTouchEnd = (e: React.TouchEvent) => {
     const touchEndY = e.changedTouches[0].clientY;
     if (touchEndY - touchStartY > 100) {
       closeModal();
     }
+  };
+
+  const openAddSchedule = () => {
+    navigate(`/calendar/${date}/add`);
+    closeModal();
   };
 
   return (
@@ -214,7 +220,8 @@ const TimeTableView: React.FC = () => {
           >
             <SheetContent>
               <Line />
-              <Button onClick={closeModal}>내 일정 추가</Button>
+              <Button onClick={openAddSchedule}>내 일정 추가</Button>
+
               <CommonButton onClick={closeModal}>공통 일정 추가</CommonButton>
             </SheetContent>
           </BottomSheet>
