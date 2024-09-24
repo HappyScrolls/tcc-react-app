@@ -3,11 +3,7 @@ import styled from "styled-components";
 import defaultCat from "../../../images/signup/defaultCat.svg";
 import { useNavigate } from "react-router-dom";
 import { getBusyColor } from "../../../utils/colors";
-import { useRecoilValue } from "recoil";
-import {
-  myScheduleState,
-  partnerScheduleState,
-} from "../../../atoms/scheduleState";
+
 import {
   useFetchMyScheduleList,
   useFetchPartnerScheduleList,
@@ -23,17 +19,10 @@ const ScheduleList = () => {
   const day = String(today.getDate()).padStart(2, "0");
   const formattedDate = `${year}-${month}-${day}`;
 
-  const { isError: myScheduleError } = useFetchMyScheduleList(formattedDate);
-  const { isError: partnerScheduleError } =
+  const { data: myScheduleList, isError: myScheduleError } =
+    useFetchMyScheduleList(formattedDate);
+  const { data: partnerScheduleList, isError: partnerScheduleError } =
     useFetchPartnerScheduleList(formattedDate);
-
-  // 내 일정
-  const myScheduleList = useRecoilValue(myScheduleState);
-  console.log("내 일정  : ", myScheduleList);
-
-  // 애인 일정
-  const partnerScheduleList = useRecoilValue(partnerScheduleState);
-  console.log("애인 일정 : ", partnerScheduleList);
 
   if (myScheduleError || partnerScheduleError) {
     return <div>일정 데이터를 가져오는 중 오류가 발생했습니다.</div>;
@@ -108,7 +97,7 @@ const ScheduleList = () => {
               </TextWrapper>
             </ScheduleInfo>
           ) : (
-            <div>에러</div>
+            <div>현재 애인의 일정이 없습니다.</div>
           )}
         </ScheduleWrapper>
         <ArrowRight
