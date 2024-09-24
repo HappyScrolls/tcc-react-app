@@ -5,7 +5,10 @@ import Redirect from "./pages/login/components/Redirect";
 import SchedulePage from "./pages/schedule/SchedulePage";
 import SignUpPage from "./pages/signup/SignUpPage";
 import MainPage from "./pages/main/MainPage";
+import NotificationPage from "./pages/notification/NotificationPage";
 import CalendarPage from "./pages/calendar/CalendarPage";
+import CoupleInfoPage from "./pages/couple/CoupleInfoPage";
+import MyPage from "./pages/mypage/MyPage";
 
 import AddMySchedulePage from "./pages/schedule/AddMySchedulePage";
 
@@ -41,6 +44,18 @@ const router = createBrowserRouter([
       {
         path: "calendar/:date/add",
         element: <AddMySchedulePage />,
+      },
+      {
+        path: "/notification",
+        element: <NotificationPage />,
+      },
+      {
+        path: "/mypage",
+        element: <MyPage />,
+      },
+      {
+        path: "/couple/info",
+        element: <CoupleInfoPage />,
       },
     ],
   },
