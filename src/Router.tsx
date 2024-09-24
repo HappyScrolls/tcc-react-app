@@ -10,6 +10,8 @@ import CalendarPage from "./pages/calendar/CalendarPage";
 import CoupleInfoPage from "./pages/couple/CoupleInfoPage";
 import MyPage from "./pages/mypage/MyPage";
 
+import AddMySchedulePage from "./pages/schedule/AddMySchedulePage";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -38,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: "/calendar/:date",
         element: <CalendarPage />,
+      },
+      {
+        path: "calendar/:date/add",
+        element: <AddMySchedulePage />,
       },
       {
         path: "/notification",

@@ -37,7 +37,7 @@ const ViewChangeHeader: React.FC<ViewChangeHeaderProps> = ({
 export default ViewChangeHeader;
 
 const ViewChangeBox = styled.div`
-  width: 80%;
+  width: 90%;
   height: 48px;
   display: flex;
   align-items: center;

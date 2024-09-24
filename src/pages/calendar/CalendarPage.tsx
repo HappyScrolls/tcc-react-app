@@ -31,6 +31,4 @@ const CalendarPage = () => {
 
 export default CalendarPage;
 
-const CalendarContainer = styled(Container)`
-  gap: 10px;
-`;
+const CalendarContainer = styled(Container)``;
