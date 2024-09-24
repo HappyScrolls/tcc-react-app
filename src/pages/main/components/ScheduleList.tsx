@@ -2,10 +2,16 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import defaultCat from "../../../images/signup/defaultCat.svg";
 import { useNavigate } from "react-router-dom";
-import { useFetchMyScheduleList } from "../../../hooks/useScheduleList";
 import { getBusyColor } from "../../../utils/colors";
 import { useRecoilValue } from "recoil";
-import { myScheduleState } from "../../../atoms/scheduleState";
+import {
+  myScheduleState,
+  partnerScheduleState,
+} from "../../../atoms/scheduleState";
+import {
+  useFetchMyScheduleList,
+  useFetchPartnerScheduleList,
+} from "../../../hooks/useScheduleList";
 
 const ScheduleList = () => {
   const [index, setIndex] = useState(0);
@@ -17,42 +23,25 @@ const ScheduleList = () => {
   const day = String(today.getDate()).padStart(2, "0");
   const formattedDate = `${year}-${month}-${day}`;
 
-  const { isLoading, isError } = useFetchMyScheduleList(formattedDate);
+  const { isError: myScheduleError } = useFetchMyScheduleList(formattedDate);
+  const { isError: partnerScheduleError } =
+    useFetchPartnerScheduleList(formattedDate);
 
   // 내 일정
-  // const { data: myScheduleList } = useFetchMyScheduleList(formattedDate);
   const myScheduleList = useRecoilValue(myScheduleState);
-  console.log(myScheduleList);
+  console.log("내 일정  : ", myScheduleList);
 
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
+  // 애인 일정
+  const partnerScheduleList = useRecoilValue(partnerScheduleState);
+  console.log("애인 일정 : ", partnerScheduleList);
 
-  if (isError) {
-    return <p>데이터를 불러오는 중 오류가 발생했습니다.</p>;
+  if (myScheduleError || partnerScheduleError) {
+    return <div>일정 데이터를 가져오는 중 오류가 발생했습니다.</div>;
   }
 
   const handleTodaySchedule = () => {
     navigate(`/calendar/${formattedDate}`);
   };
-
-  const scheduleData = [
-    {
-      name: "(애칭) 의 현재 일정1",
-      statusColor: "#fbbb6a",
-      title: "(일정 이름)",
-    },
-    {
-      name: "(애칭) 의 현재 일정2",
-      statusColor: "#7bc96f",
-      title: "(일정 이름)",
-    },
-    {
-      name: "(애칭) 의 현재 일정3",
-      statusColor: "#7bc96f",
-      title: "(일정 이름)",
-    },
-  ];
 
   return (
     <ScheduleBox>
@@ -101,18 +90,26 @@ const ScheduleList = () => {
           )}
 
           {/* 애인 일정  */}
-          <ScheduleInfo>
-            <ProfileImage>
-              <img src={defaultCat} alt="Profile" />
-            </ProfileImage>
-            <TextWrapper>
-              <NameText>{scheduleData[index].name}</NameText>
-              <Wrapper>
-                <Status color={scheduleData[index].statusColor} />
-                <ScheduleTitle>{scheduleData[index].title}</ScheduleTitle>
-              </Wrapper>
-            </TextWrapper>
-          </ScheduleInfo>
+          {partnerScheduleList && partnerScheduleList[index] ? (
+            <ScheduleInfo>
+              <ProfileImage>
+                <img src={defaultCat} alt="Profile" />
+              </ProfileImage>
+              <TextWrapper>
+                <NameText>(애인)의 일정</NameText>
+                <Wrapper>
+                  <Status
+                    color={getBusyColor(partnerScheduleList[index].busyLevel)}
+                  />
+                  <ScheduleTitle>
+                    {partnerScheduleList[index].scheduleName}
+                  </ScheduleTitle>
+                </Wrapper>
+              </TextWrapper>
+            </ScheduleInfo>
+          ) : (
+            <div>에러</div>
+          )}
         </ScheduleWrapper>
         <ArrowRight
           onClick={() =>

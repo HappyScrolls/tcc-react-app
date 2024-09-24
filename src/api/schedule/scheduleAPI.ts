@@ -43,3 +43,12 @@ export const fetchMyScheduleList = async (
 };
 
 // 애인 일정 조회
+export const fetchPartnerScheduleList = async (
+  searchDate: string
+): Promise<ScheduleData[]> => {
+  const response = await scheduleAxiosInstance.get(
+    `/schedule/couple?searchDate=${searchDate}`
+  );
+
+  return response.data;
+};

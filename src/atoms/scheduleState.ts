@@ -5,3 +5,8 @@ export const myScheduleState = atom<ScheduleData[]>({
   key: "myScheduleState",
   default: [],
 });
+
+export const partnerScheduleState = atom<ScheduleData[]>({
+  key: "partnerScheduleState",
+  default: [],
+});
