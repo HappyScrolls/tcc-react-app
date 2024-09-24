@@ -2,18 +2,37 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import defaultCat from "../../../images/signup/defaultCat.svg";
 import { useNavigate } from "react-router-dom";
+import { useFetchMyScheduleList } from "../../../hooks/useScheduleList";
+import { getBusyColor } from "../../../utils/colors";
+import { useRecoilValue } from "recoil";
+import { myScheduleState } from "../../../atoms/scheduleState";
 
 const ScheduleList = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [index, setIndex] = useState(0);
   const navigate = useNavigate();
 
-  const handleTodaySchedule = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  const formattedDate = `${year}-${month}-${day}`;
 
-    const formattedDate = `${year}-${month}-${day}`;
+  const { isLoading, isError } = useFetchMyScheduleList(formattedDate);
+
+  // 내 일정
+  // const { data: myScheduleList } = useFetchMyScheduleList(formattedDate);
+  const myScheduleList = useRecoilValue(myScheduleState);
+  console.log(myScheduleList);
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (isError) {
+    return <p>데이터를 불러오는 중 오류가 발생했습니다.</p>;
+  }
+
+  const handleTodaySchedule = () => {
     navigate(`/calendar/${formattedDate}`);
   };
 
@@ -35,44 +54,51 @@ const ScheduleList = () => {
     },
   ];
 
-  const handlePrev = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    }
-  };
-
-  const handleNext = () => {
-    if (currentIndex < scheduleData.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    }
-  };
-
   return (
     <ScheduleBox>
       <DayWrapper>
-        <DateText>2024.00.00</DateText>
-        <DdayText>D+00</DdayText>
+        <DateText>
+          {year}.{month}.{day}
+        </DateText>
+        <DdayText>오늘의 일정</DdayText>
       </DayWrapper>
 
       <ScheduleContainer>
-        <ArrowLeft onClick={handlePrev}>{"<"}</ArrowLeft>
-
+        <ArrowLeft onClick={() => setIndex((prev) => Math.max(prev - 1, 0))}>
+          {"<"}
+        </ArrowLeft>
         <ScheduleWrapper>
           {/* 내 일정  */}
-          <ScheduleInfo>
-            <ProfileImage>
-              <img src={defaultCat} alt="Profile" />
-            </ProfileImage>
-            <TextWrapper>
-              <NameText>{scheduleData[currentIndex].name}</NameText>
-              <Wrapper>
-                <Status color={scheduleData[currentIndex].statusColor} />
-                <ScheduleTitle>
-                  {scheduleData[currentIndex].title}
-                </ScheduleTitle>
-              </Wrapper>
-            </TextWrapper>
-          </ScheduleInfo>
+          {myScheduleList && myScheduleList[index] ? (
+            <ScheduleInfo>
+              <ProfileImage>
+                <img src={defaultCat} alt="Profile" />
+              </ProfileImage>
+              <TextWrapper>
+                <NameText>(나)의 일정</NameText>
+                <Wrapper>
+                  <Status
+                    color={getBusyColor(myScheduleList[index].busyLevel)}
+                  />
+                  <ScheduleTitle>
+                    {myScheduleList[index].scheduleName}
+                  </ScheduleTitle>
+                </Wrapper>
+              </TextWrapper>
+            </ScheduleInfo>
+          ) : (
+            <ScheduleInfo>
+              <ProfileImage>
+                <img src={defaultCat} alt="Profile" />
+              </ProfileImage>
+              <TextWrapper>
+                <NameText>(나)의 일정</NameText>
+                <Wrapper>
+                  <ScheduleTitle>현재 일정이 없습니다.</ScheduleTitle>
+                </Wrapper>
+              </TextWrapper>
+            </ScheduleInfo>
+          )}
 
           {/* 애인 일정  */}
           <ScheduleInfo>
@@ -80,18 +106,21 @@ const ScheduleList = () => {
               <img src={defaultCat} alt="Profile" />
             </ProfileImage>
             <TextWrapper>
-              <NameText>{scheduleData[currentIndex].name}</NameText>
+              <NameText>{scheduleData[index].name}</NameText>
               <Wrapper>
-                <Status color={scheduleData[currentIndex].statusColor} />
-                <ScheduleTitle>
-                  {scheduleData[currentIndex].title}
-                </ScheduleTitle>
+                <Status color={scheduleData[index].statusColor} />
+                <ScheduleTitle>{scheduleData[index].title}</ScheduleTitle>
               </Wrapper>
             </TextWrapper>
           </ScheduleInfo>
         </ScheduleWrapper>
-
-        <ArrowRight onClick={handleNext}>{">"}</ArrowRight>
+        <ArrowRight
+          onClick={() =>
+            setIndex((prev) => Math.min(prev + 1, myScheduleList.length - 1))
+          }
+        >
+          {">"}
+        </ArrowRight>
       </ScheduleContainer>
 
       <Button onClick={handleTodaySchedule}>오늘의 일정 확인</Button>

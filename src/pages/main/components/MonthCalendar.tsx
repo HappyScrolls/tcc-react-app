@@ -75,7 +75,7 @@ const MonthCalendar = () => {
       </DaysWrapper>
       <DatesGrid>
         {datesArray.map((date, index) => (
-          <DateBox key={index} isCurrentMonth={date.isCurrentMonth}>
+          <DateBox key={index} $isCurrentMonth={date.isCurrentMonth}>
             {date.day}
           </DateBox>
         ))}
@@ -141,7 +141,7 @@ const DatesGrid = styled.div`
   grid-gap: 6px;
 `;
 
-const DateBox = styled.div<{ isCurrentMonth: boolean }>`
+const DateBox = styled.div<{ $isCurrentMonth: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -154,7 +154,7 @@ const DateBox = styled.div<{ isCurrentMonth: boolean }>`
   border-radius: 5px;
 
   background: #fff;
-  color: ${(props) => (props.isCurrentMonth ? "#3b3634" : "#9B9B9B")};
+  color: ${(props) => (props.$isCurrentMonth ? "#3b3634" : "#9B9B9B")};
   font-family: SUIT;
   font-size: 10px;
   font-weight: 700;
