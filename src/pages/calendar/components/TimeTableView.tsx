@@ -8,6 +8,7 @@ import {
   useFetchPartnerScheduleList,
 } from "../../../hooks/useScheduleList";
 import TimeTableHeader from "./TimeTableHeader";
+import { ScheduleData } from "../../../types/ISchedule";
 
 // (1시간 = 26px)
 const timeToPosition = (dateTime: string): number => {
@@ -47,9 +48,17 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
   const { data: myScheduleList } = useFetchMyScheduleList(date);
   const { data: partnerScheduleList } = useFetchPartnerScheduleList(date);
 
+  console.log("내 일정", myScheduleList);
+
+  console.log("애인", partnerScheduleList);
+
   const navigate = useNavigate();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [touchStartY, setTouchStartY] = useState(0);
+
+  const [selectedSchedule, setSelectedSchedule] = useState<ScheduleData | null>(
+    null
+  );
 
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -59,6 +68,7 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
 
   const closeModal = () => {
     setActiveModal(null);
+    setSelectedSchedule(null);
   };
 
   const handleOutsideClick = (e: React.MouseEvent) => {
@@ -87,7 +97,6 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
     <>
       {/* 헤더  */}
       <TimeTableHeader />
-
       <TableContainer>
         {/* 왼쪽 시간 그리드 */}
         <LeftTimeGrid>
@@ -113,6 +122,7 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
                   $isCommon={false}
                   onClick={(e) => {
                     e.stopPropagation();
+                    setSelectedSchedule(schedule);
                     openModal("schedule");
                   }}
                 >
@@ -161,6 +171,7 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
                   $isPartner={true}
                   onClick={(e) => {
                     e.stopPropagation();
+                    setSelectedSchedule(schedule);
                     openModal("schedule");
                   }}
                 >
@@ -189,15 +200,13 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
             <SheetContent>
               <Line />
               <Button onClick={openAddSchedule}>내 일정 추가</Button>
-
               <CommonButton onClick={closeModal}>공통 일정 추가</CommonButton>
             </SheetContent>
           </BottomSheet>
         </Overlay>
       )}
-
       {/* 일정 상세 모달 */}
-      {activeModal === "schedule" && (
+      {activeModal === "schedule" && selectedSchedule && (
         <Overlay onClick={handleOutsideClick} onTouchEnd={handleTouchEnd}>
           <ScheduleDetailModal
             ref={modalRef}
@@ -207,20 +216,60 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
             <ScheduleContent>
               <BlackLine />
               <ModalWrapper>
-                <BusyTag backgroundColor={getBusyColor("바쁨")} />
-                <Title>(일정 이름)</Title> <Phone src={phone} />
+                <BusyTag
+                  backgroundColor={getBusyColor(selectedSchedule.busyLevel)}
+                />
+                <Title>{selectedSchedule.scheduleName}</Title>
+                <Phone src={phone} />
               </ModalWrapper>
 
               <TextWrapper>
-                <Text>(장소)</Text>
-                <Text>(사람)</Text>
-                <TimeText>(00:00~00:00)</TimeText>
-                <WeekText>(매주 수요일마다)</WeekText>
+                <Text> {selectedSchedule.scheduleLocation}</Text>
+                <SmallText>{selectedSchedule.scheduleWith}</SmallText>
+                <SmallText>
+                  {new Date(
+                    selectedSchedule.scheduleStartAt
+                  ).toLocaleTimeString()}
+                  ~
+                  {new Date(
+                    selectedSchedule.scheduleEndAt
+                  ).toLocaleTimeString()}
+                </SmallText>
+                <WeekText>{selectedSchedule.groupGenderType}</WeekText>
+                {selectedSchedule.isCommon && <Text>공통 일정입니다</Text>}
               </TextWrapper>
+
               <BtnWrapper>
-                <DeleteButton>일정 삭제</DeleteButton>
-                <ActionButton>일정 수정</ActionButton>
-                <ActionButton>공통 일정으로 변경</ActionButton>
+                {/* 내 일정일 때 */}
+                {myScheduleList?.includes(selectedSchedule) && (
+                  <>
+                    <DeleteButton>일정 삭제</DeleteButton>
+                    <ActionButton>일정 수정</ActionButton>
+                    {!selectedSchedule.isCommon && (
+                      <ActionButton>공통 일정으로 변경</ActionButton>
+                    )}
+                  </>
+                )}
+
+                {/* 애인 일정일 때  */}
+                {partnerScheduleList?.includes(selectedSchedule) && (
+                  <>
+                    <DeleteButton>일정 수정 요청</DeleteButton>
+                    <ActionButton>이모지 남기기</ActionButton>
+                    {!selectedSchedule.isCommon && (
+                      <ActionButton>공통 일정으로 변경</ActionButton>
+                    )}
+                  </>
+                )}
+
+                {/* 공통 일정일 때 */}
+                {selectedSchedule.isCommon && (
+                  <>
+                    <DeleteButton>일정 삭제</DeleteButton>
+                    <ActionButton>일정 수정</ActionButton>
+                    <ActionButton>이모지 남기기</ActionButton>
+                  </>
+                )}
               </BtnWrapper>
             </ScheduleContent>
           </ScheduleDetailModal>
@@ -316,6 +365,8 @@ const ScheduleItem = styled.div<ScheduleItemProps>`
   justify-content: ${({ $isPartner }) =>
     $isPartner ? "flex-end" : "flex-start"};
   text-align: ${({ $isPartner }) => ($isPartner ? "right" : "left")};
+
+  cursor: pointer;
 `;
 
 const ScheduleName = styled.div`
@@ -448,14 +499,8 @@ const Text = styled.div`
   line-height: normal;
 `;
 
-const TimeText = styled.div`
-  color: var(--Black, #3b3634);
-
-  font-family: SUIT;
+const SmallText = styled(Text)`
   font-size: 12px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
 `;
 
 const WeekText = styled.div`
@@ -484,10 +529,7 @@ const ActionButton = styled(Button)`
 `;
 
 const DeleteButton = styled(ActionButton)`
-  border-radius: 10px;
   background: var(--Secondary, #ffcfc7);
-
-  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
 `;
 
 const Phone = styled.img`
