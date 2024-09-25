@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { Container } from "../../components/layout/Layout";
 import ViewChangeHeader from "./components/ViewChangeHeader";
 import { useParams } from "react-router-dom";
@@ -8,7 +8,25 @@ import { styled } from "styled-components";
 
 const CalendarPage = () => {
   const { date } = useParams<{ date: string }>();
-  console.log(date);
+  const [currentDate, setCurrentDate] = useState(new Date(date ?? new Date()));
+
+  const handlePreviousDay = () => {
+    setCurrentDate((prevDate) => {
+      const newDate = new Date(prevDate);
+      newDate.setDate(prevDate.getDate() - 1);
+      return newDate;
+    });
+  };
+
+  const handleNextDay = () => {
+    setCurrentDate((prevDate) => {
+      const newDate = new Date(prevDate);
+      newDate.setDate(prevDate.getDate() + 1);
+      return newDate;
+    });
+  };
+
+  const formattedDate = currentDate.toISOString().split("T")[0];
 
   const [isTimetableView, setIsTimetableView] = useState(true);
 
@@ -22,8 +40,17 @@ const CalendarPage = () => {
         <ViewChangeHeader
           isTimetableView={isTimetableView}
           toggleView={toggleView}
+          onPreviousDay={handlePreviousDay}
+          onNextDay={handleNextDay}
+          formattedDate={formattedDate}
         />
-        {isTimetableView ? <TimeTable /> : <ListView />}
+        <Suspense fallback={<div>Loading...</div>}>
+          {isTimetableView ? (
+            <TimeTable date={formattedDate} />
+          ) : (
+            <ListView date={formattedDate} />
+          )}
+        </Suspense>
       </CalendarContainer>
     </>
   );

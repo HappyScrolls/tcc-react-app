@@ -1,78 +1,52 @@
 import React, { useRef, useState } from "react";
 import styled from "styled-components";
-import defaultCat from "../../../images/signup/defaultCat.svg";
 import phone from "../../../images/calendar/phone.svg";
 import { getBusyBackgroundColor, getBusyColor } from "../../../utils/colors";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import {
+  useFetchMyScheduleList,
+  useFetchPartnerScheduleList,
+} from "../../../hooks/useScheduleList";
+import TimeTableHeader from "./TimeTableHeader";
 
-interface Schedule {
-  title: string;
-  startTime: string;
-  endTime: string;
-  busyLevel: string;
-  isCommon: boolean;
-}
+// (1시간 = 26px)
+const timeToPosition = (dateTime: string): number => {
+  if (!dateTime || !dateTime.includes("T")) {
+    console.error("유효하지 않은 값 :", dateTime);
+    return 0;
+  }
 
-const mySchedule: Schedule[] = [
-  {
-    title: "(내 일정 1)",
-    startTime: "2:00",
-    endTime: "4:00",
-    busyLevel: "여유",
-    isCommon: false,
-  },
-  {
-    title: "(내 일정 2)",
-    startTime: "5:00",
-    endTime: "8:00",
-    busyLevel: "여유",
-    isCommon: false,
-  },
-  {
-    title: "(공통 일정)",
-    startTime: "11:00",
-    endTime: "14:00",
-    busyLevel: "보통",
-    isCommon: true,
-  },
-];
+  const time = dateTime.split("T")[1];
+  if (!time) {
+    console.error("유효하지 않은 값 :", dateTime);
+    return 0;
+  }
 
-const partnerSchedule: Schedule[] = [
-  {
-    title: "(애인 일정 1)",
-    startTime: "3:00",
-    endTime: "5:00",
-    busyLevel: "바쁨",
-    isCommon: false,
-  },
-  {
-    title: "(공통 일정)",
-    startTime: "11:00",
-    endTime: "14:00",
-    busyLevel: "보통",
-    isCommon: true,
-  },
-];
-
-// 시간을 픽셀 단위로 변환 (1시간 = 26px)
-const timeToPosition = (time: string): number => {
   const [hour, minute] = time.split(":").map(Number);
-  return ((hour * 60 + minute) / 60) * 26; // 1시간 26px
+
+  if (isNaN(hour) || isNaN(minute)) {
+    console.error("유효하지 않은 값 :", dateTime);
+    return 0;
+  }
+
+  return ((hour * 60 + minute) / 60) * 26;
 };
 
 // 타입 정의
 interface ScheduleItemProps {
   top: number;
   height: number;
-  backgroundColor: string;
-  isCommon?: boolean;
-  isPartner?: boolean;
+  backgroundcolor: string;
+  $isCommon?: boolean;
+  $isPartner?: boolean;
 }
 
 type ModalType = "empty" | "schedule" | null;
 
-const TimeTableView: React.FC = () => {
-  const { date } = useParams<{ date: string }>();
+const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
+  const { data: myScheduleList } = useFetchMyScheduleList(date);
+  const { data: partnerScheduleList } = useFetchPartnerScheduleList(date);
+
   const navigate = useNavigate();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [touchStartY, setTouchStartY] = useState(0);
@@ -111,17 +85,8 @@ const TimeTableView: React.FC = () => {
 
   return (
     <>
-      <Header>
-        <Wrapper>
-          <ProfileImage src={defaultCat} alt="프로필" />{" "}
-          <Name>(나(애칭))의 일정 </Name>
-        </Wrapper>
-
-        <Wrapper>
-          <Name>(애인(애칭))의 일정 </Name>
-          <ProfileImage src={defaultCat} alt="프로필" />
-        </Wrapper>
-      </Header>
+      {/* 헤더  */}
+      <TimeTableHeader />
 
       <TableContainer>
         {/* 왼쪽 시간 그리드 */}
@@ -132,72 +97,75 @@ const TimeTableView: React.FC = () => {
         </LeftTimeGrid>
 
         <ScheduleContainer>
+          {/* 내 일정  */}
           <ScheduleColumn onClick={() => openModal("empty")}>
-            {mySchedule
+            {myScheduleList
               .filter((schedule) => !schedule.isCommon)
               .map((schedule, index) => (
                 <ScheduleItem
                   key={index}
-                  top={timeToPosition(schedule.startTime)}
+                  top={timeToPosition(schedule.scheduleStartAt)}
                   height={
-                    timeToPosition(schedule.endTime) -
-                    timeToPosition(schedule.startTime)
+                    timeToPosition(schedule.scheduleEndAt) -
+                    timeToPosition(schedule.scheduleStartAt)
                   }
-                  backgroundColor={getBusyBackgroundColor(schedule.busyLevel)}
-                  isCommon={false} // 내 일정인 경우
+                  backgroundcolor={getBusyBackgroundColor(schedule.busyLevel)}
+                  $isCommon={false}
                   onClick={(e) => {
                     e.stopPropagation();
                     openModal("schedule");
                   }}
                 >
                   <BusyTag backgroundColor={getBusyColor(schedule.busyLevel)} />
-                  {schedule.title}
+                  <ScheduleName>{schedule.scheduleName}</ScheduleName>
                 </ScheduleItem>
               ))}
           </ScheduleColumn>
 
           <MiddleLine />
 
+          {/* 공통 일정  */}
           <CommonScheduleColumn>
-            {mySchedule
+            {myScheduleList
               .filter((schedule) => schedule.isCommon)
               .map((schedule, index) => (
                 <CommonScheduleItem
                   key={index}
-                  top={timeToPosition(schedule.startTime)}
+                  top={timeToPosition(schedule.scheduleStartAt)}
                   height={
-                    timeToPosition(schedule.endTime) -
-                    timeToPosition(schedule.startTime)
+                    timeToPosition(schedule.scheduleEndAt) -
+                    timeToPosition(schedule.scheduleStartAt)
                   }
-                  backgroundColor={getBusyBackgroundColor(schedule.busyLevel)}
-                  isCommon
+                  backgroundcolor={getBusyBackgroundColor(schedule.busyLevel)}
+                  $isCommon
                 >
                   <BusyTag backgroundColor={getBusyColor(schedule.busyLevel)} />
-                  {schedule.title}
+                  <ScheduleName>{schedule.scheduleName}</ScheduleName>
                 </CommonScheduleItem>
               ))}
           </CommonScheduleColumn>
 
+          {/* 애인 일정  */}
           <ScheduleColumn>
-            {partnerSchedule
+            {partnerScheduleList
               .filter((schedule) => !schedule.isCommon)
               .map((schedule, index) => (
                 <ScheduleItem
                   key={index}
-                  top={timeToPosition(schedule.startTime)}
+                  top={timeToPosition(schedule.scheduleStartAt)}
                   height={
-                    timeToPosition(schedule.endTime) -
-                    timeToPosition(schedule.startTime)
+                    timeToPosition(schedule.scheduleEndAt) -
+                    timeToPosition(schedule.scheduleStartAt)
                   }
-                  backgroundColor={getBusyBackgroundColor(schedule.busyLevel)}
-                  isPartner={true}
+                  backgroundcolor={getBusyBackgroundColor(schedule.busyLevel)}
+                  $isPartner={true}
                   onClick={(e) => {
                     e.stopPropagation();
                     openModal("schedule");
                   }}
                 >
                   <BusyTag backgroundColor={getBusyColor(schedule.busyLevel)} />
-                  {schedule.title}
+                  <ScheduleName>{schedule.scheduleName}</ScheduleName>
                 </ScheduleItem>
               ))}
           </ScheduleColumn>
@@ -264,39 +232,6 @@ const TimeTableView: React.FC = () => {
 
 export default TimeTableView;
 
-const Header = styled.div`
-  display: flex;
-  width: 90%;
-  justify-content: space-between;
-
-  margin-top: 5px;
-`;
-
-const Name = styled.div`
-  color: var(--Black, #3b3634);
-  font-family: SUIT;
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-
-  padding: 5px;
-`;
-
-const ProfileImage = styled.img`
-  width: 54px;
-  height: 54px;
-  padding: 11.669px 10.5px 12.494px 11.5px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0px 0px 5.7px 0px rgba(0, 0, 0, 0.25);
-`;
-
-const Wrapper = styled.div`
-  display: flex;
-  align-items: flex-end;
-`;
-
 const TableContainer = styled.div`
   display: flex;
   width: 90%;
@@ -333,6 +268,10 @@ const TimeSlot = styled.div`
   line-height: normal;
 
   border-bottom: #878678 1px dashed;
+
+  &:last-child {
+    border-bottom: none;
+  }
 `;
 
 const ScheduleContainer = styled.div`
@@ -360,20 +299,26 @@ const ScheduleItem = styled.div<ScheduleItemProps>`
   position: absolute;
   top: ${({ top }) => top}px;
   height: ${({ height }) => height}px;
-  width: ${({ isCommon }) => (isCommon ? "300%" : "150%")};
-  left: ${({ isCommon }) => (isCommon ? "auto" : "auto")};
-  right: ${({ isPartner }) => (isPartner ? "0" : "auto")};
-  background-color: ${({ backgroundColor }) => backgroundColor};
-  border-radius: ${({ isCommon, isPartner }) =>
-    isCommon ? "20px" : isPartner ? "20px 0px 0px 20px" : "0px 20px 20px 0px"};
-  padding: 9px;
+  width: ${({ $isCommon }) => ($isCommon ? "300%" : "150%")};
+  left: ${({ $isCommon }) => ($isCommon ? "auto" : "auto")};
+  right: ${({ $isPartner }) => ($isPartner ? "0" : "auto")};
+  background-color: ${({ backgroundcolor }) => backgroundcolor};
+  border-radius: ${({ $isCommon, $isPartner }) =>
+    $isCommon
+      ? "20px"
+      : $isPartner
+        ? "20px 0px 0px 20px"
+        : "0px 20px 20px 0px"};
+  padding: 5px;
 
   display: flex;
   align-items: flex-start;
-  justify-content: ${({ isPartner }) =>
-    isPartner ? "flex-end" : "flex-start"};
-  text-align: ${({ isPartner }) => (isPartner ? "right" : "left")};
+  justify-content: ${({ $isPartner }) =>
+    $isPartner ? "flex-end" : "flex-start"};
+  text-align: ${({ $isPartner }) => ($isPartner ? "right" : "left")};
+`;
 
+const ScheduleName = styled.div`
   color: var(--Black, #3b3634);
   font-family: SUIT;
   font-size: 12px;

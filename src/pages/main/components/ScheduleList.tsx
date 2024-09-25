@@ -35,7 +35,7 @@ const ScheduleList = () => {
   // 애인 정보
   const { data: loverInfo, isError: myLoverError } = useFetchMyLoverInfo();
 
-  if (myScheduleError || partnerScheduleError || myLoverError) {
+  if (myScheduleError || partnerScheduleError || myLoverError || myInfoError) {
     return <div>일정 데이터를 가져오는 중 오류가 발생했습니다.</div>;
   }
 
@@ -259,6 +259,7 @@ const ProfileImage = styled.div`
   img {
     width: 30px;
     height: 30px;
+    object-fit: cover;
   }
 `;
 

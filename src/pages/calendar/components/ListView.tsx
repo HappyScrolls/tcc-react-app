@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import defaultCat from "../../../images/signup/defaultCat.svg";
 
-const ListView = () => {
+const ListView: React.FC<{ date: string }> = ({ date }) => {
   // 내 일정
   const mySchedule = [
     {
