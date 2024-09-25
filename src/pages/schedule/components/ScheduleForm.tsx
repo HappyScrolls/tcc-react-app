@@ -24,13 +24,7 @@ const ScheduleForm: React.FC<FormProps> = ({
     status: "미완료",
   });
 
-  // 일정 수정 때 사용
-  // useEffect(() => {
-  //   if (initialFormData) {
-  //     setFormData(initialFormData);
-  //   }
-  // }, [initialFormData]);
-
+  console.log("커플일정여부: ", isCoupleSchedule);
   const daysOfWeek = ["월", "화", "수", "목", "금", "토"];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,49 +80,53 @@ const ScheduleForm: React.FC<FormProps> = ({
       </InputContainer>
 
       {!isCoupleSchedule && (
-        <InputContainer>
-          <Input
-            name="scheduleWith"
-            value={formData.scheduleWith}
-            onChange={handleChange}
-            placeholder="사람"
-          />
-        </InputContainer>
-      )}
-      {/* 성별  */}
-      <RadioGroup>
-        <RadioWrapper>
-          <RadioButton
-            type="radio"
-            name="groupGenderType"
-            value="혼성"
-            checked={formData.groupGenderType === "혼성"}
-            onChange={handleRadioChange}
-          />
-          <SmallLabel> 혼성</SmallLabel>
-        </RadioWrapper>
-        <RadioWrapper>
-          <RadioButton
-            type="radio"
-            name="groupGenderType"
-            value="여성"
-            checked={formData.groupGenderType === "여성"}
-            onChange={handleRadioChange}
-          />
-          <SmallLabel> 여성</SmallLabel>
-        </RadioWrapper>
+        <>
+          {/* 사람 입력 */}
+          <InputContainer>
+            <Input
+              name="scheduleWith"
+              value={formData.scheduleWith}
+              onChange={handleChange}
+              placeholder="사람"
+            />
+          </InputContainer>
 
-        <RadioWrapper>
-          <RadioButton
-            type="radio"
-            name="groupGenderType"
-            value="남성"
-            checked={formData.groupGenderType === "남성"}
-            onChange={handleRadioChange}
-          />
-          <SmallLabel> 남성</SmallLabel>
-        </RadioWrapper>
-      </RadioGroup>
+          {/* 성별 선택 */}
+          <RadioGroup>
+            <RadioWrapper>
+              <RadioButton
+                type="radio"
+                name="groupGenderType"
+                value="혼성"
+                checked={formData.groupGenderType === "혼성"}
+                onChange={handleRadioChange}
+              />
+              <SmallLabel>혼성</SmallLabel>
+            </RadioWrapper>
+            <RadioWrapper>
+              <RadioButton
+                type="radio"
+                name="groupGenderType"
+                value="여성"
+                checked={formData.groupGenderType === "여성"}
+                onChange={handleRadioChange}
+              />
+              <SmallLabel>여성</SmallLabel>
+            </RadioWrapper>
+            <RadioWrapper>
+              <RadioButton
+                type="radio"
+                name="groupGenderType"
+                value="남성"
+                checked={formData.groupGenderType === "남성"}
+                onChange={handleRadioChange}
+              />
+              <SmallLabel>남성</SmallLabel>
+            </RadioWrapper>
+          </RadioGroup>
+        </>
+      )}
+
       {/* 시간  */}
       <TimeInputContainer>
         <Wrapper>

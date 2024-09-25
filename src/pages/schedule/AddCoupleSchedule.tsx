@@ -1,11 +1,10 @@
 import React from "react";
 import ScheduleForm from "./components/ScheduleForm";
-
-import { ScheduleData } from "../../types/ISchedule";
-import { useSaveSchedule } from "../../hooks/useSaveSchedule";
 import { useNavigate, useParams } from "react-router-dom";
+import { useSaveSchedule } from "../../hooks/useSaveSchedule";
+import { ScheduleData } from "../../types/ISchedule";
 
-const AddMySchedulePage = () => {
+const AddCoupleSchedule = () => {
   const { date } = useParams<{ date: string }>();
   const navigate = useNavigate();
 
@@ -19,12 +18,11 @@ const AddMySchedulePage = () => {
       },
     });
   };
-
   return (
     <>
-      <ScheduleForm onSave={handleSaveSchedule} isCoupleSchedule={false} />
+      <ScheduleForm onSave={handleSaveSchedule} isCoupleSchedule={true} />
     </>
   );
 };
 
-export default AddMySchedulePage;
+export default AddCoupleSchedule;

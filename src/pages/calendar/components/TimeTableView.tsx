@@ -48,6 +48,12 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
   const { data: myScheduleList } = useFetchMyScheduleList(date);
   const { data: partnerScheduleList } = useFetchPartnerScheduleList(date);
 
+  console.log(partnerScheduleList);
+  const commonSchedules = [
+    ...(myScheduleList || []),
+    ...(partnerScheduleList || []),
+  ].filter((schedule) => schedule.isCommon);
+
   const navigate = useNavigate();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [touchStartY, setTouchStartY] = useState(0);
@@ -86,6 +92,11 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
 
   const openAddSchedule = () => {
     navigate(`/calendar/${date}/add`);
+    closeModal();
+  };
+
+  const openAddCoupleSchedule = () => {
+    navigate(`/calendar/${date}/add/couple`);
     closeModal();
   };
 
@@ -132,23 +143,21 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
 
           {/* 공통 일정  */}
           <CommonScheduleColumn>
-            {myScheduleList
-              .filter((schedule) => schedule.isCommon)
-              .map((schedule, index) => (
-                <CommonScheduleItem
-                  key={index}
-                  top={timeToPosition(schedule.scheduleStartAt)}
-                  height={
-                    timeToPosition(schedule.scheduleEndAt) -
-                    timeToPosition(schedule.scheduleStartAt)
-                  }
-                  backgroundcolor={getBusyBackgroundColor(schedule.busyLevel)}
-                  $isCommon
-                >
-                  <BusyTag backgroundColor={getBusyColor(schedule.busyLevel)} />
-                  <ScheduleName>{schedule.scheduleName}</ScheduleName>
-                </CommonScheduleItem>
-              ))}
+            {commonSchedules?.map((schedule) => (
+              <CommonScheduleItem
+                key={schedule.scheduleNo}
+                top={timeToPosition(schedule.scheduleStartAt)}
+                height={
+                  timeToPosition(schedule.scheduleEndAt) -
+                  timeToPosition(schedule.scheduleStartAt)
+                }
+                backgroundcolor={getBusyBackgroundColor(schedule.busyLevel)}
+                $isCommon
+              >
+                <BusyTag backgroundColor={getBusyColor(schedule.busyLevel)} />
+                <ScheduleName>{schedule.scheduleName}</ScheduleName>
+              </CommonScheduleItem>
+            ))}
           </CommonScheduleColumn>
 
           {/* 애인 일정  */}
@@ -196,7 +205,9 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
             <SheetContent>
               <Line />
               <Button onClick={openAddSchedule}>내 일정 추가</Button>
-              <CommonButton onClick={closeModal}>공통 일정 추가</CommonButton>
+              <CommonButton onClick={openAddCoupleSchedule}>
+                공통 일정 추가
+              </CommonButton>
             </SheetContent>
           </BottomSheet>
         </Overlay>
