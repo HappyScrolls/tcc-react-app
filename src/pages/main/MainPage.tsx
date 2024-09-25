@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import ScheduleList from "./components/ScheduleList";
 import MonthCalendar from "./components/MonthCalendar";
 import { Container } from "../../components/layout/Layout";
@@ -7,10 +7,12 @@ import styled from "styled-components";
 const MainPage = () => {
   return (
     <>
-      <MonthContainer>
-        <ScheduleList />
-        <MonthCalendar />
-      </MonthContainer>
+      <Suspense fallback={<div>Loading...</div>}>
+        <MonthContainer>
+          <ScheduleList />
+          <MonthCalendar />
+        </MonthContainer>
+      </Suspense>
     </>
   );
 };

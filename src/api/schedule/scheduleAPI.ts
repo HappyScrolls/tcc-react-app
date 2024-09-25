@@ -31,13 +31,24 @@ export const deleteSchedule = async (scheduleNo: number) => {
   }
 };
 
-// 일정 조회
-export const fetchSchedulesByDate = async (date: string) => {
-  try {
-    const response = await scheduleAxiosInstance.get(`/schedule?date=${date}`);
-    return response.data;
-  } catch (error) {
-    console.error("일정 조회 중 오류 발생:", error);
-    throw error;
-  }
+// 내 일정 리스트 조회
+export const fetchMyScheduleList = async (
+  searchDate: string
+): Promise<ScheduleData[]> => {
+  const response = await scheduleAxiosInstance.get(
+    `/schedule?searchDate=${searchDate}`
+  );
+
+  return response.data;
+};
+
+// 애인 일정 조회
+export const fetchPartnerScheduleList = async (
+  searchDate: string
+): Promise<ScheduleData[]> => {
+  const response = await scheduleAxiosInstance.get(
+    `/schedule/couple?searchDate=${searchDate}`
+  );
+
+  return response.data;
 };

@@ -7,35 +7,52 @@ import logoText from "../../../images/logotext.svg";
 import * as L from "./Login.style";
 import BackgroundDesign from "./BackgroundDesign";
 import styled from "styled-components";
-import {navigate} from "@storybook/addon-links";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 export const Login = () => {
   const navigate = useNavigate();
 
   const handle1 = () => {
-    localStorage.setItem("memberCode", "eyJubyI6MSwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9");
-    navigate("/main")
-  }
+    localStorage.setItem(
+      "memberCode",
+      "eyJubyI6MSwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9"
+    );
+    navigate("/main");
+  };
   const handle2 = () => {
-    localStorage.setItem("memberCode", "eyJubyI6MiwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9");
-    navigate("/main")
-  }
+    localStorage.setItem(
+      "memberCode",
+      "eyJubyI6MiwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9"
+    );
+    navigate("/main");
+  };
   const handle3 = () => {
-    localStorage.setItem("memberCode", "eyJubyI6MywibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9");
-    navigate("/main")
-  }
+    localStorage.setItem(
+      "memberCode",
+      "eyJubyI6MywibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9"
+    );
+    navigate("/main");
+  };
   const handle4 = () => {
-    localStorage.setItem("memberCode", "eyJubyI6NCwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9");
-    navigate("/main")
-  }
+    localStorage.setItem(
+      "memberCode",
+      "eyJubyI6NCwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9"
+    );
+    navigate("/main");
+  };
   const handle5 = () => {
-    localStorage.setItem("memberCode", "eyJubyI6NSwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9");
-    navigate("/main")
-  }
+    localStorage.setItem(
+      "memberCode",
+      "eyJubyI6NSwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9"
+    );
+    navigate("/main");
+  };
   const handle6 = () => {
-    localStorage.setItem("memberCode", "eyJubyI6NiwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9");
-    navigate("/main")
-  }
+    localStorage.setItem(
+      "memberCode",
+      "eyJubyI6NiwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9"
+    );
+    navigate("/main");
+  };
   return (
     <>
       <L.ColorContainer>
@@ -61,12 +78,12 @@ export const Login = () => {
           <NaverLogin />
           <GoogleLogin />
           <Buttons>
-          <button onClick={handle1}>1번</button>
-          <button  onClick={handle2}>2번</button>
-          <button  onClick={handle3}>3번</button>
-          <button  onClick={handle4}>4번</button>
-          <button onClick={handle5}>5번</button>
-          <button onClick={handle6}>6번</button>
+            <button onClick={handle1}>1번</button>
+            <button onClick={handle2}>2번</button>
+            <button onClick={handle3}>3번</button>
+            <button onClick={handle4}>4번</button>
+            <button onClick={handle5}>5번</button>
+            <button onClick={handle6}>6번</button>
           </Buttons>
         </L.LoginBtnWrapper>
         <BackgroundDesign />
@@ -79,5 +96,4 @@ export const Buttons = styled.div`
   justify-content: space-around;
   align-items: center;
   gap: 10px;
-
-  `;
+`;
