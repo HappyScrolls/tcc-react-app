@@ -1,91 +1,76 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import defaultCat from "../../../images/signup/defaultCat.svg";
+import {
+  useFetchMyScheduleList,
+  useFetchPartnerScheduleList,
+} from "../../../hooks/useScheduleList";
+import { getBusyColor } from "../../../utils/colors";
+import { ScheduleData } from "../../../types/ISchedule";
+import { useUpdateScheduleStatus } from "../../../hooks/useUpdateScheduleStatus";
 
-const ListView = () => {
-  // 내 일정
-  const mySchedule = [
-    {
-      title: "(내 일정 1)",
-      startTime: "16:15",
-      endTime: "4:00",
-      scheduleBusyLevel: "여유",
-      isCommon: false,
-      isCompleted: 0,
-    },
-    {
-      title: "(공통 일정 1)",
-      startTime: "6:15",
-      endTime: "13:00",
-      scheduleBusyLevel: "바쁨",
-      isCommon: true,
-      isCompleted: 1,
-    },
-  ];
+const ListView: React.FC<{ date: string }> = ({ date }) => {
+  const { data: myScheduleList } = useFetchMyScheduleList(date);
+  const { data: partnerScheduleList } = useFetchPartnerScheduleList(date);
 
-  // 애인의 일정
-  const partnerSchedule = [
-    {
-      title: "(애인 일정 1)",
-      startTime: "16:15",
-      endTime: "4:00",
-      scheduleBusyLevel: "여유",
-      isCommon: false,
-      isCompleted: 0,
-    },
-    {
-      title: "(공통 일정 1)",
-      startTime: "6:15",
-      endTime: "13:00",
-      scheduleBusyLevel: "바쁨",
-      isCommon: true,
-      isCompleted: 1,
-    },
-  ];
+  const [mySchedules, setMySchedules] = useState<ScheduleData[]>(
+    myScheduleList || []
+  );
+  const [partnerSchedules, setPartnerSchedules] = useState<ScheduleData[]>(
+    partnerScheduleList || []
+  );
 
-  const [mySchedules, setMySchedules] = useState(mySchedule);
-  const [partnerSchedules, setPartnerSchedules] = useState(partnerSchedule);
-
-  const getBusyColor = (scheduleBusyLevel: string) => {
-    switch (scheduleBusyLevel) {
-      case "여유":
-        return "#51C7B4";
-      case "보통":
-        return "#FBBB6A";
-      case "바쁨":
-        return "#F14040";
-      default:
-        return "#fff";
+  useEffect(() => {
+    if (myScheduleList) {
+      setMySchedules(myScheduleList);
     }
-  };
+  }, [myScheduleList]);
+
+  useEffect(() => {
+    if (partnerScheduleList) {
+      setPartnerSchedules(partnerScheduleList);
+    }
+  }, [partnerScheduleList]);
+
+  const { mutate: updateScheduleStatus } = useUpdateScheduleStatus();
 
   const toggleCompletion = (
-    schedules: typeof mySchedules,
-    setSchedules: React.Dispatch<React.SetStateAction<typeof mySchedules>>,
+    schedules: ScheduleData[],
+    setSchedules: React.Dispatch<React.SetStateAction<ScheduleData[]>>,
     index: number,
-    otherSchedules: typeof mySchedules,
-    setOtherSchedules: React.Dispatch<React.SetStateAction<typeof mySchedules>>
+    otherSchedules: ScheduleData[],
+    setOtherSchedules: React.Dispatch<React.SetStateAction<ScheduleData[]>>
   ) => {
-    const updatedSchedules = schedules.map((schedule, i) => {
+    const updatedSchedules: ScheduleData[] = schedules.map((schedule, i) => {
       if (i === index) {
+        const newStatus = schedule.status === "완료" ? "미완료" : "완료";
+
+        if (schedule.scheduleNo !== undefined) {
+          updateScheduleStatus({
+            scheduleNo: schedule.scheduleNo,
+            status: newStatus,
+          });
+        }
+
         return {
           ...schedule,
-          isCompleted: schedule.isCompleted === 0 ? 1 : 0,
+          status: newStatus,
         };
       }
       return schedule;
     });
 
-    // 공통 일정인 경우에만 상대방 일정 업데이트
-    const updatedOtherSchedules = otherSchedules.map((schedule) => {
-      if (schedule.isCommon && schedules[index].isCommon) {
-        return {
-          ...schedule,
-          isCompleted: updatedSchedules[index].isCompleted,
-        };
+    const updatedOtherSchedules: ScheduleData[] = otherSchedules.map(
+      (schedule) => {
+        if (schedule.isCommon && schedules[index].isCommon) {
+          return {
+            ...schedule,
+            status: updatedSchedules[index].status,
+          };
+        }
+        return schedule;
       }
-      return schedule;
-    });
+    );
 
     setSchedules(updatedSchedules);
     setOtherSchedules(updatedOtherSchedules);
@@ -102,12 +87,12 @@ const ListView = () => {
             <StatusContainer>
               <StatusItem>일정 {mySchedules.length}개</StatusItem>
               <StatusItem>
-                완료 일정{" "}
-                {mySchedules.filter((s) => s.isCompleted === 1).length}개
+                완료 일정
+                {myScheduleList.filter((s) => s.status === "완료").length}개
               </StatusItem>
               <StatusItem>
-                미완료 일정{" "}
-                {mySchedules.filter((s) => s.isCompleted === 0).length}개
+                미완료 일정
+                {myScheduleList.filter((s) => s.status === "미완료").length}개
               </StatusItem>
             </StatusContainer>
           </Wrapper>
@@ -118,13 +103,11 @@ const ListView = () => {
           {mySchedules.map((schedule, index) => (
             <ScheduleItem key={index}>
               <ScheduleInfo>
-                <ScheduleColor
-                  color={getBusyColor(schedule.scheduleBusyLevel)}
-                />
-                <ScheduleTitle>{schedule.title}</ScheduleTitle>
+                <ScheduleColor color={getBusyColor(schedule.busyLevel)} />
+                <ScheduleTitle>{schedule.scheduleName}</ScheduleTitle>
               </ScheduleInfo>
               <StatusButton
-                status={schedule.isCompleted}
+                status={schedule.status}
                 onClick={() =>
                   toggleCompletion(
                     mySchedules,
@@ -135,7 +118,7 @@ const ListView = () => {
                   )
                 }
               >
-                {schedule.isCompleted === 1 ? "완료" : "미완료"}
+                {schedule.status === "완료" ? "완료" : "미완료"}
               </StatusButton>
             </ScheduleItem>
           ))}
@@ -149,14 +132,19 @@ const ListView = () => {
           <Wrapper>
             <Name>(애칭)의 일정</Name>
             <StatusContainer>
-              <StatusItem>일정 {partnerSchedules.length}개</StatusItem>
+              <StatusItem>일정 {partnerScheduleList.length}개</StatusItem>
               <StatusItem>
-                완료 일정{" "}
-                {partnerSchedules.filter((s) => s.isCompleted === 1).length}개
+                완료 일정
+                {partnerScheduleList.filter((s) => s.status === "완료").length}
+                개
               </StatusItem>
               <StatusItem>
-                미완료 일정{" "}
-                {partnerSchedules.filter((s) => s.isCompleted === 0).length}개
+                미완료 일정
+                {
+                  partnerScheduleList.filter((s) => s.status === "미완료")
+                    .length
+                }
+                개
               </StatusItem>
             </StatusContainer>
           </Wrapper>
@@ -167,13 +155,11 @@ const ListView = () => {
           {partnerSchedules.map((schedule, index) => (
             <ScheduleItem key={index}>
               <ScheduleInfo>
-                <ScheduleColor
-                  color={getBusyColor(schedule.scheduleBusyLevel)}
-                />
-                <ScheduleTitle>{schedule.title}</ScheduleTitle>
+                <ScheduleColor color={getBusyColor(schedule.busyLevel)} />
+                <ScheduleTitle>{schedule.scheduleName}</ScheduleTitle>
               </ScheduleInfo>
               <StatusButton
-                status={schedule.isCompleted}
+                status={schedule.status}
                 onClick={() =>
                   toggleCompletion(
                     partnerSchedules,
@@ -184,7 +170,7 @@ const ListView = () => {
                   )
                 }
               >
-                {schedule.isCompleted === 1 ? "완료" : "미완료"}
+                {schedule.status === "완료" ? "완료" : "미완료"}
               </StatusButton>
             </ScheduleItem>
           ))}
@@ -304,14 +290,14 @@ const ScheduleTitle = styled.div`
   line-height: normal;
 `;
 
-const StatusButton = styled.div<{ status: number }>`
+const StatusButton = styled.div<{ status: string }>`
   padding: 2px 16px 1px 14px;
   border-radius: 10px;
   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
   justify-content: center;
   align-items: center;
-  background-color: ${({ status }) => (status === 1 ? "#FFF" : "#F25454")};
-  color: ${({ status }) => (status === 1 ? "#F25454" : "#FFF")};
+  background-color: ${({ status }) => (status === "완료" ? "#FFF" : "#F25454")};
+  color: ${({ status }) => (status === "완료" ? "#F25454" : "#FFF")};
   font-family: SUIT;
   font-size: 8px;
   font-style: normal;

@@ -21,6 +21,7 @@ const ScheduleForm: React.FC<FormProps> = ({
     scheduleEndAt: "",
     scheduleAt: "",
     isCommon: false,
+    status: "미완료",
   });
 
   // 일정 수정 때 사용

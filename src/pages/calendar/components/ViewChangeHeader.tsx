@@ -4,31 +4,37 @@ import { styled } from "styled-components";
 interface ViewChangeHeaderProps {
   isTimetableView: boolean;
   toggleView: () => void;
+  onPreviousDay: () => void;
+  onNextDay: () => void;
+  formattedDate: string;
 }
 
 const ViewChangeHeader: React.FC<ViewChangeHeaderProps> = ({
   isTimetableView,
   toggleView,
+  onPreviousDay,
+  onNextDay,
+  formattedDate,
 }) => {
   return (
     <>
       <ViewChangeBox>
-        <Arrow>{"<"}</Arrow>
+        <Arrow onClick={onPreviousDay}>{"<"}</Arrow>
         <DateInfo>
-          <DateText>2024.00.00</DateText>
-          <DdayText>D+000</DdayText>
+          <DateText>{formattedDate}</DateText>
+          <DdayText>D+000 ❤️</DdayText>
         </DateInfo>
         <ViewToggleWrapper>
           <ViewToggleButton onClick={toggleView}>
             <RadioButton checked={isTimetableView} />
-            <ViewLabel>timetable view</ViewLabel>
+            <ViewLabel>Timetable View</ViewLabel>
           </ViewToggleButton>
           <ViewToggleButton onClick={toggleView}>
             <RadioButton checked={!isTimetableView} />
-            <ViewLabel>list view</ViewLabel>
+            <ViewLabel>List View</ViewLabel>
           </ViewToggleButton>
         </ViewToggleWrapper>
-        <Arrow>{">"}</Arrow>
+        <Arrow onClick={onNextDay}>{">"}</Arrow>
       </ViewChangeBox>
     </>
   );
