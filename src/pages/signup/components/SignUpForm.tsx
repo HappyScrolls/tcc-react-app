@@ -3,14 +3,10 @@ import { Container } from "../../../components/layout/Layout";
 import styled from "styled-components";
 import defaultCat from "../../../images/signup/defaultCat.svg";
 import { useNavigate } from "react-router-dom";
-import { useMemberInfo } from "../../../hooks/useMemberInfo";
+import { useMemberInfoQuery } from "../../../hooks/useMemberInfo";
 
-interface SignUpFormProps {
-  memberCode: string;
-}
-
-const SignUpForm: React.FC<SignUpFormProps> = ({ memberCode }) => {
-  const { userInfo } = useMemberInfo(memberCode);
+const SignUpForm = () => {
+  const { data: userInfo } = useMemberInfoQuery();
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [birthYear, setBirthYear] = useState(

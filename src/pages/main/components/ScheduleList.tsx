@@ -8,6 +8,8 @@ import {
   useFetchMyScheduleList,
   useFetchPartnerScheduleList,
 } from "../../../hooks/useScheduleList";
+import { useFetchMyLoverInfo } from "../../../hooks/useCoupleInfo";
+import { useMemberInfoQuery } from "../../../hooks/useMemberInfo";
 
 const ScheduleList = () => {
   const [index, setIndex] = useState(0);
@@ -19,12 +21,21 @@ const ScheduleList = () => {
   const day = String(today.getDate()).padStart(2, "0");
   const formattedDate = `${year}-${month}-${day}`;
 
+  // 내 일정
   const { data: myScheduleList, isError: myScheduleError } =
     useFetchMyScheduleList(formattedDate);
+
+  // 애인 일정
   const { data: partnerScheduleList, isError: partnerScheduleError } =
     useFetchPartnerScheduleList(formattedDate);
 
-  if (myScheduleError || partnerScheduleError) {
+  // 내 정보
+  const { data: myInfo, isError: myInfoError } = useMemberInfoQuery();
+
+  // 애인 정보
+  const { data: loverInfo, isError: myLoverError } = useFetchMyLoverInfo();
+
+  if (myScheduleError || partnerScheduleError || myLoverError) {
     return <div>일정 데이터를 가져오는 중 오류가 발생했습니다.</div>;
   }
 
@@ -50,10 +61,13 @@ const ScheduleList = () => {
           {myScheduleList && myScheduleList[index] ? (
             <ScheduleInfo>
               <ProfileImage>
-                <img src={defaultCat} alt="Profile" />
+                <img
+                  src={myInfo.profilePhoto ? myInfo.profilePhoto : defaultCat}
+                  alt="Profile"
+                />
               </ProfileImage>
               <TextWrapper>
-                <NameText>(나)의 일정</NameText>
+                <NameText>{myInfo.name}의 일정</NameText>
                 <Wrapper>
                   <Status
                     color={getBusyColor(myScheduleList[index].busyLevel)}
@@ -65,27 +79,24 @@ const ScheduleList = () => {
               </TextWrapper>
             </ScheduleInfo>
           ) : (
-            <ScheduleInfo>
-              <ProfileImage>
-                <img src={defaultCat} alt="Profile" />
-              </ProfileImage>
-              <TextWrapper>
-                <NameText>(나)의 일정</NameText>
-                <Wrapper>
-                  <ScheduleTitle>현재 일정이 없습니다.</ScheduleTitle>
-                </Wrapper>
-              </TextWrapper>
-            </ScheduleInfo>
+            <div>현재 애인의 일정이 없습니다.</div>
           )}
 
           {/* 애인 일정  */}
           {partnerScheduleList && partnerScheduleList[index] ? (
-            <ScheduleInfo>
+            <PartnerScheduleInfo>
               <ProfileImage>
-                <img src={defaultCat} alt="Profile" />
+                <img
+                  src={
+                    loverInfo?.profilePhoto
+                      ? loverInfo.profilePhoto
+                      : defaultCat
+                  }
+                  alt="Profile"
+                />
               </ProfileImage>
               <TextWrapper>
-                <NameText>(애인)의 일정</NameText>
+                <NameText>{loverInfo?.name}의 일정</NameText>
                 <Wrapper>
                   <Status
                     color={getBusyColor(partnerScheduleList[index].busyLevel)}
@@ -95,7 +106,7 @@ const ScheduleList = () => {
                   </ScheduleTitle>
                 </Wrapper>
               </TextWrapper>
-            </ScheduleInfo>
+            </PartnerScheduleInfo>
           ) : (
             <div>현재 애인의 일정이 없습니다.</div>
           )}
@@ -203,6 +214,10 @@ const ScheduleInfo = styled.div`
   background: #fff;
   border: 1px solid var(--Secondary, #ffcfc7);
   gap: 10px;
+`;
+
+const PartnerScheduleInfo = styled(ScheduleInfo)`
+  border: 1px solid #f25454;
 `;
 
 const TextWrapper = styled.div`

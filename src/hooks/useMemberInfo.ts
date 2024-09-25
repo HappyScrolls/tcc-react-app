@@ -1,6 +1,19 @@
 import { useState, useEffect } from "react";
-import getMemberInfo from "../api/query/get/getMemberInfo";
+import getMemberInfo, { fetchUserInfo } from "../api/query/get/getMemberInfo";
 import { IMemberInfo } from "../types/IMemberInfo";
+import { useSuspenseQuery } from "@tanstack/react-query";
+
+// 내 정보 조회
+export const useMemberInfoQuery = () => {
+  const userInfo = useSuspenseQuery<IMemberInfo>({
+    queryKey: ["memberInfo"],
+    queryFn: () => fetchUserInfo(),
+
+    staleTime: 60000,
+  });
+
+  return userInfo;
+};
 
 export const useMemberInfo = (memberCode: string) => {
   const [userInfo, setUserInfo] = useState<IMemberInfo | null>(null);
