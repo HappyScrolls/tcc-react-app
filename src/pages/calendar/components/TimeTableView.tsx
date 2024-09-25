@@ -48,10 +48,6 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
   const { data: myScheduleList } = useFetchMyScheduleList(date);
   const { data: partnerScheduleList } = useFetchPartnerScheduleList(date);
 
-  console.log("내 일정", myScheduleList);
-
-  console.log("애인", partnerScheduleList);
-
   const navigate = useNavigate();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [touchStartY, setTouchStartY] = useState(0);
@@ -212,6 +208,7 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
             ref={modalRef}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
+            busyLevel={selectedSchedule.busyLevel}
           >
             <ScheduleContent>
               <BlackLine />
@@ -428,8 +425,9 @@ const Overlay = styled.div`
   align-items: flex-end;
 `;
 
-const ScheduleDetailModal = styled(BottomSheet)`
+const ScheduleDetailModal = styled(BottomSheet)<{ busyLevel: string }>`
   height: 440px;
+  border: 1px solid ${({ busyLevel }) => getBusyColor(busyLevel)};
 `;
 
 const SheetContent = styled.div`

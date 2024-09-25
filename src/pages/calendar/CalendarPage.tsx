@@ -8,7 +8,8 @@ import { styled } from "styled-components";
 
 const CalendarPage = () => {
   const { date } = useParams<{ date: string }>();
-  const [currentDate, setCurrentDate] = useState(new Date(date ?? new Date()));
+  const todayDate = date ? new Date(date) : new Date();
+  const [currentDate, setCurrentDate] = useState(todayDate);
 
   const handlePreviousDay = () => {
     setCurrentDate((prevDate) => {

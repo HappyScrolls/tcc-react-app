@@ -22,7 +22,7 @@ const ViewChangeHeader: React.FC<ViewChangeHeaderProps> = ({
         <Arrow onClick={onPreviousDay}>{"<"}</Arrow>
         <DateInfo>
           <DateText>{formattedDate}</DateText>
-          <DdayText>D+000</DdayText>
+          <DdayText>D+000 ❤️</DdayText>
         </DateInfo>
         <ViewToggleWrapper>
           <ViewToggleButton onClick={toggleView}>

@@ -5,11 +5,9 @@ import { useFetchMyLoverInfo } from "../../../hooks/useCoupleInfo";
 import defaultCat from "../../../images/signup/defaultCat.svg";
 
 const TimeTableHeader = () => {
-  // 내 정보
   const { data: myInfo } = useMemberInfoQuery();
-
-  // 애인 정보
   const { data: loverInfo } = useFetchMyLoverInfo();
+
   return (
     <>
       <Header>

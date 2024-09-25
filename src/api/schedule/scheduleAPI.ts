@@ -52,3 +52,27 @@ export const fetchPartnerScheduleList = async (
 
   return response.data;
 };
+
+// 일정 상태 업데이트
+export const updateScheduleStatus = async ({
+  scheduleNo,
+  status,
+}: {
+  scheduleNo: number;
+  status: string;
+}) => {
+  try {
+    const response = await scheduleAxiosInstance.put(
+      `/schedule/${scheduleNo}/status`,
+      {},
+      {
+        params: {
+          status,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(`일정 상태 업데이트 실패: ${error}`);
+  }
+};
