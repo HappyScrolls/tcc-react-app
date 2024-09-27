@@ -14,14 +14,15 @@ const Header = () => {
   const handleLogoButton = () => {
     navigate("/main");
   };
+
   return (
     <>
       <HeaderContainer>
-        <header>
+        <Wrapper>
           <BackButton src={backButton} />
           <Logo onClick={handleLogoButton} src={logo} />
-          <NotificationButton onClick={handleButton} src={notificationIcon} />
-        </header>
+        </Wrapper>
+        <NotificationButton onClick={handleButton} src={notificationIcon} />
       </HeaderContainer>
     </>
   );
@@ -30,26 +31,42 @@ const Header = () => {
 export default Header;
 
 const HeaderContainer = styled.div`
-  width: 393px;
-  height: 56px;
+  width: 100%;
+  padding: 0 130px;
+  height: 50px;
+
   background: #fff;
   box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.25);
+
   display: flex;
-  justify-content: space-evenly;
-  align-content: center;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+
+  @media (max-width: 768px) {
+    padding: 0 40px;
+    height: 56px;
+  }
 `;
+
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 const BackButton = styled.img`
   width: 24px;
   height: 24px;
   flex-shrink: 0;
 `;
+
 const Logo = styled.img`
-  width: 82.054px;
   height: 24px;
   flex-shrink: 0;
 `;
+
 const NotificationButton = styled.img`
   width: 24px;
   height: 24px;
-  flex-shrink: 0;
 `;

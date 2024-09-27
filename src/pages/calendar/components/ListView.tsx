@@ -184,7 +184,10 @@ export default ListView;
 
 const ListContainer = styled.div`
   width: 90%;
+  min-height: calc(100vh - 300px);
   gap: 13px;
+
+  margin-top: 15px;
 `;
 
 const Container = styled.div`
@@ -254,6 +257,10 @@ const ScheduleList = styled.div`
   margin: 0 auto;
   flex-direction: column;
   gap: 9px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 const ScheduleItem = styled.div`
