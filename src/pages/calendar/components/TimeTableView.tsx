@@ -1,9 +1,10 @@
 import React, { useRef, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import phone from "../../../images/calendar/phone.svg";
 import { getBusyBackgroundColor, getBusyColor } from "../../../utils/colors";
 import { useNavigate } from "react-router-dom";
 import {
+  useFetchCommonScheduleList,
   useFetchMyScheduleList,
   useFetchPartnerScheduleList,
 } from "../../../hooks/useScheduleList";
@@ -47,15 +48,11 @@ type ModalType = "empty" | "schedule" | null;
 const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
   const { data: myScheduleList } = useFetchMyScheduleList(date);
   const { data: partnerScheduleList } = useFetchPartnerScheduleList(date);
-
-  console.log(partnerScheduleList);
-  const commonSchedules = [
-    ...(myScheduleList || []),
-    ...(partnerScheduleList || []),
-  ].filter((schedule) => schedule.isCommon);
+  const { data: commonScheduleList } = useFetchCommonScheduleList(date);
 
   const navigate = useNavigate();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const [isClosing, setIsClosing] = useState(false);
   const [touchStartY, setTouchStartY] = useState(0);
 
   const [selectedSchedule, setSelectedSchedule] = useState<ScheduleData | null>(
@@ -66,11 +63,16 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
 
   const openModal = (type: ModalType) => {
     setActiveModal(type);
+    setIsClosing(false);
   };
 
   const closeModal = () => {
     setActiveModal(null);
     setSelectedSchedule(null);
+    setTimeout(() => {
+      setActiveModal(null);
+      setIsClosing(false);
+    }, 300);
   };
 
   const handleOutsideClick = (e: React.MouseEvent) => {
@@ -143,7 +145,7 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
 
           {/* 공통 일정  */}
           <CommonScheduleColumn>
-            {commonSchedules?.map((schedule) => (
+            {commonScheduleList?.map((schedule) => (
               <CommonScheduleItem
                 key={schedule.scheduleNo}
                 top={timeToPosition(schedule.scheduleStartAt)}
@@ -153,6 +155,11 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
                 }
                 backgroundcolor={getBusyBackgroundColor(schedule.busyLevel)}
                 $isCommon
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedSchedule(schedule);
+                  openModal("schedule");
+                }}
               >
                 <BusyTag backgroundColor={getBusyColor(schedule.busyLevel)} />
                 <ScheduleName>{schedule.scheduleName}</ScheduleName>
@@ -199,6 +206,7 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
         <Overlay onClick={handleOutsideClick} onTouchEnd={handleTouchEnd}>
           <BottomSheet
             ref={modalRef}
+            isClosing={isClosing}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
@@ -220,6 +228,7 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
             busyLevel={selectedSchedule.busyLevel}
+            isClosing={isClosing}
           >
             <ScheduleContent>
               <BlackLine />
@@ -271,7 +280,7 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
                 )}
 
                 {/* 공통 일정일 때 */}
-                {selectedSchedule.isCommon && (
+                {commonScheduleList?.includes(selectedSchedule) && (
                   <>
                     <DeleteButton>일정 삭제</DeleteButton>
                     <ActionButton>일정 수정</ActionButton>
@@ -409,7 +418,7 @@ const BusyTag = styled.div<{ backgroundColor: string }>`
 `;
 
 // 모달
-const BottomSheet = styled.div`
+const BottomSheet = styled.div<{ isClosing: boolean }>`
   position: fixed;
   bottom: 0;
   width: 85%;
@@ -421,6 +430,8 @@ const BottomSheet = styled.div`
   animation: slide-up 0.3s ease-out;
   z-index: 5;
   height: 235px;
+  animation: ${({ isClosing }) => (isClosing ? slideDown : slideUp)} 0.3s
+    ease-out forwards;
 `;
 
 const Overlay = styled.div`
@@ -565,4 +576,22 @@ const TextWrapper = styled.div`
   gap: 25px;
 
   margin-top: 40px;
+`;
+
+const slideUp = keyframes`
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0%);
+  }
+`;
+
+const slideDown = keyframes`
+  from {
+    transform: translateY(0%);
+  }
+  to {
+    transform: translateY(100%);
+  }
 `;

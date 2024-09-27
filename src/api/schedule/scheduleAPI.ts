@@ -53,6 +53,19 @@ export const fetchPartnerScheduleList = async (
   return response.data;
 };
 
+
+// 공통 일정 조회 
+export const fetchCommonScheduleList = async (
+  searchDate: string
+): Promise<ScheduleData[]> => {
+  const response = await scheduleAxiosInstance.get(
+    `/schedule/common?searchDate=${searchDate}`
+  );
+
+  return response.data;
+};
+
+
 // 일정 상태 업데이트
 export const updateScheduleStatus = async ({
   scheduleNo,
