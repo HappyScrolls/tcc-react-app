@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { createSchedule } from "../api/schedule/scheduleAPI";
 
+
 export const useSaveSchedule = () => {
   return useMutation({
     mutationFn: createSchedule,
