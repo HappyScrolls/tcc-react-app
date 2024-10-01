@@ -6,19 +6,22 @@ import PersonalProfile from "./components/PersonalProfile";
 import CoupleProfile from "./components/CoupleProfile";
 
 const MyPage = () => {
-    return (
-        <>
-            <MyPageContainer>
-                <MyPageHeader/>
-                <PersonalProfileContainer>
-                    <PersonalProfile/>
-                    <PersonalProfile/>
-                </PersonalProfileContainer>
+  return (
+    <>
+      <MyPageContainer>
+        <MyPageHeader />
+        <PersonalProfileContainer>
+          {/* 내 프로필  */}
+          <PersonalProfile isMyProfile={true} />
 
-                <CoupleProfile/>
-            </MyPageContainer>
-        </>
-    );
+          {/* 애인 프로필  */}
+          <PersonalProfile isMyProfile={false} />
+        </PersonalProfileContainer>
+
+        <CoupleProfile />
+      </MyPageContainer>
+    </>
+  );
 };
 
 export default MyPage;
@@ -28,7 +31,7 @@ const MyPageContainer = styled(Container)`
 `;
 
 const PersonalProfileContainer = styled(Container)`
-  gap: 10px;
+  gap: 25px;
   display: flex;
   flex-direction: row;
 `;
