@@ -1,11 +1,11 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
+
+import { ScheduleData } from "../types/ISchedule";
 import {
   fetchCommonScheduleList,
   fetchMyScheduleList,
   fetchPartnerScheduleList,
 } from "../api/schedule/scheduleAPI";
-
-import { ScheduleData } from "../types/ISchedule";
 
 // 내 일정 리스트
 export const useFetchMyScheduleList = (searchDate: string) => {
