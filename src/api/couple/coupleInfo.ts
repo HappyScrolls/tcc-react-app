@@ -1,3 +1,4 @@
+import { CoupleInfo } from "../../types/ICoupleInfo";
 import { LoverInfo } from "../../types/ILoverInfo";
 import { memberAxiosInstance } from "../axios";
 
@@ -39,6 +40,19 @@ export const fetchLoverInfo = async (): Promise<LoverInfo> => {
     return response.data;
   } catch (error) {
     console.error("커플 정보 가져오기 에러 :", error);
+    throw error;
+  }
+};
+
+// 커플 정보 조회
+export const fetchCoupleInfo = async (): Promise<CoupleInfo> => {
+  try {
+    const response = await memberAxiosInstance.get<CoupleInfo>(
+      `/account-service/couple/detail`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("에러", error);
     throw error;
   }
 };

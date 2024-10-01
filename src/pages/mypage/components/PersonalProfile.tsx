@@ -4,42 +4,62 @@ import { Container } from "../../../components/layout/Layout";
 import profileEdit from "../../../images/mypage/profileEdit.svg";
 import defaultCat from "../../../images/signup/defaultCat.svg";
 import { useNavigate } from "react-router-dom";
-import { useMemberInfoQuery } from "../../../hooks/useMemberInfo";
-import { useFetchMyLoverInfo } from "../../../hooks/useCoupleInfo";
+import { LoverInfo } from "../../../types/ILoverInfo";
+import { IMemberInfo } from "../../../types/IMemberInfo";
 
-const PersonalProfile = ({ isMyProfile }: { isMyProfile: boolean }) => {
+const PersonalProfile = ({
+  isMyProfile,
+  profileData,
+  partnerExists,
+  inviteLink,
+}: {
+  isMyProfile: boolean;
+  profileData?: IMemberInfo | LoverInfo;
+  partnerExists: boolean;
+  inviteLink?: string;
+}) => {
   const navigate = useNavigate();
 
-  const handleButton = () => {
+  const handleEditButton = () => {
     navigate("/signup");
   };
 
-  const { data: memberInfo } = useMemberInfoQuery();
-  const { data: loverInfo } = useFetchMyLoverInfo();
-
-  const profileData = isMyProfile ? memberInfo : loverInfo;
-  console.log(profileData.birthDate);
+  const handleInviteButton = () => {
+    if (inviteLink) {
+      alert("초대 코드")
+    }
+  };
 
   return (
-    <>
-      <ProfileBorder>
-        <ProfileHeader>
-          <HeaderText>{isMyProfile ? "내 프로필" : "애인 프로필"}</HeaderText>
-          {isMyProfile && (
-            <ProfileEditIcon onClick={handleButton} src={profileEdit} />
-          )}
-        </ProfileHeader>
+    <ProfileBorder>
+      <ProfileHeader>
+        <HeaderText>{isMyProfile ? "내 프로필" : "애인 프로필"}</HeaderText>
+        {isMyProfile && (
+          <ProfileEditIcon onClick={handleEditButton} src={profileEdit} />
+        )}
+      </ProfileHeader>
 
-        <ProfileIconBox>
-          <ProfileIcon src={profileData?.profilePhoto || defaultCat} />
-        </ProfileIconBox>
-
-        <ProfileFooter>
-          <FooterText>{profileData?.name || "(이름)"}</FooterText>
-          <FooterText>{profileData?.birthDate || "2000.00.00"}</FooterText>
-        </ProfileFooter>
-      </ProfileBorder>
-    </>
+      {!partnerExists ? (
+        <InviteWrapper>
+          <ProfileIconBox>
+            <ProfileIcon src={defaultCat} />
+          </ProfileIconBox>
+          <InviteButton onClick={handleInviteButton}>
+            카카오톡으로 초대 링크 보내기
+          </InviteButton>
+        </InviteWrapper>
+      ) : (
+        <>
+          <ProfileIconBox>
+            <ProfileIcon src={profileData?.profilePhoto || defaultCat} />
+          </ProfileIconBox>
+          <ProfileFooter>
+            <FooterText>{profileData?.name || "(이름)"}</FooterText>
+            <FooterText>{profileData?.birthDate || "2000.00.00"}</FooterText>
+          </ProfileFooter>
+        </>
+      )}
+    </ProfileBorder>
   );
 };
 
@@ -120,3 +140,7 @@ const FooterText = styled.text`
   font-weight: 500;
   line-height: normal;
 `;
+
+const InviteWrapper = styled.div``;
+
+const InviteButton = styled.div``;
