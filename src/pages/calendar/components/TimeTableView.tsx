@@ -15,6 +15,7 @@ import { useDeleteSchedule } from "../../../hooks/useDeleteSchedule";
 import tearEmoji from "../../../images/emoji/이모지_눈물.png";
 import { scheduleModalButtons } from "../../../utils/scheduleModalBtn";
 import ScheduleDetailModal from "./ScheduleDetailModal";
+import EmojiModal from "../../../components/modal/EmojiModal";
 
 // (1시간 = 26px)
 const timeToPosition = (dateTime: string): number => {
@@ -66,6 +67,9 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
     null
   );
 
+  const [isEmojiModalOpen, setIsEmojiModalOpen] = useState(false);
+  const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
+
   const modalRef = useRef<HTMLDivElement>(null);
 
   const openModal = (type: ModalType) => {
@@ -95,6 +99,15 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
         },
       });
     }
+  };
+
+  const handleEmojiModalOpen = () => {
+    setIsEmojiModalOpen(true);
+  };
+
+  const handleSelectEmoji = (emoji: string) => {
+    setSelectedEmoji(emoji);
+    setIsEmojiModalOpen(false);
   };
 
   const handleOutsideClick = (e: React.MouseEvent) => {
@@ -271,11 +284,18 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
               onDelete: () => setIsDeleteModalOpen(true),
               onEdit: () => console.log("일정 수정"),
               onCommon: () => console.log("공통 일정으로 변경"),
-              onEmoji: () => console.log("이모지 남기기"),
+              onEmoji: () => handleEmojiModalOpen(),
               onEditRequest: () => console.log("일정 수정 요청"),
             })}
           />
         </Overlay>
+      )}
+
+      {isEmojiModalOpen && (
+        <EmojiModal
+          onSelectEmoji={handleSelectEmoji}
+          onClose={() => setIsEmojiModalOpen(false)}
+        />
       )}
     </>
   );
@@ -440,7 +460,7 @@ const SheetContent = styled.div`
   gap: 12px;
 `;
 
-const Line = styled.div`
+export const Line = styled.div`
   width: 53px;
   height: 5px;
   margin: 0 auto;

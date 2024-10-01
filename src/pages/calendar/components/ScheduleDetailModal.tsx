@@ -125,7 +125,7 @@ const Phone = styled.img`
 
 const ActionButton = styled.button`
   display: flex;
-  width: 80%;
+  width: 100%;
   padding: 13px 0px 12px 0px;
   justify-content: center;
   align-items: center;
@@ -158,7 +158,7 @@ const ButtonGroup = styled.div`
   margin-top: 30px;
 `;
 
-const Line = styled.div`
+export const Line = styled.div`
   width: 53px;
   height: 5px;
   margin: 0 auto;
