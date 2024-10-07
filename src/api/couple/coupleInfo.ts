@@ -40,10 +40,8 @@ export const fetchLoverInfo = async (): Promise<LoverInfo | null> => {
     );
     return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 500) {
-      console.warn(
-        "내 상대방 정보가 없습니다."
-      );
+    if (axios.isAxiosError(error)) {
+      console.warn("내 상대방 정보가 없습니다.");
       return null;
     }
     throw error;
@@ -58,7 +56,7 @@ export const fetchCoupleInfo = async (): Promise<CoupleInfo | null> => {
     );
     return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 500) {
+    if (axios.isAxiosError(error)) {
       console.warn(
         "커플 정보가 없거나 서버 오류로 데이터를 가져올 수 없습니다."
       );

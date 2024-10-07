@@ -6,7 +6,7 @@ export const calculateDaysTogether = (startedAt: string): number => {
   const startDate = new Date(startedAt);
 
   const timeDiff = today.getTime() - startDate.getTime();
-  return Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+  return Math.floor(timeDiff / (1000 * 60 * 60 * 24) + 1);
 };
 
 // 날짜를 YYYY.MM.DD 형식 변환
@@ -88,4 +88,50 @@ export const getCurrentSchedule = (
     const end = new Date(schedule.scheduleEndAt).getTime();
     return currentTime >= start && currentTime <= end;
   });
+};
+
+export const createCalendarDates = (year: number, month: number) => {
+  const today = new Date();
+  const isToday = (date: Date) =>
+    date.getFullYear() === today.getFullYear() &&
+    date.getMonth() === today.getMonth() &&
+    date.getDate() === today.getDate();
+
+  const firstDayOfMonth = new Date(year, month, 1).getDay(); // 월의 첫 날 요일
+  const lastDateOfMonth = new Date(year, month + 1, 0).getDate(); // 현재 월의 마지막 날
+  const lastDateOfPrevMonth = new Date(year, month, 0).getDate(); // 이전 월의 마지막 날
+
+  const datesArray = [];
+
+  // 이전 월의 날짜 추가
+  for (let i = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1; i > 0; i--) {
+    const date = lastDateOfPrevMonth - i + 1;
+    datesArray.push({
+      day: date,
+      isCurrentMonth: false,
+      isToday: false,
+    });
+  }
+
+  // 현재 월의 날짜 추가
+  for (let i = 1; i <= lastDateOfMonth; i++) {
+    const currentDate = new Date(year, month, i);
+    datesArray.push({
+      day: i,
+      isCurrentMonth: true,
+      isToday: isToday(currentDate),
+    });
+  }
+
+  // 다음 월의 날짜 추가
+  const nextDays = 42 - datesArray.length; // 총 42개(6x7)의 날짜가 필요하므로 남은 칸을 채움
+  for (let i = 1; i <= nextDays; i++) {
+    datesArray.push({
+      day: i,
+      isCurrentMonth: false,
+      isToday: false,
+    });
+  }
+
+  return datesArray;
 };

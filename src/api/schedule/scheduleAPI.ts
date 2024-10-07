@@ -49,7 +49,7 @@ export const fetchMyScheduleList = async (
     return response.data;
   } catch (error) {
     console.error("내 일정 리스트 조회 중 오류 발생:", error);
-    if (axios.isAxiosError(error) && error.response?.status === 500) {
+    if (axios.isAxiosError(error)) {
       console.warn("내 일정 정보를 가져올 수 없습니다.");
       return [];
     }
@@ -68,7 +68,7 @@ export const fetchPartnerScheduleList = async (
     return response.data;
   } catch (error) {
     console.error("애인 일정 조회 중 오류 발생:", error);
-    if (axios.isAxiosError(error) && error.response?.status === 500) {
+    if (axios.isAxiosError(error)) {
       console.warn("애인 일정 정보를 가져올 수 없습니다.");
       return [];
     }
@@ -87,7 +87,7 @@ export const fetchCommonScheduleList = async (
     return response.data;
   } catch (error) {
     console.error("공통 일정 조회 중 오류 발생:", error);
-    if (axios.isAxiosError(error) && error.response?.status === 500) {
+    if (axios.isAxiosError(error)) {
       console.warn("공통 일정 정보를 가져올 수 없습니다.");
       return [];
     }
