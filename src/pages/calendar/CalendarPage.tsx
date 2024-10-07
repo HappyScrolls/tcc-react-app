@@ -37,22 +37,23 @@ const CalendarPage = () => {
 
   return (
     <>
-      <CalendarContainer>
-        <ViewChangeHeader
-          isTimetableView={isTimetableView}
-          toggleView={toggleView}
-          onPreviousDay={handlePreviousDay}
-          onNextDay={handleNextDay}
-          formattedDate={formattedDate}
-        />
-        <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <CalendarContainer>
+          <ViewChangeHeader
+            isTimetableView={isTimetableView}
+            toggleView={toggleView}
+            onPreviousDay={handlePreviousDay}
+            onNextDay={handleNextDay}
+            formattedDate={formattedDate}
+          />
+
           {isTimetableView ? (
             <TimeTable date={formattedDate} />
           ) : (
             <ListView date={formattedDate} />
           )}
-        </Suspense>
-      </CalendarContainer>
+        </CalendarContainer>{" "}
+      </Suspense>
     </>
   );
 };

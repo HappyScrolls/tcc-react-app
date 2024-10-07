@@ -25,7 +25,6 @@ async function getMemberInfo({
 export default getMemberInfo;
 
 // 내 정보 조회 (query)
-
 export const fetchUserInfo = async (): Promise<IMemberInfo> => {
   try {
     const response = await memberAxiosInstance.get<IMemberInfo>(

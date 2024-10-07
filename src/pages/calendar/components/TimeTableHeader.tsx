@@ -20,9 +20,9 @@ const TimeTableHeader = () => {
         </Wrapper>
 
         <Wrapper>
-          <Name>{loverInfo.name}의 일정 </Name>
+          <Name>{loverInfo?.name}의 일정 </Name>
           <ProfileImage
-            src={loverInfo.profilePhoto ? loverInfo.profilePhoto : defaultCat}
+            src={loverInfo?.profilePhoto ? loverInfo.profilePhoto : defaultCat}
             alt="프로필"
           />
         </Wrapper>

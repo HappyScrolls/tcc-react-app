@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import getMemberInfo, { fetchUserInfo } from "../api/query/get/getMemberInfo";
 import { IMemberInfo } from "../types/IMemberInfo";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+import { updateUserInfo } from "../api/user/UserAPI";
 
 // 내 정보 조회
 export const useMemberInfoQuery = () => {
@@ -36,4 +41,26 @@ export const useMemberInfo = (memberCode: string) => {
   }, [memberCode]);
 
   return { userInfo, loading };
+};
+
+// 내 정보 수정
+export const useUpdateMemberInfo = () => {
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation({
+    mutationKey: ["update-member-info"],
+    mutationFn: updateUserInfo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["memberInfo"],
+      });
+    },
+    onError: (error) => {
+      console.error("정보 수정 에러.", error);
+    },
+  });
+
+  return {
+    mutate,
+  };
 };

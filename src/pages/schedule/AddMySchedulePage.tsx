@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import ScheduleForm from "./components/ScheduleForm";
 
 import { ScheduleData } from "../../types/ISchedule";
@@ -22,7 +22,9 @@ const AddMySchedulePage = () => {
 
   return (
     <>
-      <ScheduleForm onSave={handleSaveSchedule} isCoupleSchedule={false} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <ScheduleForm onSave={handleSaveSchedule} isCoupleSchedule={false} />
+      </Suspense>
     </>
   );
 };
