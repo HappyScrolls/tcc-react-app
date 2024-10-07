@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-
-// 마지막 날짜가 30일인지 31일인지
-const getlastDay = (year: number, month: number) => {
-  return new Date(year, month + 1, 0).getDate();
-};
+import { getLastDay } from "../../../utils/date";
+import { useNavigate } from "react-router-dom";
 
 const MonthCalendar = () => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
+  const navigate = useNavigate();
 
   // 월 이동
   const handlePrevMonth = () => {
@@ -32,8 +30,8 @@ const MonthCalendar = () => {
 
   // 달력에 날짜 넣기
   const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-  const lastDay = getlastDay(currentYear, currentMonth);
-  const prevLastDay = getlastDay(currentYear, currentMonth - 1);
+  const lastDay = getLastDay(currentYear, currentMonth);
+  const prevLastDay = getLastDay(currentYear, currentMonth - 1);
 
   const datesArray = [];
 
