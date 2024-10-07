@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import noCoupleProfileIcon from "../../../images/mypage/noCoupleProfileIcon.svg";
 import { useNavigate } from "react-router-dom";
 import { useFetchCoupleInfo } from "../../../hooks/useCoupleInfo";
 import editPen from "../../../images/mypage/editPen.svg";
 import coupleCat from "../../../images/emoji/이모지_커플.png";
+import soloCat from "../../../images/mypage/soloCat.svg";
+import noCoupleCat from "../../../images/mypage/noCoupleProfileIcon.svg";
 import { IMemberInfo } from "../../../types/IMemberInfo";
 import { LoverInfo } from "../../../types/ILoverInfo";
 import defaultCat from "../../../images/emoji/이모지_메롱.png";
@@ -23,16 +24,20 @@ const CoupleProfile = ({
     navigate("/couple/info");
   };
 
-  const { data: coupleProfile } = useFetchCoupleInfo();
-  const coupleProfileExists = !!coupleProfile;
+  const handleEditButton = () => {
+    navigate("/couple/edit");
+  };
+
+  const { data: coupleInfo } = useFetchCoupleInfo();
+  const coupleInfoExists = !!coupleInfo;
 
   return (
     <CoupleProfileBox>
-      {coupleProfileExists ? (
-        <>
-          {/* 커플 프로필 있는 경우 */}
-          <ProfileContainer>
-            <EditIcon src={editPen} alt="수정" />
+      <ProfileContainer>
+        {coupleInfoExists ? (
+          <>
+            {/* 커플 프로필 있는 경우 */}
+            <EditIcon src={editPen} alt="수정" onClick={handleEditButton} />
             <CatIcon src={coupleCat} />
 
             <PinkWrapper>
@@ -42,7 +47,7 @@ const CoupleProfile = ({
                   src={memberInfo?.profilePhoto ?? defaultCat}
                   alt="이미지"
                 />
-                <Name>애칭</Name>
+                <Name>{coupleInfo.nickNameA}</Name>
               </Wrap>
 
               {/* 애인  */}
@@ -51,31 +56,44 @@ const CoupleProfile = ({
                   src={loverInfo?.profilePhoto ?? defaultCat}
                   alt="이미지"
                 />
-                <Name>애칭</Name>
+                <Name>{coupleInfo.nickNameB}</Name>
               </Wrap>
 
               <TextWrap>
                 <Text>
-                  {coupleProfile.name} 사랑한지 &nbsp;
-                  {calculateDaysTogether(coupleProfile?.startedAt)}일 째
+                  {coupleInfo.name} 사랑한지 &nbsp;
+                  {calculateDaysTogether(coupleInfo?.startedAt)}일 째
                 </Text>
-                <Text>{formatDateDot(coupleProfile?.startedAt)} ~</Text>
+                <Text>{formatDateDot(coupleInfo?.startedAt)} ~</Text>
               </TextWrap>
             </PinkWrapper>
-          </ProfileContainer>
-        </>
-      ) : (
-        <>
-          {/* 커플 프로필 등록 안내 */}
-          <CatIcon src={noCoupleProfileIcon} />
-          <CoupleProfileBodyText>
-            아직 커플 프로필 등록이 되지 않았습니다.
-          </CoupleProfileBodyText>
-          <CoupleProfileAddButton onClick={handleRegistrationButton}>
-            커플 프로필 등록하기
-          </CoupleProfileAddButton>
-        </>
-      )}
+          </>
+        ) : loverInfo ? (
+          <>
+            {/* 애인 정보는 있지만 커플 프로필 없음 */}{" "}
+            <CatIcon src={noCoupleCat} />
+            <NonePinkWrapper>
+              <CoupleProfileBodyText>
+                커플 프로필이 아직 등록되지 않았습니다.
+              </CoupleProfileBodyText>
+              <CoupleProfileAddButton onClick={handleRegistrationButton}>
+                커플 프로필 등록하기
+              </CoupleProfileAddButton>
+            </NonePinkWrapper>
+          </>
+        ) : (
+          <>
+            {/* 애인 정보도 없고, 커플 프로필도 없는 경우 */}
+            <CatIcon src={soloCat} />
+            <NonePinkWrapper>
+              <CoupleProfileBodyText>
+                아직 커플 등록이 되지 않아 <br /> 커플 프로필 설정을 할 수
+                없습니다.
+              </CoupleProfileBodyText>
+            </NonePinkWrapper>
+          </>
+        )}
+      </ProfileContainer>
     </CoupleProfileBox>
   );
 };
@@ -95,7 +113,7 @@ const CoupleProfileBox = styled.div`
   box-shadow: 0px 0px 11.7px 0px rgba(0, 0, 0, 0.25);
 `;
 
-const CoupleProfileBodyText = styled.text`
+const CoupleProfileBodyText = styled.div`
   color: var(--Black, #3b3634);
   text-align: center;
   font-family: SUIT;
@@ -152,7 +170,7 @@ const CatIcon = styled.img`
   flex-shrink: 0;
 
   margin-top: 120px;
-  margin-bottom: -8px;
+  /* margin-bottom: -8px; */
 `;
 
 const PinkWrapper = styled.div`
@@ -167,6 +185,11 @@ const PinkWrapper = styled.div`
   border-radius: 50px 50px 0px 0px;
   background: linear-gradient(180deg, #ffcfc7 0%, #fff 100%);
   box-shadow: 0px -3px 4.9px 0px rgba(0, 0, 0, 0.14);
+`;
+
+const NonePinkWrapper = styled(PinkWrapper)`
+  justify-content: center;
+  flex-direction: column;
 `;
 
 const CoupleImg = styled.img`

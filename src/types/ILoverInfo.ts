@@ -1,3 +1,4 @@
+// 내 상대방 정보
 export interface LoverInfo {
   no: number;
   accountId: string;

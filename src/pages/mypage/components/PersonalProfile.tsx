@@ -11,23 +11,19 @@ const PersonalProfile = ({
   isMyProfile,
   profileData,
   partnerExists,
-  inviteLink,
 }: {
   isMyProfile: boolean;
-  profileData?: IMemberInfo | LoverInfo;
+  profileData?: IMemberInfo | LoverInfo | null;
   partnerExists: boolean;
-  inviteLink?: string;
 }) => {
   const navigate = useNavigate();
 
   const handleEditButton = () => {
-    navigate("/signup");
+    navigate("/profile/edit");
   };
 
   const handleInviteButton = () => {
-    if (inviteLink) {
-      alert("초대 코드")
-    }
+    alert("초대 코드");
   };
 
   return (
@@ -39,13 +35,14 @@ const PersonalProfile = ({
         )}
       </ProfileHeader>
 
-      {!partnerExists ? (
+      {!partnerExists || !profileData ? (
+        // 애인 정보 없는 경우
         <InviteWrapper>
           <ProfileIconBox>
-            <ProfileIcon src={defaultCat} />
+            <AddProfileLabel onClick={handleInviteButton}>+</AddProfileLabel>
           </ProfileIconBox>
           <InviteButton onClick={handleInviteButton}>
-            카카오톡으로 초대 링크 보내기
+            초대 코드 생성
           </InviteButton>
         </InviteWrapper>
       ) : (
@@ -81,7 +78,7 @@ const ProfileBorder = styled(Container)`
 const ProfileHeader = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   flex-direction: row;
 `;
 
@@ -130,6 +127,7 @@ const ProfileFooter = styled.div`
   align-items: center;
 
   margin-top: 13px;
+  gap: 5px;
 `;
 
 const FooterText = styled.text`
@@ -141,6 +139,44 @@ const FooterText = styled.text`
   line-height: normal;
 `;
 
-const InviteWrapper = styled.div``;
+const InviteWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-const InviteButton = styled.div``;
+  gap: 8px;
+`;
+
+const InviteButton = styled.div`
+  align-items: center;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
+  padding: 9px;
+
+  width: 116px;
+
+  color: var(--Black, #3b3634);
+  text-align: center;
+  font-family: SUIT;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+
+const AddProfileLabel = styled.div`
+  border-radius: 100px;
+  background: var(--Primary, #f14040);
+  box-shadow: 0px 0px 6.8px 0px rgba(0, 0, 0, 0.25);
+
+  display: flex;
+  width: 72px;
+  height: 72px;
+  padding: 24px;
+  justify-content: center;
+  align-items: center;
+
+  color: #ffffff;
+`;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import ScheduleForm from "./components/ScheduleForm";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSaveSchedule } from "../../hooks/useSaveSchedule";
@@ -20,7 +20,9 @@ const AddCoupleSchedule = () => {
   };
   return (
     <>
-      <ScheduleForm onSave={handleSaveSchedule} isCoupleSchedule={true} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <ScheduleForm onSave={handleSaveSchedule} isCoupleSchedule={true} />
+      </Suspense>
     </>
   );
 };

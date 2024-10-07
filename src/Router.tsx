@@ -11,6 +11,8 @@ import MyPage from "./pages/mypage/MyPage";
 
 import AddMySchedulePage from "./pages/schedule/AddMySchedulePage";
 import AddCoupleSchedule from "./pages/schedule/AddCoupleSchedule";
+import ProfileEdit from "./pages/mypage/components/ProfileEdit";
+import CoupleProfileEdit from "./pages/mypage/components/CoupleProfileEdit";
 
 const router = createBrowserRouter([
   {
@@ -56,6 +58,14 @@ const router = createBrowserRouter([
       {
         path: "/couple/info",
         element: <CoupleInfoPage />,
+      },
+      {
+        path: "/profile/edit",
+        element: <ProfileEdit />,
+      },
+      {
+        path: "/couple/edit",
+        element: <CoupleProfileEdit isEdit={true} />,
       },
     ],
   },
