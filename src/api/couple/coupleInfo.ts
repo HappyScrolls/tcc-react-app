@@ -41,12 +41,8 @@ export const fetchLoverInfo = async (): Promise<LoverInfo | null> => {
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      if (error.response?.status === 500) {
-        console.warn(
-          "애인 정보가 없거나 서버 오류로 데이터를 가져올 수 없습니다."
-        );
-        return null;
-      }
+      console.warn("내 상대방 정보가 없습니다.");
+      return null;
     }
     throw error;
   }
@@ -60,14 +56,13 @@ export const fetchCoupleInfo = async (): Promise<CoupleInfo | null> => {
     );
     return response.data;
   } catch (error) {
-    // AxiosError인지 확인하고 상태 코드를 확인하여 null 반환
-    if (axios.isAxiosError(error) && error.response?.status === 500) {
+    if (axios.isAxiosError(error)) {
       console.warn(
         "커플 정보가 없거나 서버 오류로 데이터를 가져올 수 없습니다."
       );
-      return null; // 서버 오류인 경우 null 반환
+      return null;
     }
-    throw error; // 다른 에러는 그대로 던짐
+    throw error;
   }
 };
 

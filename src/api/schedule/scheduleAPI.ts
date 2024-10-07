@@ -1,3 +1,4 @@
+import axios from "axios";
 import { ScheduleData } from "../../types/ISchedule";
 import { ApiResponse } from "../ApiResponse";
 import { scheduleAxiosInstance } from "../axios";
@@ -14,6 +15,9 @@ export const createSchedule = async (
     return response.data;
   } catch (error) {
     console.error("일정 생성 중 오류 발생:", error);
+    if (axios.isAxiosError(error) && error.response) {
+      console.warn(`에러 상태 코드: ${error.response.status}`);
+    }
     throw error;
   }
 };
@@ -27,6 +31,9 @@ export const deleteSchedule = async (scheduleNo: number) => {
     return response.data;
   } catch (error) {
     console.error("일정 삭제 중 오류 발생:", error);
+    if (axios.isAxiosError(error) && error.response) {
+      console.warn(`에러 상태 코드: ${error.response.status}`);
+    }
     throw error;
   }
 };
@@ -35,36 +42,58 @@ export const deleteSchedule = async (scheduleNo: number) => {
 export const fetchMyScheduleList = async (
   searchDate: string
 ): Promise<ScheduleData[]> => {
-  const response = await scheduleAxiosInstance.get(
-    `/schedule?searchDate=${searchDate}`
-  );
-
-  return response.data;
+  try {
+    const response = await scheduleAxiosInstance.get(
+      `/schedule?searchDate=${searchDate}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("내 일정 리스트 조회 중 오류 발생:", error);
+    if (axios.isAxiosError(error)) {
+      console.warn("내 일정 정보를 가져올 수 없습니다.");
+      return [];
+    }
+    throw error;
+  }
 };
 
 // 애인 일정 조회
 export const fetchPartnerScheduleList = async (
   searchDate: string
 ): Promise<ScheduleData[]> => {
-  const response = await scheduleAxiosInstance.get(
-    `/schedule/couple?searchDate=${searchDate}`
-  );
-
-  return response.data;
+  try {
+    const response = await scheduleAxiosInstance.get(
+      `/schedule/couple?searchDate=${searchDate}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("애인 일정 조회 중 오류 발생:", error);
+    if (axios.isAxiosError(error)) {
+      console.warn("애인 일정 정보를 가져올 수 없습니다.");
+      return [];
+    }
+    throw error;
+  }
 };
 
-
-// 공통 일정 조회 
+// 공통 일정 조회
 export const fetchCommonScheduleList = async (
   searchDate: string
 ): Promise<ScheduleData[]> => {
-  const response = await scheduleAxiosInstance.get(
-    `/schedule/common?searchDate=${searchDate}`
-  );
-
-  return response.data;
+  try {
+    const response = await scheduleAxiosInstance.get(
+      `/schedule/common?searchDate=${searchDate}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("공통 일정 조회 중 오류 발생:", error);
+    if (axios.isAxiosError(error)) {
+      console.warn("공통 일정 정보를 가져올 수 없습니다.");
+      return [];
+    }
+    throw error;
+  }
 };
-
 
 // 일정 상태 업데이트
 export const updateScheduleStatus = async ({
@@ -86,6 +115,10 @@ export const updateScheduleStatus = async ({
     );
     return response.data;
   } catch (error) {
+    console.error("일정 상태 업데이트 중 오류 발생:", error);
+    if (axios.isAxiosError(error) && error.response) {
+      console.warn(`에러 상태 코드: ${error.response.status}`);
+    }
     throw new Error(`일정 상태 업데이트 실패: ${error}`);
   }
 };

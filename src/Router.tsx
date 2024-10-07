@@ -3,7 +3,6 @@ import LoginPage from "./pages/login/LoginPage";
 import App from "./App";
 import Redirect from "./pages/login/components/Redirect";
 import SignUpPage from "./pages/signup/SignUpPage";
-import MainPage from "./pages/main/MainPage";
 import NotificationPage from "./pages/notification/NotificationPage";
 import CalendarPage from "./pages/calendar/CalendarPage";
 import CoupleInfoPage from "./pages/couple/CoupleInfoPage";
@@ -13,6 +12,7 @@ import AddMySchedulePage from "./pages/schedule/AddMySchedulePage";
 import AddCoupleSchedule from "./pages/schedule/AddCoupleSchedule";
 import ProfileEdit from "./pages/mypage/components/ProfileEdit";
 import CoupleProfileEdit from "./pages/mypage/components/CoupleProfileEdit";
+import SuspenseMainPage from "./pages/main/SuspenseMainPage";
 
 const router = createBrowserRouter([
   {
@@ -25,7 +25,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/main",
-        element: <MainPage />,
+        element: <SuspenseMainPage />,
       },
       {
         path: "/signup",

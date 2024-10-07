@@ -10,11 +10,7 @@ import {
 // 내 일정 리스트
 export const useFetchMyScheduleList = (searchDate: string) => {
   const schedule = useSuspenseQuery<ScheduleData[]>({
-    queryKey: [
-      "myScheduleList",
-      searchDate,
-      localStorage.getItem("memberCode"),
-    ],
+    queryKey: ["myScheduleList", searchDate],
     queryFn: () => fetchMyScheduleList(searchDate),
   });
 
