@@ -195,37 +195,6 @@ const AddProfileInput = styled.input`
   display: none;
 `;
 
-const AgreementText = styled.div`
-  color: var(--Black, #3b3634);
-  font-family: SUIT;
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-
-  :nth-child(1) {
-    color: var(--Black, #3b3634);
-    font-family: SUIT;
-    font-size: 10px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-  }
-`;
-
-const AgreementWrapper = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-`;
-
-const AgreeBtn = styled.div`
-  width: 15px;
-  height: 15px;
-  background-color: var(--Primary, #f14040);
-  border-radius: 50%;
-`;
-
 const ButtonWrapper = styled.div`
   display: flex;
   gap: 5px;

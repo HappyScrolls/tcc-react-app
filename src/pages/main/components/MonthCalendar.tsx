@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import {
-  calculateDaysTogether,
-  createCalendarDates,
-  formatTodayHypen,
-} from "../../../utils/date";
+import { createCalendarDates, formatTodayHypen } from "../../../utils/date";
 import { useNavigate } from "react-router-dom";
 import { ScheduleData } from "../../../types/ISchedule";
 import { useQueryClient } from "@tanstack/react-query";
