@@ -1,8 +1,8 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 
 import { getBusyBackgroundColor, getBusyColor } from "../../../utils/colors";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   useFetchCommonScheduleList,
   useFetchMyScheduleList,
@@ -54,7 +54,8 @@ interface ScheduleItemProps {
 type ModalType = "empty" | "schedule" | null;
 
 const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
-  const { data: myScheduleList } = useFetchMyScheduleList(date);
+  const { data: myScheduleList, refetch: refetchMyScheduleList } =
+    useFetchMyScheduleList(date);
   const { data: partnerScheduleList } = useFetchPartnerScheduleList(date);
   const { data: commonScheduleList } = useFetchCommonScheduleList(date);
   const { mutate: deleteSchedule } = useDeleteSchedule();
@@ -70,6 +71,15 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
   const [selectedSchedule, setSelectedSchedule] = useState<ScheduleData | null>(
     null
   );
+
+  const location = useLocation();
+  useEffect(() => {
+    if (location.state?.refetch) {
+      refetchMyScheduleList();
+
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location, refetchMyScheduleList]);
 
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -92,6 +102,8 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
       deleteSchedule(selectedSchedule.scheduleNo, {
         onSuccess: () => {
           setIsDeleteModalOpen(false);
+          closeModal();
+          refetchMyScheduleList();
           console.log("일정이 성공적으로 삭제되었습니다.");
         },
         onError: (error) => {
@@ -107,6 +119,7 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
       changeCommonSchedule(selectedSchedule.scheduleNo, {
         onSuccess: () => {
           setIsChangeCommonModalOpen(false);
+          closeModal();
           console.log("공통일정으로 변경되었습니다.");
         },
         onError: (error) => {
