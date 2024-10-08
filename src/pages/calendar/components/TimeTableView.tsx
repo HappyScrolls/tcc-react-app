@@ -15,6 +15,9 @@ import { useDeleteSchedule } from "../../../hooks/useDeleteSchedule";
 import tearEmoji from "../../../images/emoji/이모지_눈물.png";
 import { scheduleModalButtons } from "../../../utils/scheduleModalBtn";
 import ScheduleDetailModal from "./ScheduleDetailModal";
+import coupleEmoji from "../../../images/emoji/이모지_커플.png";
+import { useChangeCommonSchedule } from "../../../hooks/useChangeCoupleSchedule";
+import OneBtnModal from "../../../components/modal/OneBtnModal";
 
 // (1시간 = 26px)
 const timeToPosition = (dateTime: string): number => {
@@ -55,12 +58,14 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
   const { data: partnerScheduleList } = useFetchPartnerScheduleList(date);
   const { data: commonScheduleList } = useFetchCommonScheduleList(date);
   const { mutate: deleteSchedule } = useDeleteSchedule();
+  const { mutate: changeCommonSchedule } = useChangeCommonSchedule();
 
   const navigate = useNavigate();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [isClosing, setIsClosing] = useState(false);
   const [touchStartY, setTouchStartY] = useState(0);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isChangeCommonModalOpen, setIsChangeCommonModalOpen] = useState(false);
 
   const [selectedSchedule, setSelectedSchedule] = useState<ScheduleData | null>(
     null
@@ -92,6 +97,21 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
         onError: (error) => {
           console.log("삭제 오류 : ", error);
           alert("삭제 중 오류가 발생했습니다:");
+        },
+      });
+    }
+  };
+
+  const handleChangeCommonSchedule = () => {
+    if (selectedSchedule?.scheduleNo) {
+      changeCommonSchedule(selectedSchedule.scheduleNo, {
+        onSuccess: () => {
+          setIsChangeCommonModalOpen(false);
+          console.log("공통일정으로 변경되었습니다.");
+        },
+        onError: (error) => {
+          console.log("변경 오류 : ", error);
+          alert("공통일정 변경 중 오류가 발생했습니다:");
         },
       });
     }
@@ -257,6 +277,17 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
         />
       )}
 
+      {/* 공통 일정 변경 모달  */}
+      {isChangeCommonModalOpen && (
+        <OneBtnModal
+          title="공통 일정으로 변경되었습니다."
+          description=""
+          imageSrc={coupleEmoji}
+          confirmText="확인"
+          onConfirm={handleChangeCommonSchedule}
+        />
+      )}
+
       {/* 일정 상세 모달 */}
       {activeModal === "schedule" && selectedSchedule && (
         <Overlay onClick={handleOutsideClick} onTouchEnd={handleTouchEnd}>
@@ -270,7 +301,9 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
               isCommonSchedule: commonScheduleList?.includes(selectedSchedule),
               onDelete: () => setIsDeleteModalOpen(true),
               onEdit: () => console.log("일정 수정"),
-              onCommon: () => console.log("공통 일정으로 변경"),
+              onCommon: () => {
+                setIsChangeCommonModalOpen(true);
+              },
               onEmoji: () => console.log("이모지 남기기"),
               onEditRequest: () => console.log("일정 수정 요청"),
             })}
