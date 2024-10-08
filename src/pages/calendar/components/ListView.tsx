@@ -2,16 +2,25 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import defaultCat from "../../../images/signup/defaultCat.svg";
 import {
+  useFetchCommonScheduleList,
   useFetchMyScheduleList,
   useFetchPartnerScheduleList,
 } from "../../../hooks/useScheduleList";
 import { getBusyColor } from "../../../utils/colors";
 import { ScheduleData } from "../../../types/ISchedule";
 import { useUpdateScheduleStatus } from "../../../hooks/useUpdateScheduleStatus";
+import { useQueryClient } from "@tanstack/react-query";
+import { CoupleInfo } from "../../../types/ICoupleInfo";
+import { IMemberInfo } from "../../../types/IMemberInfo";
 
 const ListView: React.FC<{ date: string }> = ({ date }) => {
+  const queryClient = useQueryClient();
   const { data: myScheduleList } = useFetchMyScheduleList(date);
   const { data: partnerScheduleList } = useFetchPartnerScheduleList(date);
+  const { data: commonScheduleList } = useFetchCommonScheduleList(date);
+
+  const coupleInfo = queryClient.getQueryData<CoupleInfo>(["coupleInfo"]);
+  const myInfo = queryClient.getQueryData<IMemberInfo>(["memberInfo"]);
 
   const [mySchedules, setMySchedules] = useState<ScheduleData[]>(
     myScheduleList || []
@@ -20,20 +29,26 @@ const ListView: React.FC<{ date: string }> = ({ date }) => {
     partnerScheduleList || []
   );
 
+  // 내 일정 + 공통일정 통합 상태 변경
   useEffect(() => {
     if (myScheduleList) {
-      setMySchedules(myScheduleList);
+      setMySchedules([...myScheduleList, ...(commonScheduleList || [])]);
     }
-  }, [myScheduleList]);
+  }, [myScheduleList, commonScheduleList]);
 
+  // 애인 일정 + 공통일정 통합 상태 변경
   useEffect(() => {
     if (partnerScheduleList) {
-      setPartnerSchedules(partnerScheduleList);
+      setPartnerSchedules([
+        ...partnerScheduleList,
+        ...(commonScheduleList || []),
+      ]);
     }
-  }, [partnerScheduleList]);
+  }, [partnerScheduleList, commonScheduleList]);
 
   const { mutate: updateScheduleStatus } = useUpdateScheduleStatus();
 
+  // 완료 상태 변경
   const toggleCompletion = (
     schedules: ScheduleData[],
     setSchedules: React.Dispatch<React.SetStateAction<ScheduleData[]>>,
@@ -60,9 +75,13 @@ const ListView: React.FC<{ date: string }> = ({ date }) => {
       return schedule;
     });
 
+    // 애인 일정 중에 공통일정인 일정 상태 함께 변경
     const updatedOtherSchedules: ScheduleData[] = otherSchedules.map(
       (schedule) => {
-        if (schedule.isCommon && schedules[index].isCommon) {
+        if (
+          schedule.isCommon &&
+          schedule.scheduleNo === schedules[index].scheduleNo
+        ) {
           return {
             ...schedule,
             status: updatedSchedules[index].status,
@@ -83,7 +102,9 @@ const ListView: React.FC<{ date: string }> = ({ date }) => {
         <Header>
           <ProfileImage src={defaultCat} alt="프로필" />{" "}
           <Wrapper>
-            <Name>(애칭)의 일정</Name>
+            <Name>
+              {coupleInfo ? `${coupleInfo.nickNameA}` : `${myInfo?.name}`}
+            </Name>
             <StatusContainer>
               <StatusItem>일정 {mySchedules.length}개</StatusItem>
               <StatusItem>
@@ -130,7 +151,9 @@ const ListView: React.FC<{ date: string }> = ({ date }) => {
         <Header>
           <ProfileImage src={defaultCat} alt="프로필" />{" "}
           <Wrapper>
-            <Name>(애칭)의 일정</Name>
+            <Name>
+              {coupleInfo ? `${coupleInfo.nickNameB}` : "커플로 등록해주세요!"}
+            </Name>
             <StatusContainer>
               <StatusItem>일정 {partnerScheduleList.length}개</StatusItem>
               <StatusItem>

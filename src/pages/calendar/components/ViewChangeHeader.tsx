@@ -1,5 +1,8 @@
+import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { styled } from "styled-components";
+import { CoupleInfo } from "../../../types/ICoupleInfo";
+import { calculateDaysTogether } from "../../../utils/date";
 
 interface ViewChangeHeaderProps {
   isTimetableView: boolean;
@@ -16,13 +19,20 @@ const ViewChangeHeader: React.FC<ViewChangeHeaderProps> = ({
   onNextDay,
   formattedDate,
 }) => {
+  const queryClient = useQueryClient();
+  const coupleInfo = queryClient.getQueryData<CoupleInfo>(["coupleInfo"]);
+
   return (
     <>
       <ViewChangeBox>
         <Arrow onClick={onPreviousDay}>{"<"}</Arrow>
         <DateInfo>
           <DateText>{formattedDate}</DateText>
-          <DdayText>D+000 ❤️</DdayText>
+          <DdayText>
+            {coupleInfo
+              ? `D+${calculateDaysTogether(coupleInfo.startedAt)}❤️`
+              : "커플로 등록해주세요!"}
+          </DdayText>
         </DateInfo>
         <ViewToggleWrapper>
           <ViewToggleButton onClick={toggleView}>

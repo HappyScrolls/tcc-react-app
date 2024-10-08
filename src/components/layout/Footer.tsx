@@ -3,6 +3,8 @@ import styled from "styled-components";
 import heart from "../../images/layout/heart.svg";
 import mypageLogo from "../../images/layout/mypageLogo.svg";
 import { useNavigate } from "react-router-dom";
+import { calculateDaysTogether } from "../../utils/date";
+import { useFetchCoupleInfo } from "../../hooks/useCoupleInfo";
 
 const Footer = () => {
   const navigate = useNavigate();
@@ -10,14 +12,30 @@ const Footer = () => {
   const handleButton = () => {
     navigate("/mypage");
   };
+
+  // 커플 정보
+  const { data: coupleInfo } = useFetchCoupleInfo();
+
   return (
     <>
       <FooterContainer>
         <FooterBody>
           <FooterHeader>
-            <LoveIcon src={heart} />
+            {coupleInfo ? (
+              <>
+                <span>{coupleInfo.nickNameA}</span>
+                <LoveIcon src={heart} />
+                <span>{coupleInfo.nickNameB}</span>
+              </>
+            ) : (
+              ""
+            )}
           </FooterHeader>
-          <DDay>D+100</DDay>
+          <DDay>
+            {coupleInfo
+              ? `D+${calculateDaysTogether(coupleInfo.startedAt)}`
+              : "커플로 등록해주세요!"}
+          </DDay>
         </FooterBody>
         <FooterButtonDiv onClick={handleButton}>
           <FooterButton src={mypageLogo} />
@@ -33,7 +51,7 @@ const FooterContainer = styled.div`
   width: 100%;
   padding: 0 30px;
   position: relative;
-  margin-top: 20px;
+  margin-top: 30px;
 
   background: #fff;
   display: flex;
@@ -62,6 +80,16 @@ const FooterHeader = styled.div`
   padding-top: 30px;
   @media (max-width: 768px) {
     padding: 0 10px;
+  }
+
+  span {
+    padding: 5px;
+    color: var(--Black, #3b3634);
+    font-family: SUIT;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
   }
 `;
 
