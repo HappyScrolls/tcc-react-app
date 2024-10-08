@@ -15,7 +15,7 @@ const AddMySchedulePage = () => {
     console.log("서버에 전송하려는 데이터 :", formData);
     saveSchedule(formData, {
       onSuccess: () => {
-        navigate(`/calendar/${date}`);
+        navigate(`/calendar/${date}`, { state: { refetch: true } });
       },
     });
   };

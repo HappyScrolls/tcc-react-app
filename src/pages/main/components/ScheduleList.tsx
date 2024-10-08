@@ -52,9 +52,13 @@ const ScheduleList = () => {
     navigate(`/calendar/${formattedDate}`);
   };
 
+  const myName = coupleInfo ? coupleInfo.nickNameA : myInfo?.name;
+
   const partnerName = coupleInfo
     ? coupleInfo.nickNameB
     : "커플로 등록해주세요!";
+
+  console.log(coupleInfo);
 
   return (
     <ScheduleBox>
@@ -85,7 +89,7 @@ const ScheduleList = () => {
                 />
               </ProfileImage>
               <TextWrapper>
-                <NameText>{myInfo.name}의 일정</NameText>
+                <NameText>{myName}의 일정</NameText>
                 <Wrapper>
                   <Status color={getBusyColor(currentMySchedule.busyLevel)} />
                   <ScheduleTitle>
@@ -113,7 +117,7 @@ const ScheduleList = () => {
                   />
                 </ProfileImage>
                 <TextWrapper>
-                  <NameText>{myInfo?.name}의 일정</NameText>
+                  <NameText>{myName}의 일정</NameText>
                   <NoText>현재 등록된 일정이 없습니다.</NoText>
                 </TextWrapper>
               </ScheduleInfo>

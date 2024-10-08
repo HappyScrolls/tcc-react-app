@@ -122,3 +122,20 @@ export const updateScheduleStatus = async ({
     throw new Error(`일정 상태 업데이트 실패: ${error}`);
   }
 };
+
+// 공통 일정으로 변경
+export const changeCommonSchedule = async (scheduleNo: number) => {
+  try {
+    const response = await scheduleAxiosInstance.put(
+      `/schedule/${scheduleNo}/common-schedule`,
+      {}
+    );
+    return response.data;
+  } catch (error) {
+    console.error("공통일정으로 변경 중 오류 발생:", error);
+    if (axios.isAxiosError(error) && error.response) {
+      console.warn(`에러 상태 코드: ${error.response.status}`);
+    }
+    throw new Error(`공통일정으로 변경 업데이트 실패: ${error}`);
+  }
+};
