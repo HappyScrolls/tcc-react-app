@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Container } from "../../../components/layout/Layout";
 import profileEdit from "../../../images/mypage/profileEdit.svg";
@@ -11,6 +11,7 @@ import {
   useRegisterInviteCode,
 } from "../../../hooks/useCoupleInfo";
 import copy from "../../../images/mypage/copy.svg";
+import InviteCodeModal from "../../../components/modal/InviteCodeModal";
 
 const PersonalProfile = ({
   isMyProfile,
@@ -27,13 +28,6 @@ const PersonalProfile = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showCopyMessage, setShowCopyMessage] = useState(false);
   const { mutate: registerInviteCode } = useRegisterInviteCode();
-
-  // 초대 코드 설정
-  useEffect(() => {
-    if (fetchedInviteCode) {
-      setInviteCode(fetchedInviteCode);
-    }
-  }, [fetchedInviteCode]);
 
   const handleEditButton = () => {
     navigate("/profile/edit");
@@ -59,13 +53,12 @@ const PersonalProfile = ({
 ${inviteCode}
 
 *코드 등록 방법*
-
 마이페이지 > 애인 프로필 + 버튼 클릭 > 초대 코드 입력
       `;
 
       navigator.clipboard.writeText(fullMessage);
       setShowCopyMessage(true);
-      setTimeout(() => setShowCopyMessage(false), 2000);
+      setTimeout(() => setShowCopyMessage(false), 1500);
     }
   };
 
@@ -74,12 +67,13 @@ ${inviteCode}
     setIsModalOpen(true);
   };
 
-  console.log(inviteCode);
-  const handleModalConfirm = (inviteCode?: string) => {
-    if (inviteCode) {
-      registerInviteCode(inviteCode);
-    }
-    setIsModalOpen(false);
+  const handleModalConfirm = (code: string): Promise<boolean> => {
+    return new Promise((resolve) => {
+      registerInviteCode(code, {
+        onSuccess: () => resolve(true), 
+        onError: () => resolve(false), 
+      });
+    });
   };
 
   return (
@@ -94,7 +88,6 @@ ${inviteCode}
       </ProfileHeader>
 
       {!partnerExists || !profileData ? (
-        // 애인 정보 없는 경우
         <InviteWrapper>
           <ProfileIconBox>
             <AddProfileLabel onClick={handlePlusBtn}>+</AddProfileLabel>
@@ -105,6 +98,11 @@ ${inviteCode}
                 <img src={copy} alt="복사" />
                 초대 코드 복사
               </InviteCodeBox>
+              {showCopyMessage && (
+                <p style={{ color: "green", fontWeight: "bold" }}>
+                  복사되었습니다!
+                </p>
+              )}
             </InviteButton>
           ) : (
             <InviteButton onClick={handleInviteButton}>
@@ -123,6 +121,12 @@ ${inviteCode}
           </ProfileFooter>
         </>
       )}
+
+      <InviteCodeModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleModalConfirm}
+      />
     </ProfileBorder>
   );
 };
@@ -217,7 +221,7 @@ const InviteButton = styled.div`
   border-radius: 10px;
   background: #fff;
   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
-  padding: 8px;
+  padding: 9px;
   width: 110px;
   color: var(--Black, #3b3634);
   text-align: center;
@@ -226,10 +230,15 @@ const InviteButton = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+
+  img {
+    width: 15px;
+    height: 20px;
+  }
 `;
 
 const AddProfileLabel = styled.div`
-  border-radius: 100px;
+  border-radius: 50%;
   background: var(--Primary, #f14040);
   box-shadow: 0px 0px 6.8px 0px rgba(0, 0, 0, 0.25);
   display: flex;
@@ -238,6 +247,7 @@ const AddProfileLabel = styled.div`
   padding: 24px;
   justify-content: center;
   align-items: center;
+  font-size: 24px;
   color: #ffffff;
 `;
 
