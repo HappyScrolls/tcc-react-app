@@ -66,7 +66,7 @@ export const fetchCoupleInfo = async (): Promise<CoupleInfo | null> => {
   }
 };
 
-// 커플 정보 수정
+// 커플 정보 등록 + 수정
 export const updateCoupleInfo = async (
   updatedCoupleInfo: CoupleInfo
 ): Promise<CoupleInfo> => {
@@ -78,6 +78,32 @@ export const updateCoupleInfo = async (
     return response.data;
   } catch (error) {
     console.error("커플 정보 수정 에러:", error);
+    throw error;
+  }
+};
+
+// 커플 초대코드 생성
+export const fetchInviteCode = async (): Promise<string | null> => {
+  try {
+    const response = await memberAxiosInstance.post<string>(
+      `/account-service/couple/invite-code`
+    );
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.warn("초대코드 없음.");
+      return null;
+    }
+    throw error;
+  }
+};
+
+// 커플 초대코드 등록
+export const registerInviteCode = async (inviteCode: string): Promise<void> => {
+  try {
+    await memberAxiosInstance.post(`/account-service/couple`, { inviteCode });
+  } catch (error) {
+    console.error("초대코드 등록 에러:", error);
     throw error;
   }
 };

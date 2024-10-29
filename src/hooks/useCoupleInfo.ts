@@ -6,7 +6,9 @@ import {
 import { LoverInfo } from "../types/ILoverInfo";
 import {
   fetchCoupleInfo,
+  fetchInviteCode,
   fetchLoverInfo,
+  registerInviteCode,
   updateCoupleInfo,
 } from "../api/couple/coupleInfo";
 import { CoupleInfo } from "../types/ICoupleInfo";
@@ -51,4 +53,30 @@ export const useUpdateCoupleInfo = () => {
   return {
     mutate,
   };
+};
+
+// 커플 초대코드 생성
+export const useFetchInviteCode = () => {
+  const inviteCode = useSuspenseQuery<string | null>({
+    queryKey: ["inviteCode"],
+    queryFn: () => fetchInviteCode(),
+  });
+
+  return inviteCode;
+};
+
+// 커플 초대코드 등록
+export const useRegisterInviteCode = () => {
+  const { mutate } = useMutation({
+    mutationKey: ["invite-code"],
+    mutationFn: (inviteCode: string) => registerInviteCode(inviteCode),
+    onSuccess: () => {
+      console.log("성공");
+    },
+    onError: (error) => {
+      console.error("커플 초대코드 입력 에러.", error);
+    },
+  });
+
+  return { mutate };
 };
