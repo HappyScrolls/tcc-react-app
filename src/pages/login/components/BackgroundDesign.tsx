@@ -31,6 +31,7 @@ const StrokeLine = styled.div`
   background-size: 100% 40px;
   background-position: center;
   z-index: -1;
+  /* position: relative; */
 
   @media (min-width: 768px) {
     background-size: 100% 50px;

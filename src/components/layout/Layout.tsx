@@ -6,7 +6,7 @@ export const Layout = styled.div`
   flex-direction: column;
 
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
   background-color: #fff;
 `;
 
@@ -22,4 +22,9 @@ export const Container = styled.div`
   margin: 0 auto;
   padding: 20px;
   background-color: #fff;
+`;
+
+export const MainContent = styled.div`
+  flex-grow: 1;
+  /* padding: 20px; */
 `;

@@ -51,10 +51,7 @@ const FooterContainer = styled.div`
   width: 100%;
   padding: 0 0 20px 50px;
 
-  position: fixed;
-  bottom: 0;
-  left: 0;
-
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -62,6 +59,10 @@ const FooterContainer = styled.div`
   border-radius: 20px 20px 0px 0px;
   background: #fff;
   box-shadow: 0px -1px 1px 0px rgba(0, 0, 0, 0.25);
+
+  @media (max-width: 2000px) {
+    height: 100px;
+  }
 
   @media (max-width: 768px) {
     height: 90px;
