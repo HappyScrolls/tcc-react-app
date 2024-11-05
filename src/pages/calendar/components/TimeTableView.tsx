@@ -79,7 +79,7 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
 
       navigate(location.pathname, { replace: true, state: {} });
     }
-  }, [location, refetchMyScheduleList]);
+  }, [location, navigate, refetchMyScheduleList]);
 
   const modalRef = useRef<HTMLDivElement>(null);
 
