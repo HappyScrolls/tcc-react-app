@@ -93,7 +93,7 @@ const FooterHeader = styled.div`
     font-family: SUIT;
     font-size: 12px;
     font-style: normal;
-    font-weight: 400;
+    font-weight: 500;
     line-height: normal;
   }
 `;
@@ -109,7 +109,7 @@ const DDay = styled.span`
   font-family: SUIT;
   font-size: 20px;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 800;
   line-height: normal;
 
   margin-top: 5px;
