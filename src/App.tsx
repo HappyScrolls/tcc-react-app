@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
-import { Layout } from "./components/layout/Layout";
+import { Layout, MainContent } from "./components/layout/Layout";
 import { Suspense } from "react";
 
 const App = () => {
@@ -12,7 +12,9 @@ const App = () => {
       <Suspense fallback={<div>로딩 중...</div>}>
         <Layout>
           {!hidePage && <Header />}
-          <Outlet />
+          <MainContent>
+            <Outlet />
+          </MainContent>
           {!hidePage && <Footer />}
         </Layout>
       </Suspense>

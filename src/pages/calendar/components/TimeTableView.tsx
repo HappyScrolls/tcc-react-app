@@ -12,7 +12,7 @@ import TimeTableHeader from "./TimeTableHeader";
 import { ScheduleData } from "../../../types/ISchedule";
 import TwoBtnModal from "../../../components/modal/TwoBtnModal";
 import { useDeleteSchedule } from "../../../hooks/useDeleteSchedule";
-import tearEmoji from "../../../images/emoji/이모지_눈물.png";
+import tearEmoji from "../../../images/emoji/이모지_눈물.png";
 import { scheduleModalButtons } from "../../../utils/scheduleModalBtn";
 import ScheduleDetailModal from "./ScheduleDetailModal";
 import coupleEmoji from "../../../images/emoji/이모지_커플.png";

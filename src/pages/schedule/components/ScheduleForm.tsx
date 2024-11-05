@@ -197,11 +197,12 @@ const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: 0 auto;
+  margin: 40px auto;
 
   width: 90%;
-  height: 605px;
   gap: 10px;
+
+  padding: 80px 10px 90px 10px;
 
   border-radius: 20px;
   background: #fff;
@@ -245,7 +246,7 @@ const SmallLabel = styled(Label)`
 
 const Input = styled.input`
   width: 80%;
-  padding: 14px 13px;
+  padding: 15px 13px;
   border-radius: 10px;
   background: #fff;
   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
@@ -260,7 +261,7 @@ const Input = styled.input`
 
 const TimeInputContainer = styled.div`
   display: flex;
-  margin: 0 auto;
+  margin: 10px auto;
   justify-content: space-between;
   align-items: center;
   width: 80%;
@@ -396,6 +397,8 @@ const PhoneWrapper = styled.div`
   justify-content: center;
   align-items: center;
   gap: 12px;
+
+  margin-top: 10px;
 `;
 
 const Phone = styled.img`
