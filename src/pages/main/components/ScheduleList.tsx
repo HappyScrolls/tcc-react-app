@@ -75,13 +75,7 @@ const ScheduleList = () => {
         <ScheduleWrapper>
           {/* 내 일정  */}
           {currentMySchedule && myInfo ? (
-            <ScheduleInfo
-              borderColor={
-                currentMySchedule
-                  ? getBusyColor(currentMySchedule.busyLevel)
-                  : "#F25454"
-              }
-            >
+            <ScheduleInfo borderColor={"#FFCFC7"}>
               <ProfileImage>
                 <img
                   src={myInfo.profilePhoto ? myInfo.profilePhoto : defaultCat}
@@ -101,13 +95,7 @@ const ScheduleList = () => {
           ) : (
             <>
               {/* 내 일정 없는 경우  */}
-              <ScheduleInfo
-                borderColor={
-                  currentMySchedule
-                    ? getBusyColor(currentMySchedule.busyLevel)
-                    : "#F25454"
-                }
-              >
+              <ScheduleInfo borderColor={"#FFCFC7"}>
                 <ProfileImage>
                   <img
                     src={
@@ -128,13 +116,7 @@ const ScheduleList = () => {
           {coupleInfo ? (
             // 커플 프로필 있는 경우
             currentPartnerSchedule ? (
-              <ScheduleInfo
-                borderColor={
-                  currentPartnerSchedule
-                    ? getBusyColor(currentPartnerSchedule.busyLevel)
-                    : "#F25454"
-                }
-              >
+              <ScheduleInfo borderColor={"#F25454"}>
                 <ProfileImage>
                   <img
                     src={
