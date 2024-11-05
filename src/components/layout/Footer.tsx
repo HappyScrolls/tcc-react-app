@@ -49,20 +49,22 @@ export default Footer;
 
 const FooterContainer = styled.div`
   width: 100%;
-  padding: 0 30px;
-  position: relative;
-  margin-top: 30px;
+  padding: 0 0 20px 50px;
 
-  background: #fff;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   border-radius: 20px 20px 0px 0px;
-  box-shadow: 0px -2px 4px 0px rgba(0, 0, 0, 0.25);
+  background: #fff;
+  box-shadow: 0px -1px 1px 0px rgba(0, 0, 0, 0.25);
 
   @media (max-width: 768px) {
-    padding: 0 40px;
-    height: 80px;
+    height: 90px;
   }
 `;
 
@@ -70,20 +72,22 @@ const FooterBody = styled.div`
   text-align: center;
   display: flex;
   flex-direction: column;
+  padding-left: 5px;
+  align-items: flex-start;
 `;
 
 const FooterHeader = styled.div`
-  text-align: center;
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding-top: 30px;
+  padding-top: 25px;
+  gap: 5px;
+
   @media (max-width: 768px) {
-    padding: 0 10px;
+    padding-top: 20px;
   }
 
   span {
-    padding: 5px;
     color: var(--Black, #3b3634);
     font-family: SUIT;
     font-size: 12px;
@@ -99,13 +103,15 @@ const LoveIcon = styled.img`
   flex-shrink: 0;
 `;
 
-const DDay = styled.text`
+const DDay = styled.span`
   color: var(--Black, #3b3634);
   font-family: SUIT;
   font-size: 20px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+
+  margin-top: 5px;
 `;
 
 const FooterButtonDiv = styled.div`
