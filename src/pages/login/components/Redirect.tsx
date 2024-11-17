@@ -35,7 +35,7 @@ const Redirect = () => {
           if (memberInfo?.birthDate === null) {
             navigate(`/signup?memberCode=${memberCode}`);
           } else {
-            navigate("/");
+            navigate("/main");
           }
         } catch (error) {
           console.error("Error fetching member info:", error);
