@@ -4,10 +4,17 @@ import {Container} from "../../../components/layout/Layout";
 import profileEdit from "../../../images/mypage/profileEdit.svg";
 import defaultCat from "../../../images/signup/defaultCat.svg";
 import {useNavigate} from "react-router-dom";
-
-const PersonalProfile = () => {
+import {fetchLoverInfo} from "../../../api/couple/coupleInfo";
+import {useFetchMyLoverInfo} from "../../../hooks/useCoupleInfo";
+import {useMemberInfoQuery} from "../../../hooks/useMemberInfo";
+interface PersonalProfileProps {
+    name:string | null,
+    profileImg:string | null,
+    birthDate:string | null,
+    isMine: boolean;
+}
+const PersonalProfile = ({ name,profileImg,birthDate,isMine }:PersonalProfileProps) => {
     const navigate = useNavigate();
-
     const handleButton = () => {
         navigate("/signup");
     };
@@ -16,14 +23,17 @@ const PersonalProfile = () => {
             <ProfileBorder>
                 <ProfileHeader>
                     <HeaderText>내 프로필</HeaderText>
-                    <ProfileEditIcon onClick={handleButton} src={profileEdit}/>
+                    {
+                        isMine===true?<ProfileEditIcon onClick={handleButton} src={profileEdit}/>:null
+                    }
+
                 </ProfileHeader>
                 <ProfileIconBox>
-                    <ProfileIcon src={defaultCat}/>
+                    <ProfileIcon src={profileImg?profileImg:defaultCat}/>
                 </ProfileIconBox>
                 <ProfileFooter>
-                    <FooterText>(이름)</FooterText>
-                    <FooterText>2000.00.00</FooterText>
+                    <FooterText>{name}</FooterText>
+                    <FooterText>{birthDate}</FooterText>
                 </ProfileFooter>
             </ProfileBorder>
         </>
