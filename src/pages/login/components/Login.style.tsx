@@ -67,6 +67,26 @@ export const LogoImg = styled.div`
     max-width: 100%;
     height: auto;
   }
+
+  img:first-child {
+    animation: rollIn 2s ease-in-out forwards;
+    transform-origin: center;
+  }
+
+  @keyframes rollIn {
+    0% {
+      transform: translateX(-100vw) rotate(0deg);
+      opacity: 0;
+    }
+    90% {
+      transform: translateX(0) rotate(360deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(0) rotate(360deg);
+      opacity: 1;
+    }
+  }
 `;
 
 export const LoginText = styled.div`
@@ -140,4 +160,6 @@ export const ColorContainer = styled(Container)`
   min-height: 100vh;
   background: rgba(0, 0, 0, 0.4);
   z-index: 1;
+
+  position: relative;
 `;

@@ -1,34 +1,50 @@
+import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { styled } from "styled-components";
+import { CoupleInfo } from "../../../types/ICoupleInfo";
+import { calculateDaysTogether } from "../../../utils/date";
 
 interface ViewChangeHeaderProps {
   isTimetableView: boolean;
   toggleView: () => void;
+  onPreviousDay: () => void;
+  onNextDay: () => void;
+  formattedDate: string;
 }
 
 const ViewChangeHeader: React.FC<ViewChangeHeaderProps> = ({
   isTimetableView,
   toggleView,
+  onPreviousDay,
+  onNextDay,
+  formattedDate,
 }) => {
+  const queryClient = useQueryClient();
+  const coupleInfo = queryClient.getQueryData<CoupleInfo>(["coupleInfo"]);
+
   return (
     <>
       <ViewChangeBox>
-        <Arrow>{"<"}</Arrow>
+        <Arrow onClick={onPreviousDay}>{"<"}</Arrow>
         <DateInfo>
-          <DateText>2024.00.00</DateText>
-          <DdayText>D+000</DdayText>
+          <DateText>{formattedDate}</DateText>
+          <DdayText>
+            {coupleInfo
+              ? `D+${calculateDaysTogether(coupleInfo.startedAt)}❤️`
+              : "커플로 등록해주세요!"}
+          </DdayText>
         </DateInfo>
         <ViewToggleWrapper>
           <ViewToggleButton onClick={toggleView}>
             <RadioButton checked={isTimetableView} />
-            <ViewLabel>timetable view</ViewLabel>
+            <ViewLabel>Timetable View</ViewLabel>
           </ViewToggleButton>
           <ViewToggleButton onClick={toggleView}>
             <RadioButton checked={!isTimetableView} />
-            <ViewLabel>list view</ViewLabel>
+            <ViewLabel>List View</ViewLabel>
           </ViewToggleButton>
         </ViewToggleWrapper>
-        <Arrow>{">"}</Arrow>
+        <Arrow onClick={onNextDay}>{">"}</Arrow>
       </ViewChangeBox>
     </>
   );

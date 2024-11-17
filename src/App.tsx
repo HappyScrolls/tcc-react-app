@@ -1,16 +1,23 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
-import { Layout } from "./components/layout/Layout";
+import { Layout, MainContent } from "./components/layout/Layout";
+import { Suspense } from "react";
 
 const App = () => {
+  const location = useLocation();
+  const hidePage = ["/", "/signup"].includes(location.pathname);
   return (
     <>
-      <Layout>
-         <Header />
-        <Outlet />
-         <Footer />
-      </Layout>
+      <Suspense fallback={<div>로딩 중...</div>}>
+        <Layout>
+          {!hidePage && <Header />}
+          <MainContent>
+            <Outlet />
+          </MainContent>
+          {!hidePage && <Footer />}
+        </Layout>
+      </Suspense>
     </>
   );
 };

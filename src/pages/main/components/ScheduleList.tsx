@@ -1,65 +1,81 @@
-import React, { useState } from "react";
 import styled from "styled-components";
 import defaultCat from "../../../images/signup/defaultCat.svg";
 import { useNavigate } from "react-router-dom";
 import { getBusyColor } from "../../../utils/colors";
 
 import {
-  useFetchMyScheduleList,
-  useFetchPartnerScheduleList,
-} from "../../../hooks/useScheduleList";
-import { useFetchMyLoverInfo } from "../../../hooks/useCoupleInfo";
-import { useMemberInfoQuery } from "../../../hooks/useMemberInfo";
+  calculateDaysTogether,
+  formatTodayHypen,
+  getCurrentSchedule,
+  getDay,
+  getMonth,
+  getYear,
+} from "../../../utils/date";
+import { useQueryClient } from "@tanstack/react-query";
+import { ScheduleData } from "../../../types/ISchedule";
+import { IMemberInfo } from "../../../types/IMemberInfo";
+import { LoverInfo } from "../../../types/ILoverInfo";
+import { CoupleInfo } from "../../../types/ICoupleInfo";
 
 const ScheduleList = () => {
-  const [index, setIndex] = useState(0);
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const day = String(today.getDate()).padStart(2, "0");
-  const formattedDate = `${year}-${month}-${day}`;
+  const formattedDate = formatTodayHypen();
 
   // 내 일정
-  const { data: myScheduleList, isError: myScheduleError } =
-    useFetchMyScheduleList(formattedDate);
+  const myScheduleList = queryClient.getQueryData<ScheduleData[]>([
+    "myScheduleList",
+    formattedDate,
+  ]);
 
   // 애인 일정
-  const { data: partnerScheduleList, isError: partnerScheduleError } =
-    useFetchPartnerScheduleList(formattedDate);
+  const partnerScheduleList = queryClient.getQueryData<ScheduleData[]>([
+    "partnerScheduleList",
+    formattedDate,
+  ]);
 
   // 내 정보
-  const { data: myInfo, isError: myInfoError } = useMemberInfoQuery();
+  const myInfo = queryClient.getQueryData<IMemberInfo>(["memberInfo"]);
 
   // 애인 정보
-  const { data: loverInfo, isError: myLoverError } = useFetchMyLoverInfo();
+  const loverInfo = queryClient.getQueryData<LoverInfo>(["myLoverInfo"]);
 
-  if (myScheduleError || partnerScheduleError || myLoverError) {
-    return <div>일정 데이터를 가져오는 중 오류가 발생했습니다.</div>;
-  }
+  // 커플 정보
+  const coupleInfo = queryClient.getQueryData<CoupleInfo>(["coupleInfo"]);
+
+  // 현재 시간 일정
+  const currentMySchedule = getCurrentSchedule(myScheduleList);
+  const currentPartnerSchedule = getCurrentSchedule(partnerScheduleList);
 
   const handleTodaySchedule = () => {
     navigate(`/calendar/${formattedDate}`);
   };
 
+  const myName = coupleInfo ? coupleInfo.nickNameA : myInfo?.name;
+
+  const partnerName = coupleInfo
+    ? coupleInfo.nickNameB
+    : "커플로 등록해주세요!";
+
+  console.log(coupleInfo);
+
   return (
     <ScheduleBox>
       <DayWrapper>
         <DateText>
-          {year}.{month}.{day}
+          {getYear()}.{getMonth()}.{getDay()}
         </DateText>
-        <DdayText>오늘의 일정</DdayText>
+        <DdayText>
+          {coupleInfo ? `D+${calculateDaysTogether(coupleInfo.startedAt)}` : ""}
+        </DdayText>
       </DayWrapper>
 
       <ScheduleContainer>
-        <ArrowLeft onClick={() => setIndex((prev) => Math.max(prev - 1, 0))}>
-          {"<"}
-        </ArrowLeft>
         <ScheduleWrapper>
           {/* 내 일정  */}
-          {myScheduleList && myScheduleList[index] ? (
-            <ScheduleInfo>
+          {currentMySchedule && myInfo ? (
+            <ScheduleInfo borderColor={"#FFCFC7"}>
               <ProfileImage>
                 <img
                   src={myInfo.profilePhoto ? myInfo.profilePhoto : defaultCat}
@@ -67,57 +83,92 @@ const ScheduleList = () => {
                 />
               </ProfileImage>
               <TextWrapper>
-                <NameText>{myInfo.name}의 일정</NameText>
+                <NameText>{myName}의 일정</NameText>
                 <Wrapper>
-                  <Status
-                    color={getBusyColor(myScheduleList[index].busyLevel)}
-                  />
+                  <Status color={getBusyColor(currentMySchedule.busyLevel)} />
                   <ScheduleTitle>
-                    {myScheduleList[index].scheduleName}
+                    {currentMySchedule.scheduleName}
                   </ScheduleTitle>
                 </Wrapper>
               </TextWrapper>
             </ScheduleInfo>
           ) : (
-            <div>현재 애인의 일정이 없습니다.</div>
+            <>
+              {/* 내 일정 없는 경우  */}
+              <ScheduleInfo borderColor={"#FFCFC7"}>
+                <ProfileImage>
+                  <img
+                    src={
+                      myInfo?.profilePhoto ? myInfo.profilePhoto : defaultCat
+                    }
+                    alt="Profile"
+                  />
+                </ProfileImage>
+                <TextWrapper>
+                  <NameText>{myName}의 일정</NameText>
+                  <NoText>현재 등록된 일정이 없습니다.</NoText>
+                </TextWrapper>
+              </ScheduleInfo>
+            </>
           )}
 
           {/* 애인 일정  */}
-          {partnerScheduleList && partnerScheduleList[index] ? (
-            <PartnerScheduleInfo>
-              <ProfileImage>
-                <img
-                  src={
-                    loverInfo?.profilePhoto
-                      ? loverInfo.profilePhoto
-                      : defaultCat
-                  }
-                  alt="Profile"
-                />
-              </ProfileImage>
-              <TextWrapper>
-                <NameText>{loverInfo?.name}의 일정</NameText>
-                <Wrapper>
-                  <Status
-                    color={getBusyColor(partnerScheduleList[index].busyLevel)}
+          {coupleInfo ? (
+            // 커플 프로필 있는 경우
+            currentPartnerSchedule ? (
+              <ScheduleInfo borderColor={"#F25454"}>
+                <ProfileImage>
+                  <img
+                    src={
+                      loverInfo?.profilePhoto
+                        ? loverInfo.profilePhoto
+                        : defaultCat
+                    }
+                    alt="Profile"
                   />
-                  <ScheduleTitle>
-                    {partnerScheduleList[index].scheduleName}
-                  </ScheduleTitle>
-                </Wrapper>
-              </TextWrapper>
-            </PartnerScheduleInfo>
+                </ProfileImage>
+                <TextWrapper>
+                  <NameText>{partnerName}의 일정</NameText>
+                  <Wrapper>
+                    <Status
+                      color={getBusyColor(currentPartnerSchedule.busyLevel)}
+                    />
+                    <ScheduleTitle>
+                      {currentPartnerSchedule.scheduleName}
+                    </ScheduleTitle>
+                  </Wrapper>
+                </TextWrapper>
+              </ScheduleInfo>
+            ) : (
+              // 커플 프로필은 있지만 일정이 없는 경우
+              <>
+                <ScheduleInfo borderColor={"#F25454"}>
+                  <ProfileImage>
+                    <img
+                      src={
+                        loverInfo?.profilePhoto
+                          ? loverInfo.profilePhoto
+                          : defaultCat
+                      }
+                      alt="Profile"
+                    />
+                  </ProfileImage>
+                  <TextWrapper>
+                    <NameText>{partnerName}의 일정</NameText>
+                    <NoText>현재 등록된 일정이 없습니다.</NoText>
+                  </TextWrapper>
+                </ScheduleInfo>
+              </>
+            )
           ) : (
-            <div>현재 애인의 일정이 없습니다.</div>
+            //  커플 프로필 등록 X
+            <>
+              <ScheduleInfo borderColor={"#F25454"}>
+                <CoupleRegisterText>{partnerName}</CoupleRegisterText>
+              </ScheduleInfo>
+            </>
           )}
         </ScheduleWrapper>
-        <ArrowRight
-          onClick={() =>
-            setIndex((prev) => Math.min(prev + 1, myScheduleList.length - 1))
-          }
-        >
-          {">"}
-        </ArrowRight>
       </ScheduleContainer>
 
       <Button onClick={handleTodaySchedule}>오늘의 일정 확인</Button>
@@ -129,7 +180,7 @@ export default ScheduleList;
 
 const ScheduleBox = styled.div`
   width: 320px;
-  padding: 15px 20px;
+  padding: 15px 20px 2px;
   border-radius: 20px;
   background: #fff;
   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
@@ -172,22 +223,6 @@ const ScheduleWrapper = styled.div`
   gap: 5px;
 `;
 
-const ArrowLeft = styled.div`
-  position: absolute;
-  left: -20px;
-  cursor: pointer;
-  font-size: 24px;
-  padding: 10px;
-`;
-
-const ArrowRight = styled.div`
-  position: absolute;
-  right: -20px;
-  cursor: pointer;
-  font-size: 24px;
-  padding: 10px;
-`;
-
 const Button = styled.button`
   display: flex;
   width: 223px;
@@ -205,19 +240,15 @@ const Button = styled.button`
   font-weight: 700;
 `;
 
-const ScheduleInfo = styled.div`
+const ScheduleInfo = styled.div<{ borderColor: string }>`
   display: flex;
   align-items: center;
   width: 223px;
   height: 65px;
   border-radius: 10px;
   background: #fff;
-  border: 1px solid var(--Secondary, #ffcfc7);
+  border: 1px solid ${(props) => props.borderColor};
   gap: 10px;
-`;
-
-const PartnerScheduleInfo = styled(ScheduleInfo)`
-  border: 1px solid #f25454;
 `;
 
 const TextWrapper = styled.div`
@@ -259,6 +290,7 @@ const ProfileImage = styled.div`
   img {
     width: 30px;
     height: 30px;
+    object-fit: cover;
   }
 `;
 
@@ -267,4 +299,24 @@ const ScheduleTitle = styled.div`
   font-family: SUIT;
   font-size: 8px;
   font-weight: 700;
+`;
+
+const NoText = styled.div`
+  color: var(--Primary, #f14040);
+  font-family: SUIT;
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+`;
+
+const CoupleRegisterText = styled.div`
+  color: var(--Black, #3b3634);
+  font-family: SUIT;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  margin: 60px;
+  width: 120px;
 `;

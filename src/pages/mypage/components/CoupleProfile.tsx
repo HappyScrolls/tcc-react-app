@@ -1,66 +1,120 @@
 import React from "react";
 import styled from "styled-components";
-import {Container} from "../../../components/layout/Layout";
-import noCoupleProfileIcon from "../../../images/mypage/noCoupleProfileIcon.svg";
-import addCoupleProfileButton from "../../../images/mypage/addCoupleProfileButton.svg";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useFetchCoupleInfo } from "../../../hooks/useCoupleInfo";
+import editPen from "../../../images/mypage/editPen.svg";
+import coupleCat from "../../../images/emoji/이모지_커플.png";
+import soloCat from "../../../images/mypage/soloCat.svg";
+import noCoupleCat from "../../../images/mypage/noCoupleProfileIcon.svg";
+import { IMemberInfo } from "../../../types/IMemberInfo";
+import { LoverInfo } from "../../../types/ILoverInfo";
+import defaultCat from "../../../images/emoji/이모지_메롱.png";
+import { calculateDaysTogether, formatDateDot } from "../../../utils/date";
 
-const CoupleProfile = () => {
-    const navigate = useNavigate();
+const CoupleProfile = ({
+  memberInfo,
+  loverInfo,
+}: {
+  memberInfo?: IMemberInfo | null;
+  loverInfo?: LoverInfo | null;
+}) => {
+  const navigate = useNavigate();
 
-    const handleButton = () => {
-        navigate("/couple/info");
-    };
-    return (
-        <>
-            <CoupleProfileBox>
-                <CoupleProfileCatIcon src={noCoupleProfileIcon}/>
-            </CoupleProfileBox>
-            <CoupleProfileBody>
-                <CoupleProfileBodyText>아직 커플 프로필 등록이 되지 않았습니다.</CoupleProfileBodyText>
-                <CoupleProfileAddButton>
-                    <CoupleProfileAddIcon onClick={handleButton} src={addCoupleProfileButton}/>
-                </CoupleProfileAddButton>
-            </CoupleProfileBody>
-        </>
-    );
+  const handleRegistrationButton = () => {
+    navigate("/couple/info");
+  };
+
+  const handleEditButton = () => {
+    navigate("/couple/edit");
+  };
+
+  const { data: coupleInfo } = useFetchCoupleInfo();
+  const coupleInfoExists = !!coupleInfo;
+
+  return (
+    <CoupleProfileBox>
+      <ProfileContainer>
+        {coupleInfoExists ? (
+          <>
+            {/* 커플 프로필 있는 경우 */}
+            <EditIcon src={editPen} alt="수정" onClick={handleEditButton} />
+            <CatIcon src={coupleCat} />
+
+            <PinkWrapper>
+              {/* 나 */}
+              <Wrap>
+                <CoupleImg
+                  src={memberInfo?.profilePhoto ?? defaultCat}
+                  alt="이미지"
+                />
+                <Name>{coupleInfo.nickNameA}</Name>
+              </Wrap>
+
+              {/* 애인  */}
+              <Wrap>
+                <CoupleImg
+                  src={loverInfo?.profilePhoto ?? defaultCat}
+                  alt="이미지"
+                />
+                <Name>{coupleInfo.nickNameB}</Name>
+              </Wrap>
+
+              <TextWrap>
+                <Text>
+                  {coupleInfo.name} 사랑한지 &nbsp;
+                  {calculateDaysTogether(coupleInfo?.startedAt)}일 째
+                </Text>
+                <Text>{formatDateDot(coupleInfo?.startedAt)} ~</Text>
+              </TextWrap>
+            </PinkWrapper>
+          </>
+        ) : loverInfo ? (
+          <>
+            {/* 애인 정보는 있지만 커플 프로필 없음 */}{" "}
+            <CatIcon src={noCoupleCat} />
+            <NonePinkWrapper>
+              <CoupleProfileBodyText>
+                커플 프로필이 아직 등록되지 않았습니다.
+              </CoupleProfileBodyText>
+              <CoupleProfileAddButton onClick={handleRegistrationButton}>
+                커플 프로필 등록하기
+              </CoupleProfileAddButton>
+            </NonePinkWrapper>
+          </>
+        ) : (
+          <>
+            {/* 애인 정보도 없고, 커플 프로필도 없는 경우 */}
+            <CatIcon src={soloCat} />
+            <NonePinkWrapper>
+              <CoupleProfileBodyText>
+                아직 커플 등록이 되지 않아 <br /> 커플 프로필 설정을 할 수
+                없습니다.
+              </CoupleProfileBodyText>
+            </NonePinkWrapper>
+          </>
+        )}
+      </ProfileContainer>
+    </CoupleProfileBox>
+  );
 };
 
 export default CoupleProfile;
 
-const CoupleProfileBox = styled(Container)`
-  display: inline-flex;
-  padding-top: 169px;
+const CoupleProfileBox = styled.div`
+  display: flex;
+  width: 90%;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
-  gap: 0.188px;
+
   border-radius: 20px;
   border: 1px solid var(--Gray, #585746);
-  background: #FFF;
+  background: #fff;
   box-shadow: 0px 0px 11.7px 0px rgba(0, 0, 0, 0.25);
 `;
 
-const CoupleProfileCatIcon= styled.img`
-    width: 100px;
-    height: 73.812px;
-`;
-
-const CoupleProfileBody = styled(Container)`
-  display: flex;
-  width: 323px;
-  height: 232px;
-  padding: 45px 64px 116px 63px;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  border-radius: 50px 50px 0px 0px;
-  background: linear-gradient(180deg, #FFCFC7 0%, #FFF 100%);
-  box-shadow: 0px -2px 4.9px 0px rgba(0, 0, 0, 0.25);
-`;
-
-const CoupleProfileBodyText=styled.text`
-  color: var(--Black, #3B3634);
+const CoupleProfileBodyText = styled.div`
+  color: var(--Black, #3b3634);
   text-align: center;
   font-family: SUIT;
   font-size: 12px;
@@ -69,7 +123,35 @@ const CoupleProfileBodyText=styled.text`
   line-height: normal;
 `;
 
-const CoupleProfileAddButton=styled.button`
+const ProfileContainer = styled.div`
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+`;
+
+const EditIcon = styled.img`
+  position: absolute;
+  right: 0;
+  width: 36px;
+  height: 36px;
+  padding: 7px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
+  object-fit: cover;
+
+  margin-top: 15px;
+  margin-right: 15px;
+  cursor: pointer;
+`;
+
+const CoupleProfileAddButton = styled.button`
   display: flex;
   width: 36px;
   height: 36px;
@@ -78,12 +160,86 @@ const CoupleProfileAddButton=styled.button`
   align-items: center;
   flex-shrink: 0;
   border-radius: 100px;
-  background: var(--Primary, #F14040);
+  background: var(--Primary, #f14040);
   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
 `;
 
-const CoupleProfileAddIcon=styled.img`
-  width: 24px;
-  height: 24px;
+const CatIcon = styled.img`
+  width: 120px;
+  height: 110px;
   flex-shrink: 0;
+
+  margin-top: 120px;
+  /* margin-bottom: -8px; */
+`;
+
+const PinkWrapper = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: relative;
+
+  width: 100%;
+  height: 232px;
+
+  border-radius: 50px 50px 0px 0px;
+  background: linear-gradient(180deg, #ffcfc7 0%, #fff 100%);
+  box-shadow: 0px -3px 4.9px 0px rgba(0, 0, 0, 0.14);
+`;
+
+const NonePinkWrapper = styled(PinkWrapper)`
+  justify-content: center;
+  flex-direction: column;
+`;
+
+const CoupleImg = styled.img`
+  display: flex;
+  width: 72px;
+  height: 72px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 100px;
+  background: #fff;
+  box-shadow: 0px 0px 6.8px 0px rgba(0, 0, 0, 0.25);
+
+  object-fit: cover;
+`;
+
+const Wrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Name = styled.div`
+  color: var(--Black, #3b3634);
+  font-family: SUIT;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+
+  margin-top: 12px;
+`;
+
+const Text = styled.div`
+  color: var(--Black, #3b3634);
+  font-family: SUIT;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+`;
+
+const TextWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+  padding-bottom: 10px;
 `;

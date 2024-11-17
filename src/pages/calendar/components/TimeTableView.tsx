@@ -1,90 +1,133 @@
-import React, { useRef, useState } from "react";
-import styled from "styled-components";
-import defaultCat from "../../../images/signup/defaultCat.svg";
-import phone from "../../../images/calendar/phone.svg";
+import React, { useEffect, useRef, useState } from "react";
+import styled, { keyframes } from "styled-components";
+
 import { getBusyBackgroundColor, getBusyColor } from "../../../utils/colors";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  useFetchCommonScheduleList,
+  useFetchMyScheduleList,
+  useFetchPartnerScheduleList,
+} from "../../../hooks/useScheduleList";
+import TimeTableHeader from "./TimeTableHeader";
+import { ScheduleData } from "../../../types/ISchedule";
+import TwoBtnModal from "../../../components/modal/TwoBtnModal";
+import { useDeleteSchedule } from "../../../hooks/useDeleteSchedule";
+import tearEmoji from "../../../images/emoji/이모지_눈물.png";
+import { scheduleModalButtons } from "../../../utils/scheduleModalBtn";
+import ScheduleDetailModal from "./ScheduleDetailModal";
+import coupleEmoji from "../../../images/emoji/이모지_커플.png";
+import { useChangeCommonSchedule } from "../../../hooks/useChangeCoupleSchedule";
+import OneBtnModal from "../../../components/modal/OneBtnModal";
 
-interface Schedule {
-  title: string;
-  startTime: string;
-  endTime: string;
-  busyLevel: string;
-  isCommon: boolean;
-}
+// (1시간 = 26px)
+const timeToPosition = (dateTime: string): number => {
+  if (!dateTime || !dateTime.includes("T")) {
+    console.error("유효하지 않은 값 :", dateTime);
+    return 0;
+  }
 
-const mySchedule: Schedule[] = [
-  {
-    title: "(내 일정 1)",
-    startTime: "2:00",
-    endTime: "4:00",
-    busyLevel: "여유",
-    isCommon: false,
-  },
-  {
-    title: "(내 일정 2)",
-    startTime: "5:00",
-    endTime: "8:00",
-    busyLevel: "여유",
-    isCommon: false,
-  },
-  {
-    title: "(공통 일정)",
-    startTime: "11:00",
-    endTime: "14:00",
-    busyLevel: "보통",
-    isCommon: true,
-  },
-];
+  const time = dateTime.split("T")[1];
+  if (!time) {
+    console.error("유효하지 않은 값 :", dateTime);
+    return 0;
+  }
 
-const partnerSchedule: Schedule[] = [
-  {
-    title: "(애인 일정 1)",
-    startTime: "3:00",
-    endTime: "5:00",
-    busyLevel: "바쁨",
-    isCommon: false,
-  },
-  {
-    title: "(공통 일정)",
-    startTime: "11:00",
-    endTime: "14:00",
-    busyLevel: "보통",
-    isCommon: true,
-  },
-];
-
-// 시간을 픽셀 단위로 변환 (1시간 = 26px)
-const timeToPosition = (time: string): number => {
   const [hour, minute] = time.split(":").map(Number);
-  return ((hour * 60 + minute) / 60) * 26; // 1시간 26px
+
+  if (isNaN(hour) || isNaN(minute)) {
+    console.error("유효하지 않은 값 :", dateTime);
+    return 0;
+  }
+
+  return ((hour * 60 + minute) / 60) * 26;
 };
 
 // 타입 정의
 interface ScheduleItemProps {
   top: number;
   height: number;
-  backgroundColor: string;
-  isCommon?: boolean;
-  isPartner?: boolean;
+  backgroundcolor: string;
+  $isCommon?: boolean;
+  $isPartner?: boolean;
 }
 
 type ModalType = "empty" | "schedule" | null;
 
-const TimeTableView: React.FC = () => {
-  const { date } = useParams<{ date: string }>();
+const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
+  const { data: myScheduleList, refetch: refetchMyScheduleList } =
+    useFetchMyScheduleList(date);
+  const { data: partnerScheduleList } = useFetchPartnerScheduleList(date);
+  const { data: commonScheduleList } = useFetchCommonScheduleList(date);
+  const { mutate: deleteSchedule } = useDeleteSchedule();
+  const { mutate: changeCommonSchedule } = useChangeCommonSchedule();
+
   const navigate = useNavigate();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const [isClosing, setIsClosing] = useState(false);
   const [touchStartY, setTouchStartY] = useState(0);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isChangeCommonModalOpen, setIsChangeCommonModalOpen] = useState(false);
+
+  const [selectedSchedule, setSelectedSchedule] = useState<ScheduleData | null>(
+    null
+  );
+
+  const location = useLocation();
+  useEffect(() => {
+    if (location.state?.refetch) {
+      refetchMyScheduleList();
+
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location, navigate, refetchMyScheduleList]);
 
   const modalRef = useRef<HTMLDivElement>(null);
 
   const openModal = (type: ModalType) => {
     setActiveModal(type);
+    setIsClosing(false);
   };
 
   const closeModal = () => {
     setActiveModal(null);
+    setSelectedSchedule(null);
+    setTimeout(() => {
+      setActiveModal(null);
+      setIsClosing(false);
+    }, 300);
+  };
+
+  const handleDeleteSchedule = () => {
+    if (selectedSchedule?.scheduleNo) {
+      deleteSchedule(selectedSchedule.scheduleNo, {
+        onSuccess: () => {
+          setIsDeleteModalOpen(false);
+          closeModal();
+          refetchMyScheduleList();
+          console.log("일정이 성공적으로 삭제되었습니다.");
+        },
+        onError: (error) => {
+          console.log("삭제 오류 : ", error);
+          alert("삭제 중 오류가 발생했습니다:");
+        },
+      });
+    }
+  };
+
+  const handleChangeCommonSchedule = () => {
+    if (selectedSchedule?.scheduleNo) {
+      changeCommonSchedule(selectedSchedule.scheduleNo, {
+        onSuccess: () => {
+          setIsChangeCommonModalOpen(false);
+          closeModal();
+          console.log("공통일정으로 변경되었습니다.");
+        },
+        onError: (error) => {
+          console.log("변경 오류 : ", error);
+          alert("공통일정 변경 중 오류가 발생했습니다:");
+        },
+      });
+    }
   };
 
   const handleOutsideClick = (e: React.MouseEvent) => {
@@ -109,20 +152,15 @@ const TimeTableView: React.FC = () => {
     closeModal();
   };
 
+  const openAddCoupleSchedule = () => {
+    navigate(`/calendar/${date}/add/couple`);
+    closeModal();
+  };
+
   return (
     <>
-      <Header>
-        <Wrapper>
-          <ProfileImage src={defaultCat} alt="프로필" />{" "}
-          <Name>(나(애칭))의 일정 </Name>
-        </Wrapper>
-
-        <Wrapper>
-          <Name>(애인(애칭))의 일정 </Name>
-          <ProfileImage src={defaultCat} alt="프로필" />
-        </Wrapper>
-      </Header>
-
+      {/* 헤더  */}
+      <TimeTableHeader />
       <TableContainer>
         {/* 왼쪽 시간 그리드 */}
         <LeftTimeGrid>
@@ -132,72 +170,80 @@ const TimeTableView: React.FC = () => {
         </LeftTimeGrid>
 
         <ScheduleContainer>
+          {/* 내 일정  */}
           <ScheduleColumn onClick={() => openModal("empty")}>
-            {mySchedule
+            {myScheduleList
               .filter((schedule) => !schedule.isCommon)
               .map((schedule, index) => (
                 <ScheduleItem
                   key={index}
-                  top={timeToPosition(schedule.startTime)}
+                  top={timeToPosition(schedule.scheduleStartAt)}
                   height={
-                    timeToPosition(schedule.endTime) -
-                    timeToPosition(schedule.startTime)
+                    timeToPosition(schedule.scheduleEndAt) -
+                    timeToPosition(schedule.scheduleStartAt)
                   }
-                  backgroundColor={getBusyBackgroundColor(schedule.busyLevel)}
-                  isCommon={false} // 내 일정인 경우
+                  backgroundcolor={getBusyBackgroundColor(schedule.busyLevel)}
+                  $isCommon={false}
                   onClick={(e) => {
                     e.stopPropagation();
+                    setSelectedSchedule(schedule);
                     openModal("schedule");
                   }}
                 >
                   <BusyTag backgroundColor={getBusyColor(schedule.busyLevel)} />
-                  {schedule.title}
+                  <ScheduleName>{schedule.scheduleName}</ScheduleName>
                 </ScheduleItem>
               ))}
           </ScheduleColumn>
 
           <MiddleLine />
 
+          {/* 공통 일정  */}
           <CommonScheduleColumn>
-            {mySchedule
-              .filter((schedule) => schedule.isCommon)
-              .map((schedule, index) => (
-                <CommonScheduleItem
-                  key={index}
-                  top={timeToPosition(schedule.startTime)}
-                  height={
-                    timeToPosition(schedule.endTime) -
-                    timeToPosition(schedule.startTime)
-                  }
-                  backgroundColor={getBusyBackgroundColor(schedule.busyLevel)}
-                  isCommon
-                >
-                  <BusyTag backgroundColor={getBusyColor(schedule.busyLevel)} />
-                  {schedule.title}
-                </CommonScheduleItem>
-              ))}
+            {commonScheduleList?.map((schedule) => (
+              <CommonScheduleItem
+                key={schedule.scheduleNo}
+                top={timeToPosition(schedule.scheduleStartAt)}
+                height={
+                  timeToPosition(schedule.scheduleEndAt) -
+                  timeToPosition(schedule.scheduleStartAt)
+                }
+                backgroundcolor={getBusyBackgroundColor(schedule.busyLevel)}
+                $isCommon
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedSchedule(schedule);
+                  openModal("schedule");
+                }}
+              >
+                <BusyTag backgroundColor={getBusyColor(schedule.busyLevel)} />
+                <ScheduleName>{schedule.scheduleName}</ScheduleName>
+              </CommonScheduleItem>
+            ))}
           </CommonScheduleColumn>
 
+          {/* 애인 일정  */}
           <ScheduleColumn>
-            {partnerSchedule
+            {partnerScheduleList
               .filter((schedule) => !schedule.isCommon)
               .map((schedule, index) => (
                 <ScheduleItem
                   key={index}
-                  top={timeToPosition(schedule.startTime)}
+                  top={timeToPosition(schedule.scheduleStartAt)}
                   height={
-                    timeToPosition(schedule.endTime) -
-                    timeToPosition(schedule.startTime)
+                    timeToPosition(schedule.scheduleEndAt) -
+                    timeToPosition(schedule.scheduleStartAt)
                   }
-                  backgroundColor={getBusyBackgroundColor(schedule.busyLevel)}
-                  isPartner={true}
+                  backgroundcolor={getBusyBackgroundColor(schedule.busyLevel)}
+                  $isPartner={true}
                   onClick={(e) => {
                     e.stopPropagation();
+                    setSelectedSchedule(schedule);
                     openModal("schedule");
                   }}
                 >
                   <BusyTag backgroundColor={getBusyColor(schedule.busyLevel)} />
-                  {schedule.title}
+                  <ScheduleName>{schedule.scheduleName}</ScheduleName>
                 </ScheduleItem>
               ))}
           </ScheduleColumn>
@@ -210,52 +256,71 @@ const TimeTableView: React.FC = () => {
           ))}
         </RightTimeGrid>
       </TableContainer>
+
       {/* 일정 추가 모달 */}
       {activeModal === "empty" && (
         <Overlay onClick={handleOutsideClick} onTouchEnd={handleTouchEnd}>
           <BottomSheet
             ref={modalRef}
+            isClosing={isClosing}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
             <SheetContent>
               <Line />
               <Button onClick={openAddSchedule}>내 일정 추가</Button>
-
-              <CommonButton onClick={closeModal}>공통 일정 추가</CommonButton>
+              <CommonButton onClick={openAddCoupleSchedule}>
+                공통 일정 추가
+              </CommonButton>
             </SheetContent>
           </BottomSheet>
         </Overlay>
       )}
 
+      {/* 삭제 모달 */}
+      {isDeleteModalOpen && (
+        <TwoBtnModal
+          title={`${selectedSchedule?.scheduleName} 일정을 삭제하시겠습니까?`}
+          description="복구가 불가능합니다."
+          confirmText="예"
+          cancelText="아니오"
+          imageSrc={tearEmoji}
+          onConfirm={handleDeleteSchedule}
+          onCancel={() => setIsDeleteModalOpen(false)}
+        />
+      )}
+
+      {/* 공통 일정 변경 모달  */}
+      {isChangeCommonModalOpen && (
+        <OneBtnModal
+          title="공통 일정으로 변경되었습니다."
+          description=""
+          imageSrc={coupleEmoji}
+          confirmText="확인"
+          onConfirm={handleChangeCommonSchedule}
+        />
+      )}
+
       {/* 일정 상세 모달 */}
-      {activeModal === "schedule" && (
+      {activeModal === "schedule" && selectedSchedule && (
         <Overlay onClick={handleOutsideClick} onTouchEnd={handleTouchEnd}>
           <ScheduleDetailModal
-            ref={modalRef}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-          >
-            <ScheduleContent>
-              <BlackLine />
-              <ModalWrapper>
-                <BusyTag backgroundColor={getBusyColor("바쁨")} />
-                <Title>(일정 이름)</Title> <Phone src={phone} />
-              </ModalWrapper>
-
-              <TextWrapper>
-                <Text>(장소)</Text>
-                <Text>(사람)</Text>
-                <TimeText>(00:00~00:00)</TimeText>
-                <WeekText>(매주 수요일마다)</WeekText>
-              </TextWrapper>
-              <BtnWrapper>
-                <DeleteButton>일정 삭제</DeleteButton>
-                <ActionButton>일정 수정</ActionButton>
-                <ActionButton>공통 일정으로 변경</ActionButton>
-              </BtnWrapper>
-            </ScheduleContent>
-          </ScheduleDetailModal>
+            schedule={selectedSchedule}
+            onClose={closeModal}
+            buttons={scheduleModalButtons(selectedSchedule, {
+              isMySchedule: myScheduleList?.includes(selectedSchedule),
+              isPartnerSchedule:
+                partnerScheduleList?.includes(selectedSchedule),
+              isCommonSchedule: commonScheduleList?.includes(selectedSchedule),
+              onDelete: () => setIsDeleteModalOpen(true),
+              onEdit: () => console.log("일정 수정"),
+              onCommon: () => {
+                setIsChangeCommonModalOpen(true);
+              },
+              onEmoji: () => console.log("이모지 남기기"),
+              onEditRequest: () => console.log("일정 수정 요청"),
+            })}
+          />
         </Overlay>
       )}
     </>
@@ -263,39 +328,6 @@ const TimeTableView: React.FC = () => {
 };
 
 export default TimeTableView;
-
-const Header = styled.div`
-  display: flex;
-  width: 90%;
-  justify-content: space-between;
-
-  margin-top: 5px;
-`;
-
-const Name = styled.div`
-  color: var(--Black, #3b3634);
-  font-family: SUIT;
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-
-  padding: 5px;
-`;
-
-const ProfileImage = styled.img`
-  width: 54px;
-  height: 54px;
-  padding: 11.669px 10.5px 12.494px 11.5px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0px 0px 5.7px 0px rgba(0, 0, 0, 0.25);
-`;
-
-const Wrapper = styled.div`
-  display: flex;
-  align-items: flex-end;
-`;
 
 const TableContainer = styled.div`
   display: flex;
@@ -333,6 +365,10 @@ const TimeSlot = styled.div`
   line-height: normal;
 
   border-bottom: #878678 1px dashed;
+
+  &:last-child {
+    border-bottom: none;
+  }
 `;
 
 const ScheduleContainer = styled.div`
@@ -360,20 +396,28 @@ const ScheduleItem = styled.div<ScheduleItemProps>`
   position: absolute;
   top: ${({ top }) => top}px;
   height: ${({ height }) => height}px;
-  width: ${({ isCommon }) => (isCommon ? "300%" : "150%")};
-  left: ${({ isCommon }) => (isCommon ? "auto" : "auto")};
-  right: ${({ isPartner }) => (isPartner ? "0" : "auto")};
-  background-color: ${({ backgroundColor }) => backgroundColor};
-  border-radius: ${({ isCommon, isPartner }) =>
-    isCommon ? "20px" : isPartner ? "20px 0px 0px 20px" : "0px 20px 20px 0px"};
-  padding: 9px;
+  width: ${({ $isCommon }) => ($isCommon ? "300%" : "150%")};
+  left: ${({ $isCommon }) => ($isCommon ? "auto" : "auto")};
+  right: ${({ $isPartner }) => ($isPartner ? "0" : "auto")};
+  background-color: ${({ backgroundcolor }) => backgroundcolor};
+  border-radius: ${({ $isCommon, $isPartner }) =>
+    $isCommon
+      ? "20px"
+      : $isPartner
+        ? "20px 0px 0px 20px"
+        : "0px 20px 20px 0px"};
+  padding: 5px;
 
   display: flex;
   align-items: flex-start;
-  justify-content: ${({ isPartner }) =>
-    isPartner ? "flex-end" : "flex-start"};
-  text-align: ${({ isPartner }) => (isPartner ? "right" : "left")};
+  justify-content: ${({ $isPartner }) =>
+    $isPartner ? "flex-end" : "flex-start"};
+  text-align: ${({ $isPartner }) => ($isPartner ? "right" : "left")};
 
+  cursor: pointer;
+`;
+
+const ScheduleName = styled.div`
   color: var(--Black, #3b3634);
   font-family: SUIT;
   font-size: 12px;
@@ -405,7 +449,7 @@ const BusyTag = styled.div<{ backgroundColor: string }>`
 `;
 
 // 모달
-const BottomSheet = styled.div`
+const BottomSheet = styled.div<{ isClosing: boolean }>`
   position: fixed;
   bottom: 0;
   width: 85%;
@@ -417,6 +461,8 @@ const BottomSheet = styled.div`
   animation: slide-up 0.3s ease-out;
   z-index: 5;
   height: 235px;
+  animation: ${({ isClosing }) => (isClosing ? slideDown : slideUp)} 0.3s
+    ease-out forwards;
 `;
 
 const Overlay = styled.div`
@@ -430,10 +476,6 @@ const Overlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-end;
-`;
-
-const ScheduleDetailModal = styled(BottomSheet)`
-  height: 440px;
 `;
 
 const SheetContent = styled.div`
@@ -452,11 +494,6 @@ const Line = styled.div`
   background: var(--Secondary, #ffcfc7);
 
   margin-bottom: 40px;
-`;
-
-const BlackLine = styled(Line)`
-  background: #4d3f2c;
-  margin-bottom: 15px;
 `;
 
 const Button = styled.button`
@@ -478,95 +515,20 @@ const CommonButton = styled(Button)`
   background: var(--Secondary, #ffcfc7);
 `;
 
-const ScheduleContent = styled.div`
-  display: flex;
-  flex-direction: column;
+const slideUp = keyframes`
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0%);
+  }
 `;
 
-const Title = styled.div`
-  color: var(--Black, #3b3634);
-  font-family: SUIT;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-  width: 90%;
-  margin-left: 12px;
-`;
-
-const Text = styled.div`
-  color: var(--Black, #3b3634);
-  font-family: SUIT;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-`;
-
-const TimeText = styled.div`
-  color: var(--Black, #3b3634);
-
-  font-family: SUIT;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-`;
-
-const WeekText = styled.div`
-  color: var(--Black, #3b3634);
-
-  font-family: SUIT;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-`;
-
-const ActionButton = styled(Button)`
-  border-radius: 10px;
-  background: #fff;
-
-  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
-  color: var(--Black, #3b3634);
-
-  text-align: center;
-  font-family: SUIT;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-`;
-
-const DeleteButton = styled(ActionButton)`
-  border-radius: 10px;
-  background: var(--Secondary, #ffcfc7);
-
-  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
-`;
-
-const Phone = styled.img`
-  width: 20.299px;
-  height: 27.463px;
-  flex-shrink: 0;
-`;
-
-const ModalWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const BtnWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: 25px;
-  gap: 12px;
-`;
-
-const TextWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-
-  margin-top: 40px;
+const slideDown = keyframes`
+  from {
+    transform: translateY(0%);
+  }
+  to {
+    transform: translateY(100%);
+  }
 `;

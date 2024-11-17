@@ -1,4 +1,6 @@
 export type ScheduleData = {
+  scheduleNo?: number;
+  accountNo?: number;
   busyLevel: BusyLevel;
   scheduleName: string;
   scheduleLocation: string;
@@ -8,6 +10,7 @@ export type ScheduleData = {
   scheduleEndAt: string;
   scheduleAt: string;
   isCommon: boolean;
+  status: "완료" | "미완료";
 };
 
 export type BusyLevel = "여유" | "보통" | "바쁨";

@@ -21,15 +21,10 @@ const ScheduleForm: React.FC<FormProps> = ({
     scheduleEndAt: "",
     scheduleAt: "",
     isCommon: false,
+    status: "미완료",
   });
 
-  // 일정 수정 때 사용
-  // useEffect(() => {
-  //   if (initialFormData) {
-  //     setFormData(initialFormData);
-  //   }
-  // }, [initialFormData]);
-
+  console.log("커플일정여부: ", isCoupleSchedule);
   const daysOfWeek = ["월", "화", "수", "목", "금", "토"];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,49 +80,53 @@ const ScheduleForm: React.FC<FormProps> = ({
       </InputContainer>
 
       {!isCoupleSchedule && (
-        <InputContainer>
-          <Input
-            name="scheduleWith"
-            value={formData.scheduleWith}
-            onChange={handleChange}
-            placeholder="사람"
-          />
-        </InputContainer>
-      )}
-      {/* 성별  */}
-      <RadioGroup>
-        <RadioWrapper>
-          <RadioButton
-            type="radio"
-            name="groupGenderType"
-            value="혼성"
-            checked={formData.groupGenderType === "혼성"}
-            onChange={handleRadioChange}
-          />
-          <SmallLabel> 혼성</SmallLabel>
-        </RadioWrapper>
-        <RadioWrapper>
-          <RadioButton
-            type="radio"
-            name="groupGenderType"
-            value="여성"
-            checked={formData.groupGenderType === "여성"}
-            onChange={handleRadioChange}
-          />
-          <SmallLabel> 여성</SmallLabel>
-        </RadioWrapper>
+        <>
+          {/* 사람 입력 */}
+          <InputContainer>
+            <Input
+              name="scheduleWith"
+              value={formData.scheduleWith}
+              onChange={handleChange}
+              placeholder="사람"
+            />
+          </InputContainer>
 
-        <RadioWrapper>
-          <RadioButton
-            type="radio"
-            name="groupGenderType"
-            value="남성"
-            checked={formData.groupGenderType === "남성"}
-            onChange={handleRadioChange}
-          />
-          <SmallLabel> 남성</SmallLabel>
-        </RadioWrapper>
-      </RadioGroup>
+          {/* 성별 선택 */}
+          <RadioGroup>
+            <RadioWrapper>
+              <RadioButton
+                type="radio"
+                name="groupGenderType"
+                value="혼성"
+                checked={formData.groupGenderType === "혼성"}
+                onChange={handleRadioChange}
+              />
+              <SmallLabel>혼성</SmallLabel>
+            </RadioWrapper>
+            <RadioWrapper>
+              <RadioButton
+                type="radio"
+                name="groupGenderType"
+                value="여성"
+                checked={formData.groupGenderType === "여성"}
+                onChange={handleRadioChange}
+              />
+              <SmallLabel>여성</SmallLabel>
+            </RadioWrapper>
+            <RadioWrapper>
+              <RadioButton
+                type="radio"
+                name="groupGenderType"
+                value="남성"
+                checked={formData.groupGenderType === "남성"}
+                onChange={handleRadioChange}
+              />
+              <SmallLabel>남성</SmallLabel>
+            </RadioWrapper>
+          </RadioGroup>
+        </>
+      )}
+
       {/* 시간  */}
       <TimeInputContainer>
         <Wrapper>
@@ -198,11 +197,12 @@ const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: 0 auto;
+  margin: 40px auto;
 
   width: 90%;
-  height: 605px;
   gap: 10px;
+
+  padding: 80px 10px 90px 10px;
 
   border-radius: 20px;
   background: #fff;
@@ -246,7 +246,7 @@ const SmallLabel = styled(Label)`
 
 const Input = styled.input`
   width: 80%;
-  padding: 14px 13px;
+  padding: 15px 13px;
   border-radius: 10px;
   background: #fff;
   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
@@ -261,7 +261,7 @@ const Input = styled.input`
 
 const TimeInputContainer = styled.div`
   display: flex;
-  margin: 0 auto;
+  margin: 10px auto;
   justify-content: space-between;
   align-items: center;
   width: 80%;
@@ -397,6 +397,8 @@ const PhoneWrapper = styled.div`
   justify-content: center;
   align-items: center;
   gap: 12px;
+
+  margin-top: 10px;
 `;
 
 const Phone = styled.img`

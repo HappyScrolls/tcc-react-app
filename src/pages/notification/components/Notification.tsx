@@ -1,22 +1,22 @@
 import React from "react";
 import notificationIcon from "../../../images/notification/notificationIcon.svg";
-import {SocialBtn} from "../../login/components/Login.style";
-import {INotification} from "../../../types/INotification";
+
+import { INotification } from "../../../types/INotification";
 import styled from "styled-components";
 
 const Notification = ({ title, body, createdAt, isRead }: INotification) => {
-    return (
-        <div>
-            <NotificationBtn isRead={isRead}>
-                <img src={notificationIcon}/>
-                <TextBox>
-                    <TextSmall>{title}</TextSmall>
-                    <TextBig>{body}</TextBig>
-                </TextBox>
-                <TextSmall>{createdAt}</TextSmall>
-            </NotificationBtn>
-        </div>
-    );
+  return (
+    <div>
+      <NotificationBtn isRead={isRead}>
+        <img src={notificationIcon} alt="icon" />
+        <TextBox>
+          <TextSmall>{title}</TextSmall>
+          <TextBig>{body}</TextBig>
+        </TextBox>
+        <TextSmall>{createdAt}</TextSmall>
+      </NotificationBtn>
+    </div>
+  );
 };
 
 export default Notification;
@@ -35,11 +35,11 @@ export const Btn = styled.button`
 `;
 
 interface NotificationBtnProps {
-    isRead: boolean;
+  isRead: boolean;
 }
 
 export const NotificationBtn = styled(Btn)<NotificationBtnProps>`
-  background-color: ${(props) => (props.isRead ? "#FFFFFF" : "#FFCFC7")}; 
+  background-color: ${(props) => (props.isRead ? "#FFFFFF" : "#FFCFC7")};
 
   & > span {
     color: #000;
