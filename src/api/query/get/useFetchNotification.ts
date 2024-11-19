@@ -5,7 +5,7 @@ import { INotification } from "../../../types/INotification";
 const useFetchNotification = (): INotification[] => {
   const getFetchNotification = async (): Promise<INotification[]> => {
     const response = await notificationAxiosInstance.get(
-      `/notification-service`
+      `notification-service/notification-list`
     );
 
     return response.data;

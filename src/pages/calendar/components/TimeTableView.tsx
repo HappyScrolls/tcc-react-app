@@ -75,6 +75,7 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
 
   const [isEmojiModalOpen, setIsEmojiModalOpen] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
+  console.log(selectedEmoji);
 
   const location = useLocation();
   useEffect(() => {

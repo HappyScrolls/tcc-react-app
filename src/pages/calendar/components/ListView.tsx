@@ -22,29 +22,33 @@ const ListView: React.FC<{ date: string }> = ({ date }) => {
   const coupleInfo = queryClient.getQueryData<CoupleInfo>(["coupleInfo"]);
   const myInfo = queryClient.getQueryData<IMemberInfo>(["memberInfo"]);
 
-  const [mySchedules, setMySchedules] = useState<ScheduleData[]>(
-    myScheduleList || []
-  );
-  const [partnerSchedules, setPartnerSchedules] = useState<ScheduleData[]>(
-    partnerScheduleList || []
+  // 상태 초기화
+  const [mySchedules, setMySchedules] = useState<ScheduleData[]>([]);
+  const [partnerSchedules, setPartnerSchedules] = useState<ScheduleData[]>([]);
+  const [commonSchedules, setCommonSchedules] = useState<ScheduleData[]>(
+    commonScheduleList || []
   );
 
-  // 내 일정 + 공통일정 통합 상태 변경
+  // 개인 일정 상태
   useEffect(() => {
     if (myScheduleList) {
-      setMySchedules([...myScheduleList, ...(commonScheduleList || [])]);
+      setMySchedules(myScheduleList.filter((schedule) => !schedule.isCommon));
     }
-  }, [myScheduleList, commonScheduleList]);
+  }, [myScheduleList]);
 
-  // 애인 일정 + 공통일정 통합 상태 변경
   useEffect(() => {
     if (partnerScheduleList) {
-      setPartnerSchedules([
-        ...partnerScheduleList,
-        ...(commonScheduleList || []),
-      ]);
+      setPartnerSchedules(
+        partnerScheduleList.filter((schedule) => !schedule.isCommon)
+      );
     }
-  }, [partnerScheduleList, commonScheduleList]);
+  }, [partnerScheduleList]);
+
+  useEffect(() => {
+    if (commonScheduleList) {
+      setCommonSchedules(commonScheduleList);
+    }
+  }, [commonScheduleList]);
 
   const { mutate: updateScheduleStatus } = useUpdateScheduleStatus();
 
@@ -52,11 +56,9 @@ const ListView: React.FC<{ date: string }> = ({ date }) => {
   const toggleCompletion = (
     schedules: ScheduleData[],
     setSchedules: React.Dispatch<React.SetStateAction<ScheduleData[]>>,
-    index: number,
-    otherSchedules: ScheduleData[],
-    setOtherSchedules: React.Dispatch<React.SetStateAction<ScheduleData[]>>
+    index: number
   ) => {
-    const updatedSchedules: ScheduleData[] = schedules.map((schedule, i) => {
+    const updatedSchedules = schedules.map((schedule, i) => {
       if (i === index) {
         const newStatus = schedule.status === "완료" ? "미완료" : "완료";
 
@@ -75,51 +77,73 @@ const ListView: React.FC<{ date: string }> = ({ date }) => {
       return schedule;
     });
 
-    // 애인 일정 중에 공통일정인 일정 상태 함께 변경
-    const updatedOtherSchedules: ScheduleData[] = otherSchedules.map(
-      (schedule) => {
-        if (
-          schedule.isCommon &&
-          schedule.scheduleNo === schedules[index].scheduleNo
-        ) {
-          return {
-            ...schedule,
-            status: updatedSchedules[index].status,
-          };
-        }
-        return schedule;
-      }
-    );
-
     setSchedules(updatedSchedules);
-    setOtherSchedules(updatedOtherSchedules);
   };
 
   return (
     <ListContainer>
-      {/* 내 일정  */}
-      <Container>
+      {/* 커플 일정  */}
+      <CoupleContainer>
         <Header>
-          <ProfileImage src={defaultCat} alt="프로필" />{" "}
+          <ProfileImage src={defaultCat} alt="프로필" />
           <Wrapper>
-            <Name>
-              {coupleInfo ? `${coupleInfo.nickNameA}` : `${myInfo?.name}`}
-            </Name>
+            <Name> {coupleInfo?.name || "커플 정보 없음"} 일정</Name>
             <StatusContainer>
-              <StatusItem>일정 {mySchedules.length}개</StatusItem>
+              <StatusItem>일정 {commonSchedules.length}개</StatusItem>
               <StatusItem>
                 완료 일정
-                {myScheduleList.filter((s) => s.status === "완료").length}개
+                {commonSchedules.filter((s) => s.status === "완료").length}개
               </StatusItem>
               <StatusItem>
                 미완료 일정
-                {myScheduleList.filter((s) => s.status === "미완료").length}개
+                {commonSchedules.filter((s) => s.status === "미완료").length}개
               </StatusItem>
             </StatusContainer>
           </Wrapper>
         </Header>
 
-        {/* 내 일정 목록 */}
+        <ScheduleList>
+          {commonSchedules.map((schedule, index) => (
+            <ScheduleItem key={index}>
+              <ScheduleInfo>
+                <ScheduleColor color={getBusyColor(schedule.busyLevel)} />
+                <ScheduleTitle>{schedule.scheduleName}</ScheduleTitle>
+              </ScheduleInfo>
+              <StatusButton
+                status={schedule.status}
+                onClick={() =>
+                  toggleCompletion(commonSchedules, setCommonSchedules, index)
+                }
+              >
+                {schedule.status === "완료" ? "완료" : "미완료"}
+              </StatusButton>
+            </ScheduleItem>
+          ))}
+        </ScheduleList>
+      </CoupleContainer>
+
+      {/* 내 일정 */}
+      <MyContainer>
+        <Header>
+          <ProfileImage src={defaultCat} alt="내 프로필" />
+          <Wrapper>
+            <Name>
+              {coupleInfo ? `${coupleInfo.nickNameA}` : `${myInfo?.name}`} 일정
+            </Name>
+            <StatusContainer>
+              <StatusItem>일정 {mySchedules.length}개</StatusItem>
+              <StatusItem>
+                완료 일정
+                {mySchedules.filter((s) => s.status === "완료").length}개
+              </StatusItem>
+              <StatusItem>
+                미완료 일정
+                {mySchedules.filter((s) => s.status === "미완료").length}개
+              </StatusItem>
+            </StatusContainer>
+          </Wrapper>
+        </Header>
+
         <ScheduleList>
           {mySchedules.map((schedule, index) => (
             <ScheduleItem key={index}>
@@ -130,13 +154,7 @@ const ListView: React.FC<{ date: string }> = ({ date }) => {
               <StatusButton
                 status={schedule.status}
                 onClick={() =>
-                  toggleCompletion(
-                    mySchedules,
-                    setMySchedules,
-                    index,
-                    partnerSchedules,
-                    setPartnerSchedules
-                  )
+                  toggleCompletion(mySchedules, setMySchedules, index)
                 }
               >
                 {schedule.status === "완료" ? "완료" : "미완료"}
@@ -144,36 +162,31 @@ const ListView: React.FC<{ date: string }> = ({ date }) => {
             </ScheduleItem>
           ))}
         </ScheduleList>
-      </Container>
+      </MyContainer>
 
-      {/* 애인의 일정  */}
+      {/* 애인 일정 */}
       <PartnerContainer>
         <Header>
-          <ProfileImage src={defaultCat} alt="프로필" />{" "}
+          <ProfileImage src={defaultCat} alt="애인 프로필" />
           <Wrapper>
             <Name>
-              {coupleInfo ? `${coupleInfo.nickNameB}` : "커플로 등록해주세요!"}
+              {coupleInfo ? `${coupleInfo.nickNameB}` : "커플로 등록해주세요!"}{" "}
+              일정
             </Name>
             <StatusContainer>
-              <StatusItem>일정 {partnerScheduleList.length}개</StatusItem>
+              <StatusItem>일정 {partnerSchedules.length}개</StatusItem>
               <StatusItem>
                 완료 일정
-                {partnerScheduleList.filter((s) => s.status === "완료").length}
-                개
+                {partnerSchedules.filter((s) => s.status === "완료").length}개
               </StatusItem>
               <StatusItem>
                 미완료 일정
-                {
-                  partnerScheduleList.filter((s) => s.status === "미완료")
-                    .length
-                }
-                개
+                {partnerSchedules.filter((s) => s.status === "미완료").length}개
               </StatusItem>
             </StatusContainer>
           </Wrapper>
         </Header>
 
-        {/* 애인 일정 목록 */}
         <ScheduleList>
           {partnerSchedules.map((schedule, index) => (
             <ScheduleItem key={index}>
@@ -184,13 +197,7 @@ const ListView: React.FC<{ date: string }> = ({ date }) => {
               <StatusButton
                 status={schedule.status}
                 onClick={() =>
-                  toggleCompletion(
-                    partnerSchedules,
-                    setPartnerSchedules,
-                    index,
-                    mySchedules,
-                    setMySchedules
-                  )
+                  toggleCompletion(partnerSchedules, setPartnerSchedules, index)
                 }
               >
                 {schedule.status === "완료" ? "완료" : "미완료"}
@@ -213,16 +220,21 @@ const ListContainer = styled.div`
   margin-top: 15px;
 `;
 
-const Container = styled.div`
+const CoupleContainer = styled.div`
   padding: 20px;
   border-radius: 15px;
-  background-color: #fff;
+  background: var(--Secondary, #ffcfc7);
   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
 `;
 
-const PartnerContainer = styled(Container)`
+const PartnerContainer = styled(CoupleContainer)`
   margin-top: 13px;
   background: var(--Secondary, #ffcfc7);
+`;
+
+const MyContainer = styled(CoupleContainer)`
+  margin-top: 13px;
+  background-color: #fff;
 `;
 
 const Header = styled.div`
