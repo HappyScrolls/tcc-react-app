@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import phone from "../../../images/calendar/phone.svg";
 import nophone from "../../../images/calendar/nophone.svg";
@@ -12,18 +12,18 @@ const ScheduleForm: React.FC<FormProps> = ({
   isCoupleSchedule,
 }) => {
   const [formData, setFormData] = useState<ScheduleData>(
-      initialFormData || {
-        busyLevel: "여유",
-        scheduleName: "",
-        scheduleLocation: "",
-        scheduleWith: "",
-        groupGenderType: "혼성",
-        scheduleStartAt: "",
-        scheduleEndAt: "",
-        scheduleAt: "",
-        isCommon: false,
-        status: "미완료",
-      }
+    initialFormData || {
+      busyLevel: "여유",
+      scheduleName: "",
+      scheduleLocation: "",
+      scheduleWith: "",
+      groupGenderType: "혼성",
+      scheduleStartAt: "",
+      scheduleEndAt: "",
+      scheduleAt: "",
+      isCommon: false,
+      status: "미완료",
+    }
   );
 
   useEffect(() => {
@@ -31,7 +31,6 @@ const ScheduleForm: React.FC<FormProps> = ({
       setFormData(initialFormData);
     }
   }, [initialFormData]);
-
 
   console.log("커플일정여부: ", isCoupleSchedule);
   const daysOfWeek = ["월", "화", "수", "목", "금", "토"];
@@ -143,7 +142,7 @@ const ScheduleForm: React.FC<FormProps> = ({
           <TimeInput
             type="time"
             name="scheduleStartAt"
-            value={formData.scheduleStartAt}
+            value={formData.scheduleStartAt.split("T")[1] || ""}
             onChange={handleChange}
           />
         </Wrapper>
@@ -152,7 +151,7 @@ const ScheduleForm: React.FC<FormProps> = ({
           <TimeInput
             type="time"
             name="scheduleEndAt"
-            value={formData.scheduleEndAt}
+            value={formData.scheduleEndAt.split("T")[1] || ""}
             onChange={handleChange}
           />
         </Wrapper>

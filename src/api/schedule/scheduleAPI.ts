@@ -139,3 +139,23 @@ export const changeCommonSchedule = async (scheduleNo: number) => {
     throw new Error(`공통일정으로 변경 업데이트 실패: ${error}`);
   }
 };
+
+// 일정 수정
+export const modifySchedule = async (
+  scheduleNo: number,
+  formData: ScheduleData
+) => {
+  try {
+    const response = await scheduleAxiosInstance.put(
+      `/schedule/${scheduleNo}`,
+      formData
+    );
+    return response.data;
+  } catch (error) {
+    console.error("일정 수정 중 오류 발생:", error);
+    if (axios.isAxiosError(error) && error.response) {
+      console.warn(`에러 상태 코드: ${error.response.status}`);
+    }
+    throw new Error(`일정 수정 실패 : ${error}`);
+  }
+};
