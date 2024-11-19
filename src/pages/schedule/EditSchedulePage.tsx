@@ -1,6 +1,6 @@
 import {useQueryClient} from '@tanstack/react-query';
 import React, {Suspense} from 'react';
-import {useLocation, useNavigate, useParams} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import {CoupleInfo} from '../../types/ICoupleInfo';
 import AddScheduleHeader from './components/AddScheduleHeader';
 import ScheduleForm from './components/ScheduleForm';
