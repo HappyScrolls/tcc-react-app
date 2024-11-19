@@ -18,6 +18,7 @@ import ScheduleDetailModal from "./ScheduleDetailModal";
 import coupleEmoji from "../../../images/emoji/이모지_커플.png";
 import { useChangeCommonSchedule } from "../../../hooks/useChangeCoupleSchedule";
 import OneBtnModal from "../../../components/modal/OneBtnModal";
+import EmojiModal from "../../../components/modal/EmojiModal";
 
 // (1시간 = 26px)
 const timeToPosition = (dateTime: string): number => {
@@ -71,6 +72,9 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
   const [selectedSchedule, setSelectedSchedule] = useState<ScheduleData | null>(
     null
   );
+
+  const [isEmojiModalOpen, setIsEmojiModalOpen] = useState(false);
+  const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
 
   const location = useLocation();
   useEffect(() => {
@@ -155,6 +159,15 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
   const openAddCoupleSchedule = () => {
     navigate(`/calendar/${date}/add/couple`);
     closeModal();
+  };
+
+  const handleEmojiModalOpen = () => {
+    setIsEmojiModalOpen(true);
+  };
+
+  const handleSelectEmoji = (emoji: string) => {
+    setSelectedEmoji(emoji);
+    setIsEmojiModalOpen(false);
   };
 
   return (
@@ -317,11 +330,18 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
               onCommon: () => {
                 setIsChangeCommonModalOpen(true);
               },
-              onEmoji: () => console.log("이모지 남기기"),
+              onEmoji: () => handleEmojiModalOpen(),
               onEditRequest: () => console.log("일정 수정 요청"),
             })}
           />
         </Overlay>
+      )}
+
+      {isEmojiModalOpen && (
+        <EmojiModal
+          onSelectEmoji={handleSelectEmoji}
+          onClose={() => setIsEmojiModalOpen(false)}
+        />
       )}
     </>
   );
