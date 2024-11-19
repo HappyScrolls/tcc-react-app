@@ -4,10 +4,15 @@ import ScheduleForm from "./components/ScheduleForm";
 import { ScheduleData } from "../../types/ISchedule";
 import { useSaveSchedule } from "../../hooks/useSaveSchedule";
 import { useNavigate, useParams } from "react-router-dom";
+import AddScheduleHeader from "./components/AddScheduleHeader";
+import { useQueryClient } from "@tanstack/react-query";
+import { CoupleInfo } from "../../types/ICoupleInfo";
 
 const AddMySchedulePage = () => {
+  const queryClient = useQueryClient();
   const { date } = useParams<{ date: string }>();
   const navigate = useNavigate();
+  const coupleInfo = queryClient.getQueryData<CoupleInfo>(["coupleInfo"]);
 
   const { mutate: saveSchedule } = useSaveSchedule();
 
@@ -23,6 +28,9 @@ const AddMySchedulePage = () => {
   return (
     <>
       <Suspense fallback={<div>Loading...</div>}>
+        {date && (
+          <AddScheduleHeader selectedDate={date} coupleInfo={coupleInfo} />
+        )}
         <ScheduleForm onSave={handleSaveSchedule} isCoupleSchedule={false} />
       </Suspense>
     </>
