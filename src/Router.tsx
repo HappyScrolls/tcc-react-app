@@ -13,6 +13,7 @@ import AddCoupleSchedule from "./pages/schedule/AddCoupleSchedule";
 import ProfileEdit from "./pages/mypage/components/ProfileEdit";
 import CoupleProfileEdit from "./pages/mypage/components/CoupleProfileEdit";
 import SuspenseMainPage from "./pages/main/SuspenseMainPage";
+import EditSchedulePage from "./pages/schedule/EditSchedulePage";
 
 const router = createBrowserRouter([
   {
@@ -66,6 +67,10 @@ const router = createBrowserRouter([
       {
         path: "/couple/edit",
         element: <CoupleProfileEdit isEdit={true} />,
+      },
+      {
+        path: "/edit-schedule/:scheduleNo",
+        element: <EditSchedulePage />,
       },
     ],
   },

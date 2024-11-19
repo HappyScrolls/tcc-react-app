@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState } from "react";
 import styled from "styled-components";
 import phone from "../../../images/calendar/phone.svg";
 import nophone from "../../../images/calendar/nophone.svg";
@@ -11,18 +11,27 @@ const ScheduleForm: React.FC<FormProps> = ({
   initialFormData,
   isCoupleSchedule,
 }) => {
-  const [formData, setFormData] = useState<ScheduleData>({
-    busyLevel: "여유",
-    scheduleName: "",
-    scheduleLocation: "",
-    scheduleWith: "",
-    groupGenderType: "혼성",
-    scheduleStartAt: "",
-    scheduleEndAt: "",
-    scheduleAt: "",
-    isCommon: false,
-    status: "미완료",
-  });
+  const [formData, setFormData] = useState<ScheduleData>(
+      initialFormData || {
+        busyLevel: "여유",
+        scheduleName: "",
+        scheduleLocation: "",
+        scheduleWith: "",
+        groupGenderType: "혼성",
+        scheduleStartAt: "",
+        scheduleEndAt: "",
+        scheduleAt: "",
+        isCommon: false,
+        status: "미완료",
+      }
+  );
+
+  useEffect(() => {
+    if (initialFormData) {
+      setFormData(initialFormData);
+    }
+  }, [initialFormData]);
+
 
   console.log("커플일정여부: ", isCoupleSchedule);
   const daysOfWeek = ["월", "화", "수", "목", "금", "토"];

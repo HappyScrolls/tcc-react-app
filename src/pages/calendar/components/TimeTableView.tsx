@@ -86,6 +86,7 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
     }
   }, [location, navigate, refetchMyScheduleList]);
 
+  // 모달
   const modalRef = useRef<HTMLDivElement>(null);
 
   const openModal = (type: ModalType) => {
@@ -102,6 +103,7 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
     }, 300);
   };
 
+  // 이동
   const handleDeleteSchedule = () => {
     if (selectedSchedule?.scheduleNo) {
       deleteSchedule(selectedSchedule.scheduleNo, {
@@ -169,6 +171,12 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
   const handleSelectEmoji = (emoji: string) => {
     setSelectedEmoji(emoji);
     setIsEmojiModalOpen(false);
+  };
+
+  const handleEditSchedule = (schedule: ScheduleData) => {
+    navigate(`/edit-schedule/${schedule.scheduleNo}`, {
+      state: { schedule, isCoupleSchedule: schedule.isCommon },
+    });
   };
 
   return (
@@ -327,8 +335,7 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
                 partnerScheduleList?.includes(selectedSchedule),
               isCommonSchedule: commonScheduleList?.includes(selectedSchedule),
               onDelete: () => setIsDeleteModalOpen(true),
-              onEdit: () => console.log("일정 수정"),
-              onCommon: () => {
+              onEdit: () => handleEditSchedule(selectedSchedule),              onCommon: () => {
                 setIsChangeCommonModalOpen(true);
               },
               onEmoji: () => handleEmojiModalOpen(),
