@@ -39,7 +39,6 @@ const Overlay = styled.div`
   justify-content: center;
   align-items: flex-end;
   z-index: 11;
-  background-color: rgba(0, 0, 0, 0.5);
 `;
 
 const ModalContent = styled.div`
@@ -69,8 +68,8 @@ const ScrollableContent = styled.div`
 
 const EmojiGrid = styled.div`
   display: grid;
-  /* grid-template-columns: repeat(3, 1fr); */
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  //grid-template-columns: repeat(3, 1fr); 
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
 
   gap: 20px;
   justify-items: center;

@@ -58,7 +58,6 @@ const Overlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  background-color: rgba(0, 0, 0, 0.5);
 `;
 
 const ModalWrapper = styled.div<{ borderColor: string }>`
