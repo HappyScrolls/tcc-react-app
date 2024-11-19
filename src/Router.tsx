@@ -14,6 +14,7 @@ import ProfileEdit from "./pages/mypage/components/ProfileEdit";
 import CoupleProfileEdit from "./pages/mypage/components/CoupleProfileEdit";
 import SuspenseMainPage from "./pages/main/SuspenseMainPage";
 import EditSchedulePage from "./pages/schedule/EditSchedulePage";
+import ModifyScheduleRequestPage from "./pages/schedule/ModifyScheduleRequestPage";
 
 const router = createBrowserRouter([
   {
@@ -71,6 +72,10 @@ const router = createBrowserRouter([
       {
         path: "/edit-schedule/:scheduleNo",
         element: <EditSchedulePage />,
+      },
+      {
+        path: "/modify-schedule/:scheduleNo",
+        element: <ModifyScheduleRequestPage />,
       },
     ],
   },

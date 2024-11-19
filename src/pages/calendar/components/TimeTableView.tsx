@@ -179,6 +179,15 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
     });
   };
 
+  const handleEditRequest = (schedule: ScheduleData) => {
+    navigate(`/modify-schedule/${schedule.scheduleNo}`, {
+      state: {
+        schedule: schedule,
+        isCoupleSchedule: schedule.isCommon,
+      },
+    });
+  };
+
   return (
     <>
       {/* 헤더  */}
@@ -335,11 +344,12 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
                 partnerScheduleList?.includes(selectedSchedule),
               isCommonSchedule: commonScheduleList?.includes(selectedSchedule),
               onDelete: () => setIsDeleteModalOpen(true),
-              onEdit: () => handleEditSchedule(selectedSchedule),              onCommon: () => {
+              onEdit: () => handleEditSchedule(selectedSchedule),
+              onCommon: () => {
                 setIsChangeCommonModalOpen(true);
               },
               onEmoji: () => handleEmojiModalOpen(),
-              onEditRequest: () => console.log("일정 수정 요청"),
+              onEditRequest: () => handleEditRequest(selectedSchedule),
             })}
           />
         </Overlay>

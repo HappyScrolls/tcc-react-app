@@ -202,6 +202,7 @@ const ScheduleForm: React.FC<FormProps> = ({
 };
 
 export default ScheduleForm;
+
 const FormContainer = styled.div`
   display: flex;
   flex-direction: column;

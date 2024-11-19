@@ -2,7 +2,7 @@ import {useQueryClient} from '@tanstack/react-query';
 import React, {Suspense} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {CoupleInfo} from '../../types/ICoupleInfo';
-import AddScheduleHeader from './components/AddScheduleHeader';
+import CoupleAndDateInfoHeader from './components/CoupleAndDateInfoHeader';
 import ScheduleForm from './components/ScheduleForm';
 import {ScheduleData} from '../../types/ISchedule';
 import {formatDateHyphen} from '../../utils/date';
@@ -25,7 +25,7 @@ const EditSchedulePage = () => {
 
     return (
         <Suspense fallback={<div>Loading...</div>}>
-            <AddScheduleHeader selectedDate={formatDateHyphen(schedule.scheduleStartAt)} coupleInfo={coupleInfo}/>
+            <CoupleAndDateInfoHeader selectedDate={formatDateHyphen(schedule.scheduleStartAt)} coupleInfo={coupleInfo}/>
             <ScheduleForm
                 onSave={handleSave}
                 initialFormData={schedule}

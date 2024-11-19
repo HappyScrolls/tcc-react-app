@@ -3,7 +3,7 @@ import ScheduleForm from "./components/ScheduleForm";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSaveSchedule } from "../../hooks/useSaveSchedule";
 import { ScheduleData } from "../../types/ISchedule";
-import AddScheduleHeader from "./components/AddScheduleHeader";
+import CoupleAndDateInfoHeader from "./components/CoupleAndDateInfoHeader";
 import { useQueryClient } from "@tanstack/react-query";
 import { CoupleInfo } from "../../types/ICoupleInfo";
 
@@ -27,7 +27,7 @@ const AddCoupleSchedule = () => {
     <>
       <Suspense fallback={<div>Loading...</div>}>
         {date && (
-          <AddScheduleHeader selectedDate={date} coupleInfo={coupleInfo} />
+          <CoupleAndDateInfoHeader selectedDate={date} coupleInfo={coupleInfo} />
         )}
         <ScheduleForm onSave={handleSaveSchedule} isCoupleSchedule={true} />
       </Suspense>

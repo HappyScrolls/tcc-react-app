@@ -8,7 +8,7 @@ interface AddScheduleHeaderProps {
   coupleInfo?: CoupleInfo;
 }
 
-const AddScheduleHeader: React.FC<AddScheduleHeaderProps> = ({
+const CoupleAndDateInfoHeader: React.FC<AddScheduleHeaderProps> = ({
   selectedDate,
   coupleInfo,
 }) => {
@@ -26,7 +26,7 @@ const AddScheduleHeader: React.FC<AddScheduleHeaderProps> = ({
   );
 };
 
-export default AddScheduleHeader;
+export default CoupleAndDateInfoHeader;
 
 const AddScheduleHeaderBox = styled.div`
   width: 90%;
