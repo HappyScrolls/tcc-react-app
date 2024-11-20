@@ -32,27 +32,6 @@ export const Login = () => {
     );
     navigate("/main");
   };
-  const handle4 = () => {
-    localStorage.setItem(
-      "memberCode",
-      "eyJubyI6NCwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9"
-    );
-    navigate("/main");
-  };
-  const handle5 = () => {
-    localStorage.setItem(
-      "memberCode",
-      "eyJubyI6NSwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9"
-    );
-    navigate("/main");
-  };
-  const handle6 = () => {
-    localStorage.setItem(
-      "memberCode",
-      "eyJubyI6NiwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9"
-    );
-    navigate("/main");
-  };
   return (
     <>
       <L.ColorContainer>
@@ -78,12 +57,9 @@ export const Login = () => {
           <NaverLogin />
           <GoogleLogin />
           <Buttons>
-            <button onClick={handle1}>1번</button>
-            <button onClick={handle2}>2번</button>
-            <button onClick={handle3}>3번</button>
-            <button onClick={handle4}>4번</button>
-            <button onClick={handle5}>5번</button>
-            <button onClick={handle6}>6번</button>
+            <button onClick={handle1}>예지</button>
+            <button onClick={handle2}>혜진</button>
+            <button onClick={handle3}>혁순</button>
           </Buttons>
         </L.LoginBtnWrapper>
         <BackgroundDesign />
