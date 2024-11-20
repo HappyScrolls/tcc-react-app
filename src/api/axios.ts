@@ -47,8 +47,7 @@ export const memberAxiosInstance = axios.create({
 memberAxiosInstance.interceptors.request.use(
   (config) => {
     const memberCode =
-      localStorage.getItem("memberCode") ||
-      "eyJubyI6NSwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9";
+      localStorage.getItem("memberCode");
 
     config.headers["Member-Code"] = memberCode;
 

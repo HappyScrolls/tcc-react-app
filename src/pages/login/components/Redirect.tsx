@@ -31,6 +31,7 @@ const Redirect = () => {
       const fetchMemberInfo = async () => {
         try {
           const memberCode = decodedToken["Member-Code"];
+          localStorage.setItem("memberCode", memberCode);
           const memberInfo = await getMemberInfo({ memberCode });
           if (memberInfo?.birthDate === null) {
             navigate(`/signup?memberCode=${memberCode}`);
