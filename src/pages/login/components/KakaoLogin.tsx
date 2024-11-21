@@ -10,7 +10,7 @@ const KakaoLogin = () => {
   //   window.open(kakaoLoginURL, "_self");
   // };
   // const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=70f9602918e39f149728c1c18b7fc545&redirect_uri=http://158.247.198.100:32001/login/oauth2/code/kakao&response_type=code`;
-  const KAKAO_AUTH_URL = `https://togethery.store/accounts/oauth2/authorization/kakao`;
+  const KAKAO_AUTH_URL = `https://accounts.togethery.store/oauth2/authorization/kakao`;
 
   const handleLogin = () => {
     window.location.href = KAKAO_AUTH_URL;
