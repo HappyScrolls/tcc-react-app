@@ -71,4 +71,4 @@ jobs:
 
             # Pull and run the new container
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/react-app
-            docker run -d --name react_app --network root_app-network -p 80:3001 ${{ secrets.DOCKER_HUB_USERNAME }}/react-app
+            docker run -d --name react_app --network root_app-network -p 3001:3001 ${{ secrets.DOCKER_HUB_USERNAME }}/react-app
