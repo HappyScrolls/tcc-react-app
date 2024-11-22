@@ -2,13 +2,13 @@ import axios from "axios";
 
 // 스케줄
 export const scheduleAxiosInstance = axios.create({
-  baseURL: "https://togethery.store/api",
+  baseURL: "https://api.togethery.store",
   withCredentials: true,
   timeout: 5000,
 });
 
 export const refreshInstance = axios.create({
-  baseURL: "https://togethery.store/api",
+  baseURL: "https://api.togethery.store",
   withCredentials: true,
 });
 
@@ -40,7 +40,7 @@ scheduleAxiosInstance.interceptors.response.use(
 
 // 멤버
 export const memberAxiosInstance = axios.create({
-  baseURL: "https://togethery.store/api",
+  baseURL: "https://api.togethery.store",
   withCredentials: true,
 });
 
@@ -70,7 +70,7 @@ memberAxiosInstance.interceptors.response.use(
 
 // 알림
 export const notificationAxiosInstance = axios.create({
-  baseURL: "https://togethery.store/api",
+  baseURL: "https://api.togethery.store",
   withCredentials: true,
 });
 
