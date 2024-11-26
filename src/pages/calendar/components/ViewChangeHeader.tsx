@@ -21,6 +21,10 @@ const ViewChangeHeader: React.FC<ViewChangeHeaderProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const coupleInfo = queryClient.getQueryData<CoupleInfo>(["coupleInfo"]);
+  const isValidCoupleInfo =
+    coupleInfo &&
+    (coupleInfo.nickNameA || coupleInfo.nickNameB || coupleInfo.startedAt);
+  const isInvalidCoupleInfo = !!coupleInfo && !isValidCoupleInfo;
 
   return (
     <>
@@ -29,9 +33,11 @@ const ViewChangeHeader: React.FC<ViewChangeHeaderProps> = ({
         <DateInfo>
           <DateText>{formattedDate}</DateText>
           <DdayText>
-            {coupleInfo
-              ? `D+${calculateDaysTogether(coupleInfo.startedAt)}❤️`
-              : "커플로 등록해주세요!"}
+            {!coupleInfo
+              ? "커플로 등록해주세요!"
+              : isInvalidCoupleInfo
+                ? "커플 정보를 등록해주세요!"
+                : `D+${calculateDaysTogether(coupleInfo.startedAt)}`}
           </DdayText>
         </DateInfo>
         <ViewToggleWrapper>

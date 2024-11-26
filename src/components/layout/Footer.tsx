@@ -15,17 +15,17 @@ const Footer = () => {
 
   // 커플 정보
   const { data: coupleInfo } = useFetchCoupleInfo();
-  const hasValidCoupleInfo =
+  const isValidCoupleInfo =
     coupleInfo &&
     (coupleInfo.nickNameA || coupleInfo.nickNameB || coupleInfo.startedAt);
-  const hasInvalidCoupleInfo = coupleInfo && !hasValidCoupleInfo;
+  const isInvalidCoupleInfo = !!coupleInfo && !isValidCoupleInfo;
 
   return (
     <>
       <FooterContainer>
         <FooterBody>
           <FooterHeader>
-            {hasValidCoupleInfo ? (
+            {isValidCoupleInfo ? (
               <>
                 <span>{coupleInfo.nickNameA}</span>
                 <LoveIcon src={heart} />
@@ -38,7 +38,7 @@ const Footer = () => {
           <DDay>
             {!coupleInfo
               ? "커플로 등록해주세요!"
-              : hasInvalidCoupleInfo
+              : isInvalidCoupleInfo
                 ? "커플 정보를 등록해주세요!"
                 : `D+${calculateDaysTogether(coupleInfo.startedAt)}`}
           </DDay>

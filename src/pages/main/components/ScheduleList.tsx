@@ -11,38 +11,40 @@ import {
   getMonth,
   getYear,
 } from "../../../utils/date";
-import { useQueryClient } from "@tanstack/react-query";
-import { ScheduleData } from "../../../types/ISchedule";
-import { IMemberInfo } from "../../../types/IMemberInfo";
-import { LoverInfo } from "../../../types/ILoverInfo";
-import { CoupleInfo } from "../../../types/ICoupleInfo";
+
+import {
+  useFetchMyScheduleList,
+  useFetchPartnerScheduleList,
+} from "../../../hooks/useScheduleList";
+import { useMemberInfoQuery } from "../../../hooks/useMemberInfo";
+import {
+  useFetchCoupleInfo,
+  useFetchMyLoverInfo,
+} from "../../../hooks/useCoupleInfo";
 
 const ScheduleList = () => {
-  const queryClient = useQueryClient();
+  const todayDate = formatTodayHypen();
   const navigate = useNavigate();
 
   const formattedDate = formatTodayHypen();
 
   // 내 일정
-  const myScheduleList = queryClient.getQueryData<ScheduleData[]>([
-    "myScheduleList",
-    formattedDate,
-  ]);
+  const { data: myScheduleList } = useFetchMyScheduleList(todayDate);
 
   // 애인 일정
-  const partnerScheduleList = queryClient.getQueryData<ScheduleData[]>([
-    "partnerScheduleList",
-    formattedDate,
-  ]);
+  const { data: partnerScheduleList } = useFetchPartnerScheduleList(todayDate);
 
   // 내 정보
-  const myInfo = queryClient.getQueryData<IMemberInfo>(["memberInfo"]);
+  const { data: myInfo } = useMemberInfoQuery();
 
   // 애인 정보
-  const loverInfo = queryClient.getQueryData<LoverInfo>(["myLoverInfo"]);
+  const { data: loverInfo } = useFetchMyLoverInfo();
 
   // 커플 정보
-  const coupleInfo = queryClient.getQueryData<CoupleInfo>(["coupleInfo"]);
+  const { data: coupleInfo } = useFetchCoupleInfo();
+  const isValidCoupleInfo =
+    coupleInfo &&
+    (coupleInfo.nickNameA || coupleInfo.nickNameB || coupleInfo.startedAt);
 
   // 현재 시간 일정
   const currentMySchedule = getCurrentSchedule(myScheduleList);
@@ -52,11 +54,13 @@ const ScheduleList = () => {
     navigate(`/calendar/${formattedDate}`);
   };
 
-  const myName = coupleInfo ? coupleInfo.nickNameA : myInfo?.name;
+  const myName = isValidCoupleInfo ? coupleInfo.nickNameA : myInfo?.name;
 
-  const partnerName = coupleInfo
-    ? coupleInfo.nickNameB
-    : "커플로 등록해주세요!";
+  const partnerName = !coupleInfo
+    ? "커플로 등록해주세요!"
+    : isValidCoupleInfo
+      ? coupleInfo?.nickNameB
+      : loverInfo?.name;
 
   console.log(coupleInfo);
 
@@ -67,7 +71,9 @@ const ScheduleList = () => {
           {getYear()}.{getMonth()}.{getDay()}
         </DateText>
         <DdayText>
-          {coupleInfo ? `D+${calculateDaysTogether(coupleInfo.startedAt)}` : ""}
+          {isValidCoupleInfo
+            ? `D+${calculateDaysTogether(coupleInfo.startedAt)}`
+            : ""}
         </DdayText>
       </DayWrapper>
 

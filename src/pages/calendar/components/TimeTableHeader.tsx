@@ -20,7 +20,9 @@ const TimeTableHeader = () => {
         </Wrapper>
 
         <Wrapper>
-          <Name>{loverInfo?.name}의 일정 </Name>
+          <Name>
+            {loverInfo ? `${loverInfo?.name}의 일정` : "커플로 등록해주세요!"}
+          </Name>
           <ProfileImage
             src={loverInfo?.profilePhoto ? loverInfo.profilePhoto : defaultCat}
             alt="프로필"
