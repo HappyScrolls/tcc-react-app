@@ -30,25 +30,6 @@ const Header = () => {
 
 export default Header;
 
-// const HeaderContainer = styled.div`
-//   width: 100%;
-//   padding: 0 130px;
-//   height: 50px;
-
-//   background: #fff;
-//   box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.25);
-
-//   display: flex;
-//   justify-content: space-between;
-//   align-items: center;
-//   z-index: 10;
-
-//   @media (max-width: 768px) {
-//     padding: 0 40px;
-//     height: 56px;
-//   }
-// `;
-
 const HeaderContainer = styled.div`
   width: 100%;
   padding: calc(10px + env(safe-area-inset-top)) 130px 10px 130px;

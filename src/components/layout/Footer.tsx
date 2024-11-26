@@ -18,6 +18,8 @@ const Footer = () => {
   const hasValidCoupleInfo =
     coupleInfo &&
     (coupleInfo.nickNameA || coupleInfo.nickNameB || coupleInfo.startedAt);
+  const hasInvalidCoupleInfo = coupleInfo && !hasValidCoupleInfo;
+
   return (
     <>
       <FooterContainer>
@@ -34,9 +36,11 @@ const Footer = () => {
             )}
           </FooterHeader>
           <DDay>
-            {hasValidCoupleInfo
-              ? `D+${calculateDaysTogether(coupleInfo.startedAt)}`
-              : "커플로 등록해주세요!"}
+            {!coupleInfo
+              ? "커플로 등록해주세요!"
+              : hasInvalidCoupleInfo
+                ? "커플 정보를 등록해주세요!"
+                : `D+${calculateDaysTogether(coupleInfo.startedAt)}`}
           </DDay>
         </FooterBody>
         <FooterButtonDiv onClick={handleButton}>
@@ -53,6 +57,7 @@ const FooterContainer = styled.div`
   width: 100%;
   padding: 0 0 20px 50px;
 
+  margin-top: auto;
   position: relative;
   display: flex;
   justify-content: space-between;
