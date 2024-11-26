@@ -81,7 +81,6 @@ const FooterHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding-top: 20px;
   gap: 5px;
 
   span {
@@ -107,8 +106,6 @@ const DDay = styled.span`
   font-style: normal;
   font-weight: 800;
   line-height: normal;
-
-  margin-top: 5px;
 `;
 
 const FooterButtonDiv = styled.div`
