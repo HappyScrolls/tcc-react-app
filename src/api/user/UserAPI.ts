@@ -22,7 +22,7 @@ export const createUserInfo = async (
   createUserInfo: IAdditionalMembberInfo
 ): Promise<void> => {
   try {
-    await memberAxiosInstance.put(
+    await memberAxiosInstance.post(
       `/account-service/member/additional-info`,
       createUserInfo
     );

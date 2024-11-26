@@ -30,6 +30,7 @@ export const useCreateMemberInfo = () => {
       queryClient.invalidateQueries({
         queryKey: ["memberInfo"],
       });
+      console.log("서버 응답:", Response);
       console.log("추가 정보 등록 성공");
     },
     onError: (error) => {

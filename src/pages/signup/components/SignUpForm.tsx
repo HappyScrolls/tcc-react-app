@@ -37,15 +37,14 @@ const SignUpForm = () => {
 
     const birthDate = `${birthYear}-${birthMonth.padStart(2, "0")}-${birthDay.padStart(2, "0")}`;
 
-    console.log(birthDate);
-    
-    createMemberInfo({
+    const userData = {
       name: userInfo?.name || null,
       mobileNo: userInfo?.mobileNo || "",
       birthDate,
       profilePhoto: userInfo?.profilePhoto || defaultCat,
-    });
-
+    };
+    console.log("전달값:", userData);
+    createMemberInfo(userData);
     navigate("/main");
   };
 
