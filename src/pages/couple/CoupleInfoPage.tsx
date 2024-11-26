@@ -5,16 +5,17 @@ import noCoupleProfileIcon from "../../images/mypage/noCoupleProfileIcon.svg";
 import createCoupleInfo, {
   CreateCoupleInfoRequest,
 } from "../../api/couple/coupleInfo";
+import { useNavigate } from "react-router-dom";
 
 const CoupleInfoPage = () => {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [nickNameA, setNickNameA] = useState("");
   const [nickNameB, setNickNameB] = useState("");
   const [year, setYear] = useState("");
   const [month, setMonth] = useState("");
   const [day, setDay] = useState("");
-  const [coupleImg, setCoupleImg] = useState<string | null>(null);
-  console.log(coupleImg, setCoupleImg);
+  // const [coupleImg, setCoupleImg] = useState<string | null>(null);
 
   // 날짜 변환
   const formatDate = (year: string, month: string, day: string): string => {
@@ -32,6 +33,7 @@ const CoupleInfoPage = () => {
     } as CreateCoupleInfoRequest;
     try {
       await createCoupleInfo(coupleInfo);
+      navigate("/mypage");
     } catch (error) {
       console.error("API 호출 실패:", error);
     }

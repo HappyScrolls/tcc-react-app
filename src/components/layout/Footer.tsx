@@ -54,33 +54,26 @@ const Footer = () => {
 export default Footer;
 
 const FooterContainer = styled.div`
+  position: fixed;
+  bottom: 0;
+  left: 0;
   width: 100%;
-  padding: 0 0 20px 50px;
+  height: 80px;
 
-  margin-top: auto;
-  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  border-radius: 20px 20px 0px 0px;
+  border-radius: 20px 0px 0px 0px;
   background: #fff;
   box-shadow: 0px -1px 1px 0px rgba(0, 0, 0, 0.25);
-
-  @media (max-width: 2000px) {
-    height: 100px;
-  }
-
-  @media (max-width: 768px) {
-    height: 90px;
-  }
+  z-index: 10;
 `;
 
 const FooterBody = styled.div`
   text-align: center;
   display: flex;
   flex-direction: column;
-  padding-left: 5px;
+  padding-left: 20px;
   align-items: flex-start;
 `;
 
@@ -88,12 +81,8 @@ const FooterHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding-top: 25px;
+  padding-top: 20px;
   gap: 5px;
-
-  @media (max-width: 768px) {
-    padding-top: 20px;
-  }
 
   span {
     color: var(--Black, #3b3634);
