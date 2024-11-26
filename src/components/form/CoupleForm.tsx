@@ -49,7 +49,7 @@ const CoupleForm: React.FC<{
     <>
       <FormContainer>
         <FormDiv>
-          <Text>{isEdit ? "커플 정보 수정" : "커플 정보 등록"}</Text>
+          <Text>{isEdit ? "커플 정보 수정" : "커플 프로필 등록"}</Text>
           {/* 커플명 입력 */}
           <TextInput
             value={name}
@@ -144,7 +144,7 @@ const Text = styled.div`
   line-height: normal;
   width: 100%;
   text-align: left;
-  margin-bottom: 33px;
+  margin-bottom: 13px;
 `;
 
 const TextInput = styled.input`
@@ -189,7 +189,7 @@ const ProfileImage = styled.div`
     width: 110px;
     height: 110px;
     flex-shrink: 0;
-    /* object-fit: cover; */
+    object-fit: cover;
   }
 `;
 

@@ -5,9 +5,7 @@ import Redirect from "./pages/login/components/Redirect";
 import SignUpPage from "./pages/signup/SignUpPage";
 import NotificationPage from "./pages/notification/NotificationPage";
 import CalendarPage from "./pages/calendar/CalendarPage";
-import CoupleInfoPage from "./pages/couple/CoupleInfoPage";
 import MyPage from "./pages/mypage/MyPage";
-
 import AddMySchedulePage from "./pages/schedule/AddMySchedulePage";
 import AddCoupleSchedule from "./pages/schedule/AddCoupleSchedule";
 import ProfileEdit from "./pages/mypage/components/ProfileEdit";
@@ -15,6 +13,7 @@ import CoupleProfileEdit from "./pages/mypage/components/CoupleProfileEdit";
 import SuspenseMainPage from "./pages/main/SuspenseMainPage";
 import EditSchedulePage from "./pages/schedule/EditSchedulePage";
 import ModifyScheduleRequestPage from "./pages/schedule/ModifyScheduleRequestPage";
+import CoupleProfileRegister from "./pages/mypage/components/CoupleProfileRegister";
 
 const router = createBrowserRouter([
   {
@@ -58,8 +57,8 @@ const router = createBrowserRouter([
         element: <MyPage />,
       },
       {
-        path: "/couple/info",
-        element: <CoupleInfoPage />,
+        path: "/couple/register",
+        element: <CoupleProfileRegister isEdit={false} />,
       },
       {
         path: "/profile/edit",

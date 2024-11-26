@@ -28,15 +28,12 @@ const CoupleProfile = ({
   const hasInvalidCoupleInfo = coupleInfo && !hasValidCoupleInfo;
 
   const handleRegistrationButton = () => {
-    navigate("/couple/info");
+    navigate("/couple/register");
   };
 
   const handleEditButton = () => {
     navigate("/couple/edit");
   };
-
-  console.log("커플정보 -> ", coupleInfo);
-  console.log("애인 정보 -> ", loverInfo);
 
   return (
     <CoupleProfileBox>
