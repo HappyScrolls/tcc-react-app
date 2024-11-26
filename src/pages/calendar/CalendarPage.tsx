@@ -52,7 +52,7 @@ const CalendarPage = () => {
           ) : (
             <ListView date={formattedDate} />
           )}
-        </CalendarContainer>{" "}
+        </CalendarContainer>
       </Suspense>
     </>
   );

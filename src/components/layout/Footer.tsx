@@ -73,7 +73,7 @@ const FooterBody = styled.div`
   text-align: center;
   display: flex;
   flex-direction: column;
-  padding-left: 20px;
+  padding-left: 24px;
   align-items: flex-start;
 `;
 
