@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useFetchCoupleInfo } from "../../../hooks/useCoupleInfo";
 import editPen from "../../../images/mypage/editPen.svg";
 import coupleCat from "../../../images/emoji/이모지_커플.png";
+import addcoupleheart from "../../../images/mypage/addcoupleheart.svg";
 import soloCat from "../../../images/mypage/soloCat.svg";
 import noCoupleCat from "../../../images/mypage/noCoupleProfileIcon.svg";
 import { IMemberInfo } from "../../../types/IMemberInfo";
@@ -19,6 +20,12 @@ const CoupleProfile = ({
   loverInfo?: LoverInfo | null;
 }) => {
   const navigate = useNavigate();
+  const { data: coupleInfo } = useFetchCoupleInfo();
+
+  const hasValidCoupleInfo =
+    coupleInfo &&
+    (coupleInfo.nickNameA || coupleInfo.nickNameB || coupleInfo.startedAt);
+  const hasInvalidCoupleInfo = coupleInfo && !hasValidCoupleInfo;
 
   const handleRegistrationButton = () => {
     navigate("/couple/info");
@@ -28,13 +35,13 @@ const CoupleProfile = ({
     navigate("/couple/edit");
   };
 
-  const { data: coupleInfo } = useFetchCoupleInfo();
-  const coupleInfoExists = !!coupleInfo;
+  console.log("커플정보 -> ", coupleInfo);
+  console.log("애인 정보 -> ", loverInfo);
 
   return (
     <CoupleProfileBox>
       <ProfileContainer>
-        {coupleInfoExists ? (
+        {hasValidCoupleInfo ? (
           <>
             {/* 커플 프로필 있는 경우 */}
             <EditIcon src={editPen} alt="수정" onClick={handleEditButton} />
@@ -68,16 +75,17 @@ const CoupleProfile = ({
               </TextWrap>
             </PinkWrapper>
           </>
-        ) : loverInfo ? (
+        ) : hasInvalidCoupleInfo ? (
           <>
-            {/* 애인 정보는 있지만 커플 프로필 없음 */}{" "}
+            {/* 애인 정보는 있지만 커플 프로필 없음 */}
             <CatIcon src={noCoupleCat} />
             <NonePinkWrapper>
               <CoupleProfileBodyText>
                 커플 프로필이 아직 등록되지 않았습니다.
               </CoupleProfileBodyText>
+
               <CoupleProfileAddButton onClick={handleRegistrationButton}>
-                커플 프로필 등록하기
+                <img src={addcoupleheart} alt="+" />
               </CoupleProfileAddButton>
             </NonePinkWrapper>
           </>
@@ -153,6 +161,7 @@ const EditIcon = styled.img`
 
 const CoupleProfileAddButton = styled.button`
   display: flex;
+  margin-top: 20px;
   width: 36px;
   height: 36px;
   padding: 6px;
@@ -162,6 +171,11 @@ const CoupleProfileAddButton = styled.button`
   border-radius: 100px;
   background: var(--Primary, #f14040);
   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
+
+  img {
+    width: 23px;
+    height: 23px;
+  }
 `;
 
 const CatIcon = styled.img`
