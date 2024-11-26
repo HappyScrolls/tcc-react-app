@@ -18,7 +18,7 @@ const ModifyScheduleRequestPage = () => {
   const coupleInfo = queryClient.getQueryData<CoupleInfo>(["coupleInfo"]);
 
   const handleSave = (formData: ScheduleData) => {
-    console.log("수정 d요청하려는 데이터:", formData);
+    console.log("수정 요청하려는 데이터:", formData);
     alert("수정 요청");
     // API 호출
     navigate(-1);

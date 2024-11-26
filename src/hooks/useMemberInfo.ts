@@ -1,12 +1,11 @@
-import { useState, useEffect } from "react";
-import getMemberInfo, { fetchUserInfo } from "../api/query/get/getMemberInfo";
+import { fetchUserInfo } from "../api/query/get/getMemberInfo";
 import { IMemberInfo } from "../types/IMemberInfo";
 import {
   useMutation,
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
-import { updateUserInfo } from "../api/user/UserAPI";
+import { createUserInfo, updateUserInfo } from "../api/user/UserAPI";
 
 // 내 정보 조회
 export const useMemberInfoQuery = () => {
@@ -20,27 +19,25 @@ export const useMemberInfoQuery = () => {
   return userInfo;
 };
 
-export const useMemberInfo = (memberCode: string) => {
-  const [userInfo, setUserInfo] = useState<IMemberInfo | null>(null);
-  const [loading, setLoading] = useState(true);
+// 내 정보 등록 (추가 정보 등록)
+export const useCreateMemberInfo = () => {
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const fetchMemberInfo = async () => {
-      try {
-        const data = await getMemberInfo({ memberCode });
-        setUserInfo(data || null);
-      } catch (error) {
-        console.error("Error fetching member info:", error);
-        setUserInfo(null);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { mutate, isError, isSuccess } = useMutation({
+    mutationKey: ["create-member-info"],
+    mutationFn: createUserInfo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["memberInfo"],
+      });
+      console.log("추가 정보 등록 성공");
+    },
+    onError: (error) => {
+      console.error("추가 정보 등록 실패:", error);
+    },
+  });
 
-    fetchMemberInfo();
-  }, [memberCode]);
-
-  return { userInfo, loading };
+  return { mutate, isError, isSuccess };
 };
 
 // 내 정보 수정

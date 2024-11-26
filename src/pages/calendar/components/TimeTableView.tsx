@@ -105,6 +105,11 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
 
   // 이동
   const handleDeleteSchedule = () => {
+    setTimeout(() => {
+      setIsDeleteModalOpen(true);
+      console.log("모달 상태 업데이트됨:", isDeleteModalOpen);
+    }, 0);
+
     if (selectedSchedule?.scheduleNo) {
       deleteSchedule(selectedSchedule.scheduleNo, {
         onSuccess: () => {
@@ -288,50 +293,6 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
         </RightTimeGrid>
       </TableContainer>
 
-      {/* 일정 추가 모달 */}
-      {activeModal === "empty" && (
-        <Overlay onClick={handleOutsideClick} onTouchEnd={handleTouchEnd}>
-          <BottomSheet
-            ref={modalRef}
-            isClosing={isClosing}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-          >
-            <SheetContent>
-              <Line />
-              <Button onClick={openAddSchedule}>내 일정 추가</Button>
-              <CommonButton onClick={openAddCoupleSchedule}>
-                공통 일정 추가
-              </CommonButton>
-            </SheetContent>
-          </BottomSheet>
-        </Overlay>
-      )}
-
-      {/* 삭제 모달 */}
-      {isDeleteModalOpen && (
-        <TwoBtnModal
-          title={`${selectedSchedule?.scheduleName} 일정을 삭제하시겠습니까?`}
-          description="복구가 불가능합니다."
-          confirmText="예"
-          cancelText="아니오"
-          imageSrc={tearEmoji}
-          onConfirm={handleDeleteSchedule}
-          onCancel={() => setIsDeleteModalOpen(false)}
-        />
-      )}
-
-      {/* 공통 일정 변경 모달  */}
-      {isChangeCommonModalOpen && (
-        <OneBtnModal
-          title="공통 일정으로 변경되었습니다."
-          description=""
-          imageSrc={coupleEmoji}
-          confirmText="확인"
-          onConfirm={handleChangeCommonSchedule}
-        />
-      )}
-
       {/* 일정 상세 모달 */}
       {activeModal === "schedule" && selectedSchedule && (
         <Overlay onClick={handleOutsideClick} onTouchEnd={handleTouchEnd}>
@@ -353,6 +314,50 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
             })}
           />
         </Overlay>
+      )}
+
+      {/* 삭제 모달 */}
+      {isDeleteModalOpen && (
+        <TwoBtnModal
+          title={`${selectedSchedule?.scheduleName} 일정을 삭제하시겠습니까?`}
+          description="복구가 불가능합니다."
+          confirmText="예"
+          cancelText="아니오"
+          imageSrc={tearEmoji}
+          onConfirm={handleDeleteSchedule}
+          onCancel={() => setIsDeleteModalOpen(false)}
+        />
+      )}
+
+      {/* 일정 추가 모달 */}
+      {activeModal === "empty" && (
+        <Overlay onClick={handleOutsideClick} onTouchEnd={handleTouchEnd}>
+          <BottomSheet
+            ref={modalRef}
+            isClosing={isClosing}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            <SheetContent>
+              <Line />
+              <Button onClick={openAddSchedule}>내 일정 추가</Button>
+              <CommonButton onClick={openAddCoupleSchedule}>
+                공통 일정 추가
+              </CommonButton>
+            </SheetContent>
+          </BottomSheet>
+        </Overlay>
+      )}
+
+      {/* 공통 일정 변경 모달  */}
+      {isChangeCommonModalOpen && (
+        <OneBtnModal
+          title="공통 일정으로 변경되었습니다."
+          description=""
+          imageSrc={coupleEmoji}
+          confirmText="확인"
+          onConfirm={handleChangeCommonSchedule}
+        />
       )}
 
       {isEmojiModalOpen && (
@@ -509,11 +514,11 @@ const Overlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 4;
 
   display: flex;
   justify-content: center;
   align-items: flex-end;
+  z-index: 10;
 `;
 
 const SheetContent = styled.div`

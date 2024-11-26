@@ -40,7 +40,7 @@ const ModalOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10;
+  z-index: 20;
 `;
 
 const ModalContent = styled.div`
@@ -50,6 +50,7 @@ const ModalContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  z-index: 100;
 `;
 
 const ModalTitle = styled.h2`

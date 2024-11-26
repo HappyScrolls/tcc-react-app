@@ -34,7 +34,7 @@ const Redirect = () => {
           localStorage.setItem("memberCode", memberCode);
           const memberInfo = await getMemberInfo({ memberCode });
           if (memberInfo?.birthDate === null) {
-            navigate(`/signup?memberCode=${memberCode}`);
+            navigate(`/signup`);
           } else {
             navigate("/main");
           }

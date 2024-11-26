@@ -3,12 +3,15 @@ import { Container } from "../../../components/layout/Layout";
 import styled from "styled-components";
 import defaultCat from "../../../images/signup/defaultCat.svg";
 import { useNavigate } from "react-router-dom";
-import { useMemberInfoQuery } from "../../../hooks/useMemberInfo";
+import {
+  useCreateMemberInfo,
+  useMemberInfoQuery,
+} from "../../../hooks/useMemberInfo";
 
 const SignUpForm = () => {
   const { data: userInfo } = useMemberInfoQuery();
+  const { mutate: createMemberInfo } = useCreateMemberInfo();
 
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [birthYear, setBirthYear] = useState(
     userInfo?.birthDate?.split("-")[0] || ""
   );
@@ -18,6 +21,8 @@ const SignUpForm = () => {
   const [birthDay, setBirthDay] = useState(
     userInfo?.birthDate?.split("-")[2] || ""
   );
+
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleCancel = () => {
@@ -25,6 +30,20 @@ const SignUpForm = () => {
   };
 
   const handleSubmit = () => {
+    if (!birthYear || !birthMonth || !birthDay) {
+      alert("생년월일을 모두 입력해주세요.");
+      return;
+    }
+
+    const birthDate = `${birthYear}-${birthMonth.padStart(2, "0")}-${birthDay.padStart(2, "0")}`;
+
+    createMemberInfo({
+      name: userInfo?.name || null,
+      mobileNo: userInfo?.mobileNo || "",
+      birthDate,
+      profilePhoto: userInfo?.profilePhoto || defaultCat,
+    });
+
     navigate("/main");
   };
 
@@ -45,7 +64,7 @@ const SignUpForm = () => {
           <TextInput value={userInfo?.name || ""} placeholder="이름" readOnly />
           <TextInput
             value={userInfo?.email || ""}
-            placeholder="전화번호"
+            placeholder="이메일"
             readOnly
           />
           <DateInputWrapper>
@@ -75,12 +94,12 @@ const SignUpForm = () => {
               onChange={handleImageFile}
             />
           </ProfileImage>
-          <AgreementWrapper>
-            <AgreementText>
-              개인정보 수집 및 이용 동의<span>(필수)</span>
-            </AgreementText>
-            <AgreeBtn />
-          </AgreementWrapper>
+          {/*<AgreementWrapper>*/}
+          {/*  <AgreementText>*/}
+          {/*    개인정보 수집 및 이용 동의<span>(필수)</span>*/}
+          {/*  </AgreementText>*/}
+          {/*  <AgreeBtn />*/}
+          {/*</AgreementWrapper>*/}
         </FormDiv>
         <ButtonWrapper>
           <CancelButton onClick={handleCancel}>이전</CancelButton>

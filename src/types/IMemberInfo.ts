@@ -7,3 +7,10 @@ export interface IMemberInfo {
   birthDate: string | null;
   mobileNo: string | null;
 }
+
+export interface IAdditionalMembberInfo {
+  name: string | null;
+  mobileNo: string;
+  birthDate: string;
+  profilePhoto?: string;
+}

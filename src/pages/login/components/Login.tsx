@@ -14,14 +14,14 @@ export const Login = () => {
   const handle1 = () => {
     localStorage.setItem(
       "memberCode",
-      "eyJubyI6MSwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9"
+      "eyJubyI6MiwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9"
     );
     navigate("/main");
   };
   const handle2 = () => {
     localStorage.setItem(
       "memberCode",
-      "eyJubyI6MiwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9"
+      "eyJubyI6MSwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9"
     );
     navigate("/main");
   };
@@ -46,7 +46,6 @@ export const Login = () => {
           <L.Text2>
             <span>ev</span>ery
           </L.Text2>
-
           <L.Text3>
             사랑하는 사람과
             <div>언제나 함께하는 일정 공유</div>
