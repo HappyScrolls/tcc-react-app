@@ -37,6 +37,8 @@ const SignUpForm = () => {
 
     const birthDate = `${birthYear}-${birthMonth.padStart(2, "0")}-${birthDay.padStart(2, "0")}`;
 
+    console.log(birthDate);
+    
     createMemberInfo({
       name: userInfo?.name || null,
       mobileNo: userInfo?.mobileNo || "",
