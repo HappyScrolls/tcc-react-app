@@ -42,7 +42,8 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  padding: 20px;
+  width: 40%;
+  padding: 30px;
   border-radius: 20px;
   background: #fff;
   display: flex;
@@ -53,6 +54,7 @@ const ModalContent = styled.div`
 const ModalTitle = styled.h2`
   color: var(--Black, #3b3634);
 
+  margin-top: 7px;
   text-align: center;
   font-family: SUIT;
   font-size: 10px;
@@ -78,7 +80,7 @@ const ModalImage = styled.img`
 
 const ModalButtonWrapper = styled.div`
   display: flex;
-  margin-top: 10px;
+  margin-top: 20px;
   gap: 20px;
 `;
 

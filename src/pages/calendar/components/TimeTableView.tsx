@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import styled, { keyframes } from "styled-components";
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
 
 import { getBusyBackgroundColor, getBusyColor } from "../../../utils/colors";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -10,38 +10,10 @@ import {
 } from "../../../hooks/useScheduleList";
 import TimeTableHeader from "./TimeTableHeader";
 import { ScheduleData } from "../../../types/ISchedule";
-import TwoBtnModal from "../../../components/modal/TwoBtnModal";
 import { useDeleteSchedule } from "../../../hooks/useDeleteSchedule";
-import tearEmoji from "../../../images/emoji/이모지_눈물.png";
-import { scheduleModalButtons } from "../../../utils/scheduleModalBtn";
-import ScheduleDetailModal from "./ScheduleDetailModal";
-import coupleEmoji from "../../../images/emoji/이모지_커플.png";
 import { useChangeCommonSchedule } from "../../../hooks/useChangeCoupleSchedule";
-import OneBtnModal from "../../../components/modal/OneBtnModal";
-import EmojiModal from "../../../components/modal/EmojiModal";
-
-// (1시간 = 26px)
-const timeToPosition = (dateTime: string): number => {
-  if (!dateTime || !dateTime.includes("T")) {
-    console.error("유효하지 않은 값 :", dateTime);
-    return 0;
-  }
-
-  const time = dateTime.split("T")[1];
-  if (!time) {
-    console.error("유효하지 않은 값 :", dateTime);
-    return 0;
-  }
-
-  const [hour, minute] = time.split(":").map(Number);
-
-  if (isNaN(hour) || isNaN(minute)) {
-    console.error("유효하지 않은 값 :", dateTime);
-    return 0;
-  }
-
-  return ((hour * 60 + minute) / 60) * 26;
-};
+import { timeToPosition } from "../../../utils/timePosition";
+import TimeTableModals from "./TimeTableModals";
 
 // 타입 정의
 interface ScheduleItemProps {
@@ -55,17 +27,21 @@ interface ScheduleItemProps {
 type ModalType = "empty" | "schedule" | null;
 
 const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
+  // 일정 데이터
   const { data: myScheduleList, refetch: refetchMyScheduleList } =
     useFetchMyScheduleList(date);
-  const { data: partnerScheduleList } = useFetchPartnerScheduleList(date);
-  const { data: commonScheduleList } = useFetchCommonScheduleList(date);
+  const { data: partnerScheduleList, refetch: refetchPartnerScheduleList } =
+    useFetchPartnerScheduleList(date);
+  const { data: commonScheduleList, refetch: refetchCommonScheduleList } =
+    useFetchCommonScheduleList(date);
+
+  // 함수 (일정 삭제, 공통일정 변경)
   const { mutate: deleteSchedule } = useDeleteSchedule();
   const { mutate: changeCommonSchedule } = useChangeCommonSchedule();
 
   const navigate = useNavigate();
   const [activeModal, setActiveModal] = useState<ModalType>(null);
-  const [isClosing, setIsClosing] = useState(false);
-  const [touchStartY, setTouchStartY] = useState(0);
+  const [, setIsClosing] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isChangeCommonModalOpen, setIsChangeCommonModalOpen] = useState(false);
 
@@ -74,20 +50,18 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
   );
 
   const [isEmojiModalOpen, setIsEmojiModalOpen] = useState(false);
-  const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
-  console.log(selectedEmoji);
+  const [, setSelectedEmoji] = useState<string | null>(null);
 
   const location = useLocation();
+
   useEffect(() => {
     if (location.state?.refetch) {
       refetchMyScheduleList();
+      refetchPartnerScheduleList();
 
       navigate(location.pathname, { replace: true, state: {} });
     }
-  }, [location, navigate, refetchMyScheduleList]);
-
-  // 모달
-  const modalRef = useRef<HTMLDivElement>(null);
+  }, [location, navigate, refetchMyScheduleList, refetchPartnerScheduleList]);
 
   const openModal = (type: ModalType) => {
     setActiveModal(type);
@@ -103,17 +77,11 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
     }, 300);
   };
 
-  // 이동
+  // 일정 삭제
   const handleDeleteSchedule = () => {
-    setTimeout(() => {
-      setIsDeleteModalOpen(true);
-      console.log("모달 상태 업데이트됨:", isDeleteModalOpen);
-    }, 0);
-
     if (selectedSchedule?.scheduleNo) {
       deleteSchedule(selectedSchedule.scheduleNo, {
         onSuccess: () => {
-          setIsDeleteModalOpen(false);
           closeModal();
           refetchMyScheduleList();
           console.log("일정이 성공적으로 삭제되었습니다.");
@@ -126,12 +94,19 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
     }
   };
 
+  const openDeleteModal = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  // 공통 일정 변경
   const handleChangeCommonSchedule = () => {
     if (selectedSchedule?.scheduleNo) {
       changeCommonSchedule(selectedSchedule.scheduleNo, {
         onSuccess: () => {
-          setIsChangeCommonModalOpen(false);
           closeModal();
+          refetchCommonScheduleList();
+          refetchMyScheduleList();
+          refetchPartnerScheduleList();
           console.log("공통일정으로 변경되었습니다.");
         },
         onError: (error) => {
@@ -142,48 +117,41 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
     }
   };
 
-  const handleOutsideClick = (e: React.MouseEvent) => {
-    if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-      closeModal();
-    }
+  const openChangeCommonScheduleModal = () => {
+    setIsChangeCommonModalOpen(true);
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStartY(e.touches[0].clientY);
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    const touchEndY = e.changedTouches[0].clientY;
-    if (touchEndY - touchStartY > 100) {
-      closeModal();
-    }
-  };
-
+  // 일정 추가 페이지
   const openAddSchedule = () => {
     navigate(`/calendar/${date}/add`);
     closeModal();
   };
 
+  // 공통일정 추가 페이지
   const openAddCoupleSchedule = () => {
     navigate(`/calendar/${date}/add/couple`);
     closeModal();
   };
 
+  // 이모지 모달
   const handleEmojiModalOpen = () => {
     setIsEmojiModalOpen(true);
   };
 
+  // 이모지 선택
   const handleSelectEmoji = (emoji: string) => {
     setSelectedEmoji(emoji);
     setIsEmojiModalOpen(false);
   };
 
+  // 일정 수정 페이지
   const handleEditSchedule = (schedule: ScheduleData) => {
     navigate(`/edit-schedule/${schedule.scheduleNo}`, {
       state: { schedule, isCoupleSchedule: schedule.isCommon },
     });
   };
 
+  // 일정 수정 요청 페이지
   const handleEditRequest = (schedule: ScheduleData) => {
     navigate(`/modify-schedule/${schedule.scheduleNo}`, {
       state: {
@@ -293,79 +261,30 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
         </RightTimeGrid>
       </TableContainer>
 
-      {/* 일정 상세 모달 */}
-      {activeModal === "schedule" && selectedSchedule && (
-        <Overlay onClick={handleOutsideClick} onTouchEnd={handleTouchEnd}>
-          <ScheduleDetailModal
-            schedule={selectedSchedule}
-            onClose={closeModal}
-            buttons={scheduleModalButtons(selectedSchedule, {
-              isMySchedule: myScheduleList?.includes(selectedSchedule),
-              isPartnerSchedule:
-                partnerScheduleList?.includes(selectedSchedule),
-              isCommonSchedule: commonScheduleList?.includes(selectedSchedule),
-              onDelete: () => setIsDeleteModalOpen(true),
-              onEdit: () => handleEditSchedule(selectedSchedule),
-              onCommon: () => {
-                setIsChangeCommonModalOpen(true);
-              },
-              onEmoji: () => handleEmojiModalOpen(),
-              onEditRequest: () => handleEditRequest(selectedSchedule),
-            })}
-          />
-        </Overlay>
-      )}
-
-      {/* 삭제 모달 */}
-      {isDeleteModalOpen && (
-        <TwoBtnModal
-          title={`${selectedSchedule?.scheduleName} 일정을 삭제하시겠습니까?`}
-          description="복구가 불가능합니다."
-          confirmText="예"
-          cancelText="아니오"
-          imageSrc={tearEmoji}
-          onConfirm={handleDeleteSchedule}
-          onCancel={() => setIsDeleteModalOpen(false)}
-        />
-      )}
-
-      {/* 일정 추가 모달 */}
-      {activeModal === "empty" && (
-        <Overlay onClick={handleOutsideClick} onTouchEnd={handleTouchEnd}>
-          <BottomSheet
-            ref={modalRef}
-            isClosing={isClosing}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-          >
-            <SheetContent>
-              <Line />
-              <Button onClick={openAddSchedule}>내 일정 추가</Button>
-              <CommonButton onClick={openAddCoupleSchedule}>
-                공통 일정 추가
-              </CommonButton>
-            </SheetContent>
-          </BottomSheet>
-        </Overlay>
-      )}
-
-      {/* 공통 일정 변경 모달  */}
-      {isChangeCommonModalOpen && (
-        <OneBtnModal
-          title="공통 일정으로 변경되었습니다."
-          description=""
-          imageSrc={coupleEmoji}
-          confirmText="확인"
-          onConfirm={handleChangeCommonSchedule}
-        />
-      )}
-
-      {isEmojiModalOpen && (
-        <EmojiModal
-          onSelectEmoji={handleSelectEmoji}
-          onClose={() => setIsEmojiModalOpen(false)}
-        />
-      )}
+      {/* 모달  */}
+      <TimeTableModals
+        activeModal={activeModal}
+        selectedSchedule={selectedSchedule}
+        isDeleteModalOpen={isDeleteModalOpen}
+        setIsDeleteModalOpen={setIsDeleteModalOpen}
+        openDeleteModal={openDeleteModal}
+        openChangeCommonScheduleModal={openChangeCommonScheduleModal}
+        isChangeCommonModalOpen={isChangeCommonModalOpen}
+        setIsCommonModalOpen={setIsChangeCommonModalOpen}
+        isEmojiModalOpen={isEmojiModalOpen}
+        onClose={closeModal}
+        onDeleteSchedule={handleDeleteSchedule}
+        onConfirmCommonSchedule={handleChangeCommonSchedule}
+        onSelectEmoji={handleSelectEmoji}
+        handleEditSchedule={handleEditSchedule}
+        handleEditRequest={handleEditRequest}
+        handleEmojiModalOpen={handleEmojiModalOpen}
+        openAddSchedule={openAddSchedule}
+        openAddCoupleSchedule={openAddCoupleSchedule}
+        myScheduleList={myScheduleList || []}
+        partnerScheduleList={partnerScheduleList || []}
+        commonScheduleList={commonScheduleList || []}
+      />
     </>
   );
 };
@@ -489,89 +408,4 @@ const BusyTag = styled.div<{ backgroundColor: string }>`
   margin-top: 3px;
   margin-right: 2px;
   background-color: ${({ backgroundColor }) => backgroundColor};
-`;
-
-// 모달
-const BottomSheet = styled.div<{ isClosing: boolean }>`
-  position: fixed;
-  bottom: 0;
-  width: 85%;
-  background: #fff;
-  border-radius: 20px 20px 0px 0px;
-  border: 1px solid #f25454;
-  box-shadow: 0px -2px 4px 0px rgba(0, 0, 0, 0.25);
-  padding: 20px;
-  animation: slide-up 0.3s ease-out;
-  z-index: 5;
-  height: 235px;
-  animation: ${({ isClosing }) => (isClosing ? slideDown : slideUp)} 0.3s
-    ease-out forwards;
-`;
-
-const Overlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  z-index: 10;
-`;
-
-const SheetContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  gap: 12px;
-`;
-
-const Line = styled.div`
-  width: 53px;
-  height: 5px;
-  margin: 0 auto;
-  border-radius: 30px;
-  background: var(--Secondary, #ffcfc7);
-
-  margin-bottom: 40px;
-`;
-
-const Button = styled.button`
-  padding: 12px 0px 13px 0px;
-  border-radius: 10px;
-  background: #fff;
-  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
-
-  color: var(--Black, #3b3634);
-  text-align: center;
-  font-family: SUIT;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-`;
-
-const CommonButton = styled(Button)`
-  background: var(--Secondary, #ffcfc7);
-`;
-
-const slideUp = keyframes`
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0%);
-  }
-`;
-
-const slideDown = keyframes`
-  from {
-    transform: translateY(0%);
-  }
-  to {
-    transform: translateY(100%);
-  }
 `;
