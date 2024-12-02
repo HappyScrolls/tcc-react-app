@@ -20,13 +20,14 @@ const ScheduleForm: React.FC<FormProps> = ({
       groupGenderType: "혼성",
       scheduleStartAt: "",
       scheduleEndAt: "",
-      scheduleAt: "",
       isCommon: false,
       status: "미완료",
     }
   );
 
   useEffect(() => {
+    console.log(initialFormData);
+    console.log(formData);
     if (initialFormData) {
       setFormData(initialFormData);
     }
@@ -36,7 +37,17 @@ const ScheduleForm: React.FC<FormProps> = ({
   const daysOfWeek = ["월", "화", "수", "목", "금", "토"];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (e.target.name === "scheduleStartAt" || e.target.name === "scheduleEndAt") {
+      const currentDate = formData[e.target.name].split('T')[0];
+      const newTime = `${e.target.value}:00`; 
+      setFormData({ 
+        ...formData, 
+        [e.target.name]: `${currentDate}T${newTime}` 
+      });
+      console.log(formData);
+    } else {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+    }
   };
 
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,9 +61,6 @@ const ScheduleForm: React.FC<FormProps> = ({
   const handleSave = () => {
     const requestBody = {
       ...formData,
-      scheduleStartAt: `${date}T${formData.scheduleStartAt}`,
-      scheduleEndAt: `${date}T${formData.scheduleEndAt}`,
-      scheduleAt: date,
       isCommon: isCoupleSchedule ? true : false,
     };
 

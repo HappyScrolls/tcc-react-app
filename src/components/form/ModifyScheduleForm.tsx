@@ -19,7 +19,6 @@ const ModifyScheduleForm: React.FC<FormProps> = ({
       groupGenderType: "혼성",
       scheduleStartAt: "",
       scheduleEndAt: "",
-      scheduleAt: "",
       isCommon: false,
       status: "미완료",
     }
@@ -35,6 +34,7 @@ const ModifyScheduleForm: React.FC<FormProps> = ({
   );
 
   const handleSave = () => {
+    console.log(formData);
     const updatedData = {
       ...formData,
       groupGenderType: gender,

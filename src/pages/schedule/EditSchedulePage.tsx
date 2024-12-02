@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { CoupleInfo } from "../../types/ICoupleInfo";
 import CoupleAndDateInfoHeader from "./components/CoupleAndDateInfoHeader";
 import ScheduleForm from "./components/ScheduleForm";
-import { ScheduleData } from "../../types/ISchedule";
+import { ModifyScheduleRequest, ScheduleData } from "../../types/ISchedule";
 import { formatDateHyphen } from "../../utils/date";
 import { useModifySchedule } from "../../hooks/useModifySchedule";
 
@@ -27,7 +27,18 @@ const EditSchedulePage = () => {
     });
 
     modifySchedule(
-      { scheduleNo: schedule.scheduleNo!, formData },
+      {         
+        scheduleNo: schedule.scheduleNo!, 
+        formData: { 
+          busyLevel: formData.busyLevel,
+          scheduleName: formData.scheduleName,
+          scheduleLocation: formData.scheduleLocation,
+          scheduleWith: formData.scheduleWith,
+          groupGenderType: formData.groupGenderType,
+          scheduleStartAt: formData.scheduleStartAt,
+          scheduleEndAt: formData.scheduleEndAt,
+          isCommon: formData.isCommon
+        }as ModifyScheduleRequest  },
       {
         onSuccess: () => {
           navigate(-1);
