@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { modifySchedule } from "../api/schedule/scheduleAPI";
 import { AxiosError } from "axios";
-import { ScheduleData } from "../types/ISchedule";
+import { ModifyScheduleRequest } from "../types/ISchedule";
 
 export const useModifySchedule = () => {
   return useMutation({
@@ -10,7 +10,7 @@ export const useModifySchedule = () => {
       formData,
     }: {
       scheduleNo: number;
-      formData: ScheduleData;
+      formData: ModifyScheduleRequest;
     }) => modifySchedule(scheduleNo, formData),
     onError: (error: unknown) => {
       if (error instanceof AxiosError) {

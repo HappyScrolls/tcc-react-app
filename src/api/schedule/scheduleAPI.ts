@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ScheduleData } from "../../types/ISchedule";
+import { ModifyScheduleRequest, ScheduleData } from "../../types/ISchedule";
 import { ApiResponse } from "../ApiResponse";
 import { scheduleAxiosInstance } from "../axios";
 
@@ -46,6 +46,7 @@ export const fetchMyScheduleList = async (
     const response = await scheduleAxiosInstance.get(
       `/schedule?searchDate=${searchDate}`
     );
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("내 일정 리스트 조회 중 오류 발생:", error);
@@ -143,9 +144,10 @@ export const changeCommonSchedule = async (scheduleNo: number) => {
 // 일정 수정
 export const modifySchedule = async (
   scheduleNo: number,
-  formData: ScheduleData
+  formData: ModifyScheduleRequest
 ) => {
   try {
+    console.log(formData);
     const response = await scheduleAxiosInstance.put(
       `/schedule/${scheduleNo}`,
       formData
