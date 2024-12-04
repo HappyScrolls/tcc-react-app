@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import phone from "../../../images/calendar/phone.svg";
-import nophone from "../../../images/calendar/nophone.svg";
+
 import FormProps from "../../../types/IFormProps";
 import BusyLevelSelector from "./BusyLevelSelector";
 import { ScheduleData } from "../../../types/ISchedule";
@@ -33,7 +32,7 @@ const ScheduleForm: React.FC<FormProps> = ({
   }, [initialFormData]);
 
   console.log("커플일정여부: ", isCoupleSchedule);
-  const daysOfWeek = ["월", "화", "수", "목", "금", "토"];
+  // const daysOfWeek = ["월", "화", "수", "목", "금", "토"];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (
