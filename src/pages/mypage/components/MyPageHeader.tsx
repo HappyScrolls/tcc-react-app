@@ -1,17 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import setting from "../../../images/mypage/setting.svg";
+import SettingModal from "../../../components/modal/SettingModal";
 
 const MyPageHeader = () => {
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const handleLogout = () => {
+    console.log("로그아웃");
+    setModalOpen(false);
+  };
+
+  const handleDeleteCoupleProfile = () => {
+    console.log("커플 프로필 삭제");
+    setModalOpen(false);
+  };
+
+  const handleWithdraw = () => {
+    console.log("회원 탈퇴");
+    setModalOpen(false);
+  };
+
   return (
     <>
       <HeaderContainer>
         <HeaderText>MY PAGE</HeaderText>
         <ButtonDiv>
-          <Button>
+          <Button onClick={() => setModalOpen(true)}>
             <ButtonIcon src={setting}></ButtonIcon>
           </Button>
         </ButtonDiv>
+
+        {isModalOpen && (
+          <SettingModal
+            onLogout={handleLogout}
+            onDeleteCoupleProfile={handleDeleteCoupleProfile}
+            onWithdraw={handleWithdraw}
+            onClose={() => setModalOpen(false)}
+          />
+        )}
       </HeaderContainer>
     </>
   );
