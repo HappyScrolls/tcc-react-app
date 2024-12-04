@@ -161,3 +161,24 @@ export const modifySchedule = async (
     throw new Error(`일정 수정 실패 : ${error}`);
   }
 };
+
+// 일정 수정 요청
+
+export const modifyScheduleRequest = async (
+  formData: ModifyScheduleRequest
+) => {
+  try {
+    console.log(formData);
+    const response = await scheduleAxiosInstance.put(
+      "/schedule/modify-request",
+      formData
+    );
+    return response.data;
+  } catch (error) {
+    console.error("일정 수정 요청 중 오류 발생:", error);
+    if (axios.isAxiosError(error) && error.response) {
+      console.warn(`에러 상태 코드: ${error.response.status}`);
+    }
+    throw new Error(`일정 수정 요청 실패 : ${error}`);
+  }
+};

@@ -1,5 +1,3 @@
-import {format} from "url";
-
 export type ScheduleData = {
   scheduleNo?: number;
   accountNo?: number;

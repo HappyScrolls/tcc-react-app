@@ -1,30 +1,26 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
 import styled from "styled-components";
-import { ScheduleData } from "../../types/ISchedule";
-import FormProps from "../../types/IFormProps";
-import phoneIcon from "../../images/calendar/phone.svg";
-import noPhoneIcon from "../../images/calendar/nophone.svg";
+import { ModifyScheduleRequest } from "../../types/ISchedule";
+import { ModifyFormProps } from "../../types/IFormProps";
+import { useNavigate } from "react-router-dom";
 
-const ModifyScheduleForm: React.FC<FormProps> = ({
+const ModifyScheduleForm: React.FC<ModifyFormProps> = ({
   onSave,
   initialFormData,
 }) => {
-  const [formData, setFormData] = useState<ScheduleData>(
-    initialFormData || {
-      busyLevel: "여유",
-      scheduleName: "",
-      scheduleLocation: "",
-      scheduleWith: "",
-      groupGenderType: "혼성",
-      scheduleStartAt: "",
-      scheduleEndAt: "",
-      isCommon: false,
-      status: "미완료",
-    }
-  );
+  const navigate = useNavigate();
 
-  console.log(formData);
+  const [formData] = useState<ModifyScheduleRequest>({
+    busyLevel: initialFormData?.busyLevel || "여유",
+    scheduleName: initialFormData?.scheduleName || "",
+    scheduleLocation: initialFormData?.scheduleLocation || "",
+    scheduleWith: initialFormData?.scheduleWith || "",
+    groupGenderType: initialFormData?.groupGenderType || "혼성",
+    scheduleStartAt: initialFormData?.scheduleStartAt || "",
+    scheduleEndAt: initialFormData?.scheduleEndAt || "",
+    isCommon: initialFormData?.isCommon || false,
+  });
+
   const [gender, setGender] = useState(formData.groupGenderType || "혼성");
   const [startTime, setStartTime] = useState(
     formData.scheduleStartAt.split("T")[1] || ""
@@ -33,16 +29,18 @@ const ModifyScheduleForm: React.FC<FormProps> = ({
     formData.scheduleEndAt.split("T")[1] || ""
   );
 
+  const handleCancel = () => {
+    navigate(-1);
+  };
+
   const handleSave = () => {
-    console.log(formData);
-    const updatedData = {
+    const updatedData: ModifyScheduleRequest = {
       ...formData,
       groupGenderType: gender,
       scheduleStartAt: `${formData.scheduleStartAt.split("T")[0]}T${startTime}`,
       scheduleEndAt: `${formData.scheduleEndAt.split("T")[0]}T${endTime}`,
     };
 
-    console.log("수정된 데이터:", updatedData);
     onSave(updatedData);
   };
 
@@ -64,7 +62,6 @@ const ModifyScheduleForm: React.FC<FormProps> = ({
       </InputContainer>
 
       {/* 성별 */}
-
       <RadioGroup>
         <RadioWrapper>
           <RadioButton
@@ -88,7 +85,6 @@ const ModifyScheduleForm: React.FC<FormProps> = ({
           />
           <SmallLabel>남성</SmallLabel>
         </RadioWrapper>
-
         <RadioWrapper>
           <RadioButton
             type="radio"
@@ -101,27 +97,6 @@ const ModifyScheduleForm: React.FC<FormProps> = ({
           <SmallLabel>여성</SmallLabel>
         </RadioWrapper>
       </RadioGroup>
-
-      {/* 수정 전 시간 */}
-      <InputContainer>
-        <Label>수정 전 시간</Label>
-        <TimeWrapper>
-          <Wrapper>
-            <Label>시작</Label>
-            <TimeInput
-              type="read-only"
-              value={formData.scheduleStartAt.split("T")[1]}
-            />
-          </Wrapper>
-          <Wrapper>
-            <Label>끝</Label>
-            <TimeInput
-              type="read-only"
-              value={formData.scheduleEndAt.split("T")[1]}
-            />
-          </Wrapper>
-        </TimeWrapper>
-      </InputContainer>
 
       {/* 수정 요청 시간 */}
       <InputContainer>
@@ -146,16 +121,8 @@ const ModifyScheduleForm: React.FC<FormProps> = ({
         </TimeWrapper>
       </InputContainer>
 
-      {/* 핸드폰 사용 여부 */}
-      <InputContainer>
-        <IconWrapper>
-          <PhoneIcon src={phoneIcon} alt="핸드폰 사용 가능" />
-          <PhoneIcon src={noPhoneIcon} alt="핸드폰 사용 불가능" />
-        </IconWrapper>
-      </InputContainer>
-
       <ButtonContainer>
-        <CancelButton>이전</CancelButton>
+        <CancelButton onClick={handleCancel}></CancelButton>
         <SaveButton onClick={handleSave}>수정 요청하기</SaveButton>
       </ButtonContainer>
     </FormContainer>
@@ -289,29 +256,29 @@ const TimeInput = styled.input`
   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
 `;
 
-const IconWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
+// const IconWrapper = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   gap: 12px;
 
-  margin-top: 10px;
-`;
+//   margin-top: 10px;
+// `;
 
-const PhoneIcon = styled.img`
-  display: flex;
-  width: 50px;
-  height: 50px;
-  padding: 6.667px 8.333px 8.333px 6.667px;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
+// const PhoneIcon = styled.img`
+//   display: flex;
+//   width: 50px;
+//   height: 50px;
+//   padding: 6.667px 8.333px 8.333px 6.667px;
+//   justify-content: center;
+//   align-items: center;
+//   flex-shrink: 0;
 
-  border-radius: 166.667px;
-  background: #fff;
+//   border-radius: 166.667px;
+//   background: #fff;
 
-  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
-`;
+//   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
+// `;
 
 const ButtonContainer = styled.div`
   display: flex;

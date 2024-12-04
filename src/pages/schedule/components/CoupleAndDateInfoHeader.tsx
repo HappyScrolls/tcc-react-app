@@ -2,13 +2,14 @@ import React from "react";
 import { styled } from "styled-components";
 import { calculateDaysTogether, formatDateDot } from "../../../utils/date";
 import { CoupleInfo } from "../../../types/ICoupleInfo";
+import { isInvalidCoupleInfo } from "../../../utils/coupleCheck";
 
-interface AddScheduleHeaderProps {
+interface CoupleAndDateInfoHeadeProps {
   selectedDate: string;
   coupleInfo?: CoupleInfo;
 }
 
-const CoupleAndDateInfoHeader: React.FC<AddScheduleHeaderProps> = ({
+const CoupleAndDateInfoHeader: React.FC<CoupleAndDateInfoHeadeProps> = ({
   selectedDate,
   coupleInfo,
 }) => {
@@ -17,9 +18,11 @@ const CoupleAndDateInfoHeader: React.FC<AddScheduleHeaderProps> = ({
       <DateInfo>
         <DateText>{formatDateDot(selectedDate)}</DateText>
         <DdayText>
-          {coupleInfo
-            ? `D+${calculateDaysTogether(coupleInfo.startedAt)}❤️`
-            : "커플로 등록해주세요!"}
+          {!coupleInfo
+            ? "커플로 등록해주세요!"
+            : isInvalidCoupleInfo(coupleInfo)
+              ? "커플 정보를 등록해주세요!"
+              : `D+${calculateDaysTogether(coupleInfo.startedAt)}❤️`}
         </DdayText>
       </DateInfo>
     </AddScheduleHeaderBox>
