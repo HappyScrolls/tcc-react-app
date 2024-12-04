@@ -386,6 +386,7 @@ const ScheduleName = styled.div`
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+  max-width: calc(100% - 12px);
 `;
 
 const CommonScheduleItem = styled(ScheduleItem)`
