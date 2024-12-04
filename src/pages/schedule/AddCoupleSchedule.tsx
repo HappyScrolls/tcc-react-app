@@ -21,13 +21,20 @@ const AddCoupleSchedule = () => {
       onSuccess: () => {
         navigate(`/calendar/${date}`);
       },
+      onError: (error: any) => {
+        console.error("저장 실패:", error);
+        alert("일정 저장 중 오류가 발생했습니다. 다시 시도해주세요.");
+      },
     });
   };
   return (
     <>
       <Suspense fallback={<div>Loading...</div>}>
         {date && (
-          <CoupleAndDateInfoHeader selectedDate={date} coupleInfo={coupleInfo} />
+          <CoupleAndDateInfoHeader
+            selectedDate={date}
+            coupleInfo={coupleInfo}
+          />
         )}
         <ScheduleForm onSave={handleSaveSchedule} isCoupleSchedule={true} />
       </Suspense>

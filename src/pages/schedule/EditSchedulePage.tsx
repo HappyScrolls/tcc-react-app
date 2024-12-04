@@ -27,9 +27,9 @@ const EditSchedulePage = () => {
     });
 
     modifySchedule(
-      {         
-        scheduleNo: schedule.scheduleNo!, 
-        formData: { 
+      {
+        scheduleNo: schedule.scheduleNo!,
+        formData: {
           busyLevel: formData.busyLevel,
           scheduleName: formData.scheduleName,
           scheduleLocation: formData.scheduleLocation,
@@ -37,8 +37,9 @@ const EditSchedulePage = () => {
           groupGenderType: formData.groupGenderType,
           scheduleStartAt: formData.scheduleStartAt,
           scheduleEndAt: formData.scheduleEndAt,
-          isCommon: formData.isCommon
-        }as ModifyScheduleRequest  },
+          isCommon: formData.isCommon,
+        } as ModifyScheduleRequest,
+      },
       {
         onSuccess: () => {
           navigate(-1);

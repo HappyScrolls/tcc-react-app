@@ -27,7 +27,6 @@ const ScheduleForm: React.FC<FormProps> = ({
 
   useEffect(() => {
     console.log(initialFormData);
-    console.log(formData);
     if (initialFormData) {
       setFormData(initialFormData);
     }
@@ -37,12 +36,15 @@ const ScheduleForm: React.FC<FormProps> = ({
   const daysOfWeek = ["월", "화", "수", "목", "금", "토"];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.name === "scheduleStartAt" || e.target.name === "scheduleEndAt") {
-      const currentDate = formData[e.target.name].split('T')[0];
-      const newTime = `${e.target.value}:00`; 
-      setFormData({ 
-        ...formData, 
-        [e.target.name]: `${currentDate}T${newTime}` 
+    if (
+      e.target.name === "scheduleStartAt" ||
+      e.target.name === "scheduleEndAt"
+    ) {
+      const currentDate = formData[e.target.name].split("T")[0];
+      const newTime = `${e.target.value}:00`;
+      setFormData({
+        ...formData,
+        [e.target.name]: `${currentDate}T${newTime}`,
       });
       console.log(formData);
     } else {
@@ -54,9 +56,6 @@ const ScheduleForm: React.FC<FormProps> = ({
     const genderValue = e.target.value as "혼성" | "남성" | "여성";
     setFormData({ ...formData, groupGenderType: genderValue });
   };
-
-  const currentUrl = window.location.pathname;
-  const date = currentUrl.split("/")[2];
 
   const handleSave = () => {
     const requestBody = {
@@ -165,24 +164,24 @@ const ScheduleForm: React.FC<FormProps> = ({
         </Wrapper>
       </TimeInputContainer>
       {/* 반복, 요일  */}
-      <WeekWrapper>
-        <RadioGroup>
+      {/* <WeekWrapper> */}
+      {/* <RadioGroup>
           <RadioButton type="radio" name="repeat" value="반복 없음" />
           <SmallLabel> 반복 없음</SmallLabel>
           <RadioButton type="radio" name="repeat" value="매주 반복" />
           <SmallLabel> 매주 반복</SmallLabel>
           <RadioButton type="radio" name="repeat" value="매달 반복" />
           <SmallLabel> 매달 반복</SmallLabel>
-        </RadioGroup>
+        </RadioGroup> */}
 
-        {/* 요일 선택 */}
-        <DaySelectionContainer>
+      {/* 요일 선택 */}
+      {/* <DaySelectionContainer>
           {daysOfWeek.map((day) => (
             <DayButton key={day}>{day}</DayButton>
           ))}
-        </DaySelectionContainer>
+        </DaySelectionContainer> */}
 
-        <RepeatEndContainer>
+      {/* <RepeatEndContainer>
           <RadioGroup>
             <RadioButton type="radio" name="repeatEnd" value="없음" />
             없음
@@ -193,15 +192,18 @@ const ScheduleForm: React.FC<FormProps> = ({
             <RadioButton type="radio" name="repeatEnd" value="1달 후" />
             <DateInput type="date" />
           </RadioGroup>
-        </RepeatEndContainer>
-      </WeekWrapper>
-      {!isCoupleSchedule && (
+        </RepeatEndContainer> */}
+      {/* </WeekWrapper> */}
+
+      {/* {!isCoupleSchedule && (
         <PhoneWrapper>
           <Phone src={phone} />
           <Phone src={nophone} />
         </PhoneWrapper>
-      )}
+      )} */}
+
       <ButtonContainer>
+        <CancelButton>이전</CancelButton>
         <SaveButton onClick={handleSave}>저장하기</SaveButton>
       </ButtonContainer>
     </FormContainer>
@@ -301,7 +303,8 @@ const TimeInput = styled(Input)`
 
 const ButtonContainer = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 19px;
 `;
 
 const RadioGroup = styled.div`
@@ -346,9 +349,28 @@ const RadioButton = styled.input`
   }
 `;
 
+const CancelButton = styled.button`
+  padding: 13px 0px 12px 0px;
+  width: 40%;
+
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
+
+  text-align: center;
+  font-family: SUIT;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+
 const SaveButton = styled.button`
   padding: 13px 0px 12px 0px;
-  width: 80%;
+  width: 40%;
 
   justify-content: center;
   align-items: center;
@@ -368,67 +390,67 @@ const SaveButton = styled.button`
   line-height: normal;
 `;
 
-const WeekWrapper = styled.div`
-  width: 80%;
-  margin: 0 auto;
-  padding: 15px;
-  border-radius: 20px;
-  background: var(--Secondary, #ffcfc7);
-  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
-`;
+// const WeekWrapper = styled.div`
+//   width: 80%;
+//   margin: 0 auto;
+//   padding: 15px;
+//   border-radius: 20px;
+//   background: var(--Secondary, #ffcfc7);
+//   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
+// `;
 
-const DaySelectionContainer = styled.div`
-  display: flex;
-  margin-top: 10px;
-  justify-content: space-around;
-`;
+// const DaySelectionContainer = styled.div`
+//   display: flex;
+//   margin-top: 10px;
+//   justify-content: space-around;
+// `;
 
-const DayButton = styled.button`
-  padding: 5px 10px;
-  justify-content: center;
-  align-items: center;
-  width: 26px;
-  border-radius: 10px;
+// const DayButton = styled.button`
+//   padding: 5px 10px;
+//   justify-content: center;
+//   align-items: center;
+//   width: 26px;
+//   border-radius: 10px;
 
-  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
-  text-align: center;
-  font-family: SUIT;
-  font-size: 8px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-`;
+//   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
+//   text-align: center;
+//   font-family: SUIT;
+//   font-size: 8px;
+//   font-style: normal;
+//   font-weight: 400;
+//   line-height: normal;
+// `;
 
-const RepeatEndContainer = styled.div`
-  margin-top: 20px;
-`;
+// const RepeatEndContainer = styled.div`
+//   margin-top: 20px;
+// `;
 
-const DateInput = styled.input`
-  padding: 5px 7px;
-  border-radius: 10px;
-  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
-`;
+// const DateInput = styled.input`
+//   padding: 5px 7px;
+//   border-radius: 10px;
+//   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
+// `;
 
-const PhoneWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
+// const PhoneWrapper = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   gap: 12px;
 
-  margin-top: 10px;
-`;
+//   margin-top: 10px;
+// `;
 
-const Phone = styled.img`
-  display: flex;
-  width: 50px;
-  height: 50px;
-  padding: 6.667px 8.333px 8.333px 6.667px;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
+// const Phone = styled.img`
+//   display: flex;
+//   width: 50px;
+//   height: 50px;
+//   padding: 6.667px 8.333px 8.333px 6.667px;
+//   justify-content: center;
+//   align-items: center;
+//   flex-shrink: 0;
 
-  border-radius: 166.667px;
-  background: #fff;
+//   border-radius: 166.667px;
+//   background: #fff;
 
-  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
-`;
+//   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
+// `;
