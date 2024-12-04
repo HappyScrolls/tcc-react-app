@@ -8,6 +8,10 @@ import { useNavigate } from "react-router-dom";
 const Header = () => {
   const navigate = useNavigate();
 
+  const handleBackButton = () => {
+    navigate(-1);
+  };
+
   const handleButton = () => {
     navigate("/notification");
   };
@@ -19,7 +23,7 @@ const Header = () => {
     <>
       <HeaderContainer>
         <Wrapper>
-          <BackButton src={backButton} />
+          <BackButton onClick={handleBackButton} src={backButton} />
           <Logo onClick={handleLogoButton} src={logo} />
         </Wrapper>
         <NotificationButton onClick={handleButton} src={notificationIcon} />

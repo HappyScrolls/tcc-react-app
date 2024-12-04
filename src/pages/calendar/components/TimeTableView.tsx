@@ -357,7 +357,7 @@ const CommonScheduleColumn = styled.div`
 const ScheduleItem = styled.div<ScheduleItemProps>`
   position: absolute;
   top: ${({ top }) => top}px;
-  height: ${({ height }) => height}px;
+  height: ${({ height }) => Math.max(height, 13)}px;
   width: ${({ $isCommon }) => ($isCommon ? "300%" : "150%")};
   left: ${({ $isCommon }) => ($isCommon ? "auto" : "auto")};
   right: ${({ $isPartner }) => ($isPartner ? "0" : "auto")};
@@ -386,6 +386,7 @@ const ScheduleName = styled.div`
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+  max-width: calc(100% - 12px);
 `;
 
 const CommonScheduleItem = styled(ScheduleItem)`
