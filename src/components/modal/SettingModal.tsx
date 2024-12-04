@@ -1,11 +1,17 @@
 import React from "react";
 import styled from "styled-components";
+import { CoupleInfo } from "../../types/ICoupleInfo";
+import {
+  isInvalidCoupleInfo,
+  isValidCoupleInfo,
+} from "../../utils/coupleCheck";
 
 interface SettingModalProps {
   onLogout: () => void;
   onDeleteCoupleProfile: () => void;
   onWithdraw: () => void;
   onClose: () => void;
+  coupleInfo: CoupleInfo | null;
 }
 
 const SettingModal: React.FC<SettingModalProps> = ({
@@ -13,7 +19,11 @@ const SettingModal: React.FC<SettingModalProps> = ({
   onDeleteCoupleProfile,
   onWithdraw,
   onClose,
+  coupleInfo,
 }) => {
+  const validCoupleInfo = isValidCoupleInfo(coupleInfo);
+  const invalidCoupleInfo = isInvalidCoupleInfo(coupleInfo);
+
   return (
     <ModalOverlay>
       <ModalContent>
@@ -22,9 +32,17 @@ const SettingModal: React.FC<SettingModalProps> = ({
           <ActionButton buttonType="default" onClick={onLogout}>
             로그아웃
           </ActionButton>
-          <ActionButton buttonType="delete" onClick={onDeleteCoupleProfile}>
-            💔 커플 프로필 삭제하기
-          </ActionButton>
+
+          {invalidCoupleInfo && (
+            <ActionButton buttonType="delete" onClick={onDeleteCoupleProfile}>
+              💔 애인 정보 삭제하기
+            </ActionButton>
+          )}
+          {validCoupleInfo && (
+            <ActionButton buttonType="delete" onClick={onDeleteCoupleProfile}>
+              💔 커플 프로필 삭제하기
+            </ActionButton>
+          )}
           <ActionButton buttonType="withdraw" onClick={onWithdraw}>
             회원 탈퇴
           </ActionButton>
