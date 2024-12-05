@@ -123,7 +123,7 @@ const ModifyScheduleForm: React.FC<ModifyFormProps> = ({
       </InputContainer>
 
       <ButtonContainer>
-        <CancelButton onClick={handleCancel}></CancelButton>
+        <CancelButton onClick={handleCancel}>이전</CancelButton>
         <SaveButton onClick={handleSave}>수정 요청하기</SaveButton>
       </ButtonContainer>
     </FormContainer>
