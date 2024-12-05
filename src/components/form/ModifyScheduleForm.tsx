@@ -239,7 +239,6 @@ const TimeWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   align-content: center;
-  gap: 45px;
 `;
 
 const InputDesign = styled.div`
@@ -255,6 +254,7 @@ const TimeInput = styled.input`
   width: 120px;
   justify-content: center;
   align-items: center;
+  background: transparent;
   color: var(--Black, #3b3634);
   text-align: center;
   font-family: SUIT;
@@ -262,6 +262,7 @@ const TimeInput = styled.input`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  padding: 0;
 `;
 
 // const IconWrapper = styled.div`
