@@ -21,11 +21,6 @@ const EditSchedulePage = () => {
   const { mutate: modifySchedule } = useModifySchedule();
 
   const handleSave = (formData: ScheduleData) => {
-    console.log("수정 요청 데이터:", {
-      scheduleNo: schedule.scheduleNo,
-      formData,
-    });
-
     modifySchedule(
       {
         scheduleNo: schedule.scheduleNo!,

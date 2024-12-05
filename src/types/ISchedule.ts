@@ -1,6 +1,5 @@
 export type ScheduleData = {
   scheduleNo?: number;
-  accountNo?: number;
   busyLevel: BusyLevel;
   scheduleName: string;
   scheduleLocation: string;

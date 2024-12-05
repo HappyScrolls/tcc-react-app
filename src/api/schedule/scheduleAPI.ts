@@ -163,7 +163,6 @@ export const modifySchedule = async (
 };
 
 // 일정 수정 요청
-
 export const modifyScheduleRequest = async (
   formData: ModifyScheduleRequest
 ) => {

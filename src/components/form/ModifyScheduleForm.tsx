@@ -4,6 +4,7 @@ import { ModifyScheduleRequest } from "../../types/ISchedule";
 import { ModifyFormProps } from "../../types/IFormProps";
 import { useNavigate } from "react-router-dom";
 
+// 수정 요청
 const ModifyScheduleForm: React.FC<ModifyFormProps> = ({
   onSave,
   initialFormData,

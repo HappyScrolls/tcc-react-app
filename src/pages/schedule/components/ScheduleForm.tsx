@@ -4,12 +4,18 @@ import styled from "styled-components";
 import FormProps from "../../../types/IFormProps";
 import BusyLevelSelector from "./BusyLevelSelector";
 import { ScheduleData } from "../../../types/ISchedule";
+import { formatDateAndTime, formatToTime } from "../../../utils/date";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const ScheduleForm: React.FC<FormProps> = ({
   onSave,
   initialFormData,
   isCoupleSchedule,
 }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const date = location.pathname.split("/")[2];
+
   const [formData, setFormData] = useState<ScheduleData>(
     initialFormData || {
       busyLevel: "여유",
@@ -17,10 +23,10 @@ const ScheduleForm: React.FC<FormProps> = ({
       scheduleLocation: "",
       scheduleWith: "",
       groupGenderType: "혼성",
-      scheduleStartAt: "",
-      scheduleEndAt: "",
-      isCommon: false,
-      status: "미완료",
+      scheduleStartAt: `${date}T00:00:00`,
+      scheduleEndAt: `${date}T00:00:00`,
+      isCommon: isCoupleSchedule || false,
+      status: "",
     }
   );
 
@@ -31,29 +37,30 @@ const ScheduleForm: React.FC<FormProps> = ({
     }
   }, [initialFormData]);
 
-  console.log("커플일정여부: ", isCoupleSchedule);
   // const daysOfWeek = ["월", "화", "수", "목", "금", "토"];
 
+  // 시간 입력 핸들러
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (
-      e.target.name === "scheduleStartAt" ||
-      e.target.name === "scheduleEndAt"
-    ) {
-      const currentDate = formData[e.target.name].split("T")[0];
-      const newTime = `${e.target.value}:00`;
+    const { name, value } = e.target;
+
+    if (name === "scheduleStartAt" || name === "scheduleEndAt") {
+      const currentDate =
+        initialFormData?.scheduleStartAt.split("T")[0] || date;
+
       setFormData({
         ...formData,
-        [e.target.name]: `${currentDate}T${newTime}`,
+        [name]: formatDateAndTime(currentDate, value),
       });
-      console.log(formData);
     } else {
-      setFormData({ ...formData, [e.target.name]: e.target.value });
+      setFormData({ ...formData, [name]: value });
     }
   };
 
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const genderValue = e.target.value as "혼성" | "남성" | "여성";
-    setFormData({ ...formData, groupGenderType: genderValue });
+    setFormData({
+      ...formData,
+      groupGenderType: e.target.value as "혼성" | "남성" | "여성",
+    });
   };
 
   const handleSave = () => {
@@ -64,6 +71,10 @@ const ScheduleForm: React.FC<FormProps> = ({
 
     console.log("입력한 데이터:", requestBody);
     onSave(requestBody);
+  };
+
+  const handleBack = () => {
+    navigate(-1);
   };
 
   return (
@@ -148,7 +159,7 @@ const ScheduleForm: React.FC<FormProps> = ({
           <TimeInput
             type="time"
             name="scheduleStartAt"
-            value={formData.scheduleStartAt.split("T")[1] || ""}
+            value={formatToTime(formData.scheduleStartAt)}
             onChange={handleChange}
           />
         </Wrapper>
@@ -157,7 +168,7 @@ const ScheduleForm: React.FC<FormProps> = ({
           <TimeInput
             type="time"
             name="scheduleEndAt"
-            value={formData.scheduleEndAt.split("T")[1] || ""}
+            value={formatToTime(formData.scheduleEndAt)}
             onChange={handleChange}
           />
         </Wrapper>
@@ -202,7 +213,7 @@ const ScheduleForm: React.FC<FormProps> = ({
       )} */}
 
       <ButtonContainer>
-        <CancelButton>이전</CancelButton>
+        <CancelButton onClick={handleBack}>이전</CancelButton>
         <SaveButton onClick={handleSave}>저장하기</SaveButton>
       </ButtonContainer>
     </FormContainer>

@@ -16,7 +16,7 @@ export const useModifySchedule = () => {
       scheduleNo: number;
       formData: ModifyScheduleRequest;
     }) => modifySchedule(scheduleNo, formData),
-    onError: (error: unknown) => {
+    onError: (error) => {
       if (error instanceof AxiosError) {
         if (error.response) {
           console.error(
@@ -24,13 +24,19 @@ export const useModifySchedule = () => {
             error.response.status,
             error.response.data
           );
+          alert(
+            `수정 실패: ${error.response.data.message || "알 수 없는 오류"}`
+          );
         } else if (error.request) {
-          console.error("Request failed 실패:", error.request);
+          console.error("요청 실패:", error.request);
+          alert("수정 실패: 서버로 요청이 전달되지 않았습니다.");
         } else {
-          console.error("Error message 에러:", error.message);
+          console.error("에러 메시지:", error.message);
+          alert(`수정 실패: ${error.message}`);
         }
       } else {
-        console.error("Unknown error:", error);
+        console.error("알 수 없는 에러:", error);
+        alert("수정 실패: 알 수 없는 에러가 발생했습니다.");
       }
     },
   });

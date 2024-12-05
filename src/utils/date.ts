@@ -135,3 +135,14 @@ export const createCalendarDates = (year: number, month: number) => {
 
   return datesArray;
 };
+
+// YYYY-MM-DDTHH:mm -> HH:mm 변환
+export const formatToTime = (datetime: string): string => {
+  const timeString = datetime.split("T")[1];
+  return timeString ? timeString.slice(0, 5) : "";
+};
+
+//  YYYY-MM-DDTHH:mm 변환
+export const formatDateAndTime = (date: string, time: string): string => {
+  return `${date}T${time}`;
+};
