@@ -105,19 +105,23 @@ const ModifyScheduleForm: React.FC<ModifyFormProps> = ({
         <TimeWrapper>
           <Wrapper>
             <Label>시작</Label>
-            <TimeInput
-              type="time"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-            />
+            <InputDesign>
+              <TimeInput
+                type="time"
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+              />
+            </InputDesign>
           </Wrapper>
           <Wrapper>
             <Label>끝</Label>
-            <TimeInput
-              type="time"
-              value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
-            />
+            <InputDesign>
+              <TimeInput
+                type="time"
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+              />
+            </InputDesign>
           </Wrapper>
         </TimeWrapper>
       </InputContainer>
@@ -238,11 +242,19 @@ const TimeWrapper = styled.div`
   gap: 45px;
 `;
 
+const InputDesign = styled.div`
+  display: inline-block;
+  margin-top: 3px;
+  padding: 15px 13px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
+`;
+
 const TimeInput = styled.input`
   width: 120px;
   justify-content: center;
   align-items: center;
-
   color: var(--Black, #3b3634);
   text-align: center;
   font-family: SUIT;
@@ -250,11 +262,6 @@ const TimeInput = styled.input`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-
-  padding: 15px 13px;
-  border-radius: 10px;
-  background: #fff;
-  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
 `;
 
 // const IconWrapper = styled.div`
@@ -305,6 +312,7 @@ const CancelButton = styled.button`
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
+  color: #3b3634;
   line-height: normal;
 `;
 
