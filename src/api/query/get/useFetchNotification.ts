@@ -2,13 +2,12 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { notificationAxiosInstance } from "../../axios";
 import { INotification } from "../../../types/INotification";
 
-const useFetchNotification = (): INotification[] => {
+export const useFetchNotification = (): INotification[] => {
   const getFetchNotification = async (): Promise<INotification[]> => {
     const response = await notificationAxiosInstance.get(
-      `notification-service/notification-list`
+      `/notification?page=0&size=100`
     );
-
-    return response.data;
+    return response.data.content;
   };
 
   const { data: notifications } = useSuspenseQuery({
@@ -18,5 +17,13 @@ const useFetchNotification = (): INotification[] => {
 
   return notifications;
 };
-
-export default useFetchNotification;
+export const readNotification = async (notificationNo: number)  => {
+  try {
+    const response = await notificationAxiosInstance.delete(
+        `/notification/${notificationNo}`
+    );
+    return;
+  } catch (error) {
+    console.error("메뉴를 읽는데 실패하였습니다.", error);
+  }
+};

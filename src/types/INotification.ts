@@ -1,8 +1,8 @@
 export interface INotification {
     notificationNo: number,
-    title: string,
-    body: string,
-    link: string,
+    message: string,
+    path?: string,
+    parameter?: string,
     isRead: boolean,
-    createdAt: string,
+    messagedAt: string,
 }
