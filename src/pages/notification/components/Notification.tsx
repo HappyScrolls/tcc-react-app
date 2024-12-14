@@ -2,17 +2,29 @@ import React from "react";
 import notificationIcon from "../../../images/notification/notificationIcon.svg";
 import { INotification } from "../../../types/INotification";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import {readNotification} from "../../../api/query/get/useFetchNotification";
+const Notification = ({ notificationNo,message,path, messagedAt, isRead }: INotification) => {
+  const navigate = useNavigate();
 
-const Notification = ({ title, body, createdAt, isRead }: INotification) => {
+  const handleClick = () => {
+    readNotification(notificationNo).then(()=>{
+          if (path) {
+            navigate(path);
+          }
+      }
+    )
+
+  };
   return (
     <>
-      <NotificationBtn isRead={isRead}>
+      <NotificationBtn isRead={isRead} onClick={handleClick}>
         <img src={notificationIcon} alt="icon" />
         <TextBox>
-          <Title>{title}</Title>
-          <Description>{body}</Description>
+          <Title>일정 생성</Title>
+          <Description>{message}</Description>
         </TextBox>
-        <TextSmall>{createdAt}</TextSmall>
+        <TextSmall>{messagedAt}</TextSmall>
       </NotificationBtn>
     </>
   );

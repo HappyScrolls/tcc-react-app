@@ -90,7 +90,12 @@ notificationAxiosInstance.interceptors.request.use(
 );
 
 notificationAxiosInstance.interceptors.response.use(
-  (response) => response,
+    (config) => {
+        const memberCode = localStorage.getItem("memberCode");
+        config.headers["Member-Code"] = memberCode;
+
+        return config;
+    },
   (error) => {
     if (error.response && error.response.status === 401) {
       //
