@@ -19,7 +19,7 @@ export const useFetchNotification = (): INotification[] => {
 };
 export const readNotification = async (notificationNo: number)  => {
   try {
-    const response = await notificationAxiosInstance.delete(
+    await notificationAxiosInstance.delete(
         `/notification/${notificationNo}`
     );
     return;
