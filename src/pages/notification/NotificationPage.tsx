@@ -30,6 +30,7 @@ const NotificationPage = () => {
                   <Notification
                       key={notification.notificationNo}
                       notificationNo={notification.notificationNo}
+                      type={notification.type}
                       message={notification.message}
                       messagedAt={notification.messagedAt}
                       isRead={notification.isRead}
@@ -48,6 +49,7 @@ const NotificationPage = () => {
                 <Notification
                   key={notification.notificationNo}
                   notificationNo={notification.notificationNo}
+                  type={notification.type}
                   message={notification.message}
                   messagedAt={notification.messagedAt}
                   isRead={notification.isRead}

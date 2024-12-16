@@ -168,8 +168,8 @@ export const modifyScheduleRequest = async (
 ) => {
   try {
     console.log(formData);
-    const response = await scheduleAxiosInstance.put(
-      "/schedule/modify-request",
+    const response = await scheduleAxiosInstance.post(
+      `/schedule/modify-request`,
       formData
     );
     return response.data;
@@ -179,5 +179,18 @@ export const modifyScheduleRequest = async (
       console.warn(`에러 상태 코드: ${error.response.status}`);
     }
     throw new Error(`일정 수정 요청 실패 : ${error}`);
+  }
+};
+
+export const fetchScheduleModifyRequest = async (
+    scheduleNo: number
+): Promise<ScheduleData | null> => {
+  try {
+    const response = await scheduleAxiosInstance.get(
+        `/schedule/modify-request/${scheduleNo}`
+    );
+    return response.data;
+  } catch (error) {
+    return null;
   }
 };

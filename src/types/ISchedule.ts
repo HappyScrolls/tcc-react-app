@@ -1,5 +1,5 @@
 export type ScheduleData = {
-  scheduleNo?: number;
+  scheduleNo: number;
   busyLevel: BusyLevel;
   scheduleName: string;
   scheduleLocation: string;
@@ -14,6 +14,7 @@ export type ScheduleData = {
 export type BusyLevel = "여유" | "보통" | "바쁨";
 
 export interface ModifyScheduleRequest {
+  scheduleNo:number;
   busyLevel: BusyLevel;
   scheduleName: string;
   scheduleLocation: string;

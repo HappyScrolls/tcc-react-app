@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import React, { Suspense } from "react";
+import React, {Suspense, useEffect, useState} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CoupleInfo } from "../../types/ICoupleInfo";
 import CoupleAndDateInfoHeader from "./components/CoupleAndDateInfoHeader";
@@ -7,13 +7,29 @@ import ScheduleForm from "./components/ScheduleForm";
 import { ModifyScheduleRequest, ScheduleData } from "../../types/ISchedule";
 import { formatDateHyphen } from "../../utils/date";
 import { useModifySchedule } from "../../hooks/useModifySchedule";
+import {fetchScheduleModifyRequest} from "../../api/schedule/scheduleAPI";
 
 const EditSchedulePage = () => {
   const location = useLocation();
   const {
-    schedule,
+    schedule: initialSchedule,
     isCoupleSchedule,
   }: { schedule: ScheduleData; isCoupleSchedule: boolean } = location.state;
+  const fromNotification = location.state?.fromNotification;
+  const [schedule, setSchedule] = useState<ScheduleData>(initialSchedule);
+
+  useEffect(() => {
+    const updateScheduleFromNotification = async () => {
+      if (fromNotification) {
+        const fetchedSchedule = await fetchScheduleModifyRequest(initialSchedule.scheduleNo);
+        if (fetchedSchedule) {
+          setSchedule(fetchedSchedule);
+        }
+      }
+    };
+
+    updateScheduleFromNotification();
+  }, [fromNotification,initialSchedule]);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const coupleInfo = queryClient.getQueryData<CoupleInfo>(["coupleInfo"]);

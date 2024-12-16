@@ -18,6 +18,7 @@ const ScheduleForm: React.FC<FormProps> = ({
 
   const [formData, setFormData] = useState<ScheduleData>(
     initialFormData || {
+        scheduleNo:1,
       busyLevel: "여유",
       scheduleName: "",
       scheduleLocation: "",

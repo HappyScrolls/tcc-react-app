@@ -12,6 +12,7 @@ const ModifyScheduleForm: React.FC<ModifyFormProps> = ({
   const navigate = useNavigate();
 
   const [formData] = useState<ModifyScheduleRequest>({
+    scheduleNo:initialFormData?.scheduleNo || 0,
     busyLevel: initialFormData?.busyLevel || "여유",
     scheduleName: initialFormData?.scheduleName || "",
     scheduleLocation: initialFormData?.scheduleLocation || "",
