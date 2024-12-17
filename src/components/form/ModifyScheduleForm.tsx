@@ -12,18 +12,18 @@ const ModifyScheduleForm: React.FC<ModifyFormProps> = ({
   const navigate = useNavigate();
 
   const [formData] = useState<ModifyScheduleRequest>({
-    scheduleNo:initialFormData?.scheduleNo || 0,
+    scheduleNo: initialFormData?.scheduleNo || 0,
     busyLevel: initialFormData?.busyLevel || "여유",
     scheduleName: initialFormData?.scheduleName || "",
     scheduleLocation: initialFormData?.scheduleLocation || "",
     scheduleWith: initialFormData?.scheduleWith || "",
-    groupGenderType: initialFormData?.groupGenderType || "혼성",
+    genderType: initialFormData?.genderType || "혼성",
     scheduleStartAt: initialFormData?.scheduleStartAt || "",
     scheduleEndAt: initialFormData?.scheduleEndAt || "",
     isCommon: initialFormData?.isCommon || false,
   });
 
-  const [gender, setGender] = useState(formData.groupGenderType || "혼성");
+  const [gender, setGender] = useState(formData.genderType || "혼성");
   const [startTime, setStartTime] = useState(
     formData.scheduleStartAt.split("T")[1] || ""
   );
@@ -38,7 +38,7 @@ const ModifyScheduleForm: React.FC<ModifyFormProps> = ({
   const handleSave = () => {
     const updatedData: ModifyScheduleRequest = {
       ...formData,
-      groupGenderType: gender,
+      genderType: gender,
       scheduleStartAt: `${formData.scheduleStartAt.split("T")[0]}T${startTime}`,
       scheduleEndAt: `${formData.scheduleEndAt.split("T")[0]}T${endTime}`,
     };

@@ -18,12 +18,12 @@ const ScheduleForm: React.FC<FormProps> = ({
 
   const [formData, setFormData] = useState<ScheduleData>(
     initialFormData || {
-        scheduleNo:1,
+      scheduleNo: 1,
       busyLevel: "여유",
       scheduleName: "",
       scheduleLocation: "",
       scheduleWith: "",
-      groupGenderType: "혼성",
+      genderType: "혼성",
       scheduleStartAt: `${date}T00:00:00`,
       scheduleEndAt: `${date}T00:00:00`,
       isCommon: isCoupleSchedule || false,
@@ -60,7 +60,7 @@ const ScheduleForm: React.FC<FormProps> = ({
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
-      groupGenderType: e.target.value as "혼성" | "남성" | "여성",
+      genderType: e.target.value as "혼성" | "남성" | "여성",
     });
   };
 
@@ -124,7 +124,7 @@ const ScheduleForm: React.FC<FormProps> = ({
                 type="radio"
                 name="groupGenderType"
                 value="혼성"
-                checked={formData.groupGenderType === "혼성"}
+                checked={formData.genderType === "혼성"}
                 onChange={handleRadioChange}
               />
               <SmallLabel>혼성</SmallLabel>
@@ -134,7 +134,7 @@ const ScheduleForm: React.FC<FormProps> = ({
                 type="radio"
                 name="groupGenderType"
                 value="여성"
-                checked={formData.groupGenderType === "여성"}
+                checked={formData.genderType === "여성"}
                 onChange={handleRadioChange}
               />
               <SmallLabel>여성</SmallLabel>
@@ -144,7 +144,7 @@ const ScheduleForm: React.FC<FormProps> = ({
                 type="radio"
                 name="groupGenderType"
                 value="남성"
-                checked={formData.groupGenderType === "남성"}
+                checked={formData.genderType === "남성"}
                 onChange={handleRadioChange}
               />
               <SmallLabel>남성</SmallLabel>
@@ -296,9 +296,10 @@ const Input = styled.input`
 const TimeInputContainer = styled.div`
   display: flex;
   margin: 10px auto;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   width: 80%;
+  gap: 20px;
 `;
 
 const InputDesign = styled.div`
@@ -385,6 +386,7 @@ const CancelButton = styled.button`
   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
 
   text-align: center;
+  color: #3b3634;
   font-family: SUIT;
   font-size: 12px;
   font-style: normal;
