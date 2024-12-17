@@ -6,7 +6,6 @@ import { ScheduleData } from "../../../types/ISchedule";
 import TwoBtnModal from "../../../components/modal/TwoBtnModal";
 import ScheduleDetailModal from "./ScheduleDetailModal";
 import OneBtnModal from "../../../components/modal/OneBtnModal";
-import EmojiModal from "../../../components/modal/EmojiModal";
 import { scheduleModalButtons } from "../../../utils/scheduleModalBtn";
 import AddScheduleModal from "../../../components/modal/AddScheduleModal";
 
@@ -17,7 +16,6 @@ interface ModalsProps {
   selectedSchedule: ScheduleData | null;
   isDeleteModalOpen: boolean;
   isChangeCommonModalOpen: boolean;
-  isEmojiModalOpen: boolean;
   onClose: () => void;
   onDeleteSchedule: () => void;
   setIsDeleteModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -25,10 +23,8 @@ interface ModalsProps {
   openChangeCommonScheduleModal: () => void;
   onConfirmCommonSchedule: () => void;
   setIsCommonModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  onSelectEmoji: (emoji: string) => void;
   handleEditSchedule: (schedule: ScheduleData) => void;
   handleEditRequest: (schedule: ScheduleData) => void;
-  handleEmojiModalOpen: () => void;
   openAddSchedule: () => void;
   openAddCoupleSchedule: () => void;
   myScheduleList: ScheduleData[];
@@ -40,17 +36,14 @@ const TimeTableModals: React.FC<ModalsProps> = ({
   selectedSchedule,
   isDeleteModalOpen,
   isChangeCommonModalOpen,
-  isEmojiModalOpen,
   onClose,
   onDeleteSchedule,
   openDeleteModal,
   openChangeCommonScheduleModal,
   onConfirmCommonSchedule,
   setIsCommonModalOpen,
-  onSelectEmoji,
   handleEditSchedule,
   handleEditRequest,
-  handleEmojiModalOpen,
   openAddSchedule,
   openAddCoupleSchedule,
   setIsDeleteModalOpen,
@@ -81,7 +74,6 @@ const TimeTableModals: React.FC<ModalsProps> = ({
             onDelete: openDeleteModal,
             onEdit: () => handleEditSchedule(selectedSchedule),
             onCommon: openChangeCommonScheduleModal,
-            onEmoji: handleEmojiModalOpen,
             onEditRequest: () => handleEditRequest(selectedSchedule),
           })}
         />
@@ -120,9 +112,9 @@ const TimeTableModals: React.FC<ModalsProps> = ({
       )}
 
       {/* 이모지 모달 */}
-      {isEmojiModalOpen && (
+      {/* {isEmojiModalOpen && (
         <EmojiModal onSelectEmoji={onSelectEmoji} onClose={onClose} />
-      )}
+      )} */}
     </>
   );
 };

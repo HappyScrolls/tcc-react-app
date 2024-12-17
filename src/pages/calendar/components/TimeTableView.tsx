@@ -49,8 +49,8 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
     null
   );
 
-  const [isEmojiModalOpen, setIsEmojiModalOpen] = useState(false);
-  const [, setSelectedEmoji] = useState<string | null>(null);
+  // const [isEmojiModalOpen, setIsEmojiModalOpen] = useState(false);
+  // const [, setSelectedEmoji] = useState<string | null>(null);
 
   const location = useLocation();
 
@@ -133,16 +133,16 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
     closeModal();
   };
 
-  // 이모지 모달
-  const handleEmojiModalOpen = () => {
-    setIsEmojiModalOpen(true);
-  };
+  // // 이모지 모달
+  // const handleEmojiModalOpen = () => {
+  //   setIsEmojiModalOpen(true);
+  // };
 
-  // 이모지 선택
-  const handleSelectEmoji = (emoji: string) => {
-    setSelectedEmoji(emoji);
-    setIsEmojiModalOpen(false);
-  };
+  // // 이모지 선택
+  // const handleSelectEmoji = (emoji: string) => {
+  //   setSelectedEmoji(emoji);
+  //   setIsEmojiModalOpen(false);
+  // };
 
   // 일정 수정 페이지
   const handleEditSchedule = (schedule: ScheduleData) => {
@@ -271,14 +271,14 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
         openChangeCommonScheduleModal={openChangeCommonScheduleModal}
         isChangeCommonModalOpen={isChangeCommonModalOpen}
         setIsCommonModalOpen={setIsChangeCommonModalOpen}
-        isEmojiModalOpen={isEmojiModalOpen}
+        // isEmojiModalOpen={isEmojiModalOpen}
         onClose={closeModal}
         onDeleteSchedule={handleDeleteSchedule}
         onConfirmCommonSchedule={handleChangeCommonSchedule}
-        onSelectEmoji={handleSelectEmoji}
+        // onSelectEmoji={handleSelectEmoji}
         handleEditSchedule={handleEditSchedule}
         handleEditRequest={handleEditRequest}
-        handleEmojiModalOpen={handleEmojiModalOpen}
+        // handleEmojiModalOpen={handleEmojiModalOpen}
         openAddSchedule={openAddSchedule}
         openAddCoupleSchedule={openAddCoupleSchedule}
         myScheduleList={myScheduleList || []}
@@ -366,8 +366,8 @@ const ScheduleItem = styled.div<ScheduleItemProps>`
     $isCommon
       ? "20px"
       : $isPartner
-        ? "20px 0px 0px 20px"
-        : "0px 20px 20px 0px"};
+      ? "20px 0px 0px 20px"
+      : "0px 20px 20px 0px"};
   padding: 5px;
 
   display: flex;

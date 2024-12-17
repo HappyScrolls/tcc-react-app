@@ -20,7 +20,6 @@ const ScheduleDetailModal: React.FC<IDetailModalProps> = ({
           <Wrap>
             <BusyTag backgroundColor={getBusyColor(schedule.busyLevel)} />
             <Title>{schedule.scheduleName}</Title>
-            <Phone src={phone} />
           </Wrap>
 
           <Details>
