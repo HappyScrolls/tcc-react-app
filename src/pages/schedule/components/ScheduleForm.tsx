@@ -23,7 +23,7 @@ const ScheduleForm: React.FC<FormProps> = ({
       scheduleName: "",
       scheduleLocation: "",
       scheduleWith: "",
-      groupGenderType: "혼성",
+      genderType: "혼성",
       scheduleStartAt: `${date}T00:00:00`,
       scheduleEndAt: `${date}T00:00:00`,
       isCommon: isCoupleSchedule || false,
@@ -60,7 +60,7 @@ const ScheduleForm: React.FC<FormProps> = ({
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
-      groupGenderType: e.target.value as "혼성" | "남성" | "여성",
+      genderType: e.target.value as "혼성" | "남성" | "여성",
     });
   };
 
@@ -124,7 +124,7 @@ const ScheduleForm: React.FC<FormProps> = ({
                 type="radio"
                 name="groupGenderType"
                 value="혼성"
-                checked={formData.groupGenderType === "혼성"}
+                checked={formData.genderType === "혼성"}
                 onChange={handleRadioChange}
               />
               <SmallLabel>혼성</SmallLabel>
@@ -134,7 +134,7 @@ const ScheduleForm: React.FC<FormProps> = ({
                 type="radio"
                 name="groupGenderType"
                 value="여성"
-                checked={formData.groupGenderType === "여성"}
+                checked={formData.genderType === "여성"}
                 onChange={handleRadioChange}
               />
               <SmallLabel>여성</SmallLabel>
@@ -144,7 +144,7 @@ const ScheduleForm: React.FC<FormProps> = ({
                 type="radio"
                 name="groupGenderType"
                 value="남성"
-                checked={formData.groupGenderType === "남성"}
+                checked={formData.genderType === "남성"}
                 onChange={handleRadioChange}
               />
               <SmallLabel>남성</SmallLabel>

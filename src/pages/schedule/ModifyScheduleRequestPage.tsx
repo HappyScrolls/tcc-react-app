@@ -22,17 +22,17 @@ const ModifyScheduleRequestPage = () => {
   const { mutate: requestModifySchedule } = useModifyScheduleRequest();
 
   const handleSave = (formData: ModifyScheduleRequest) => {
-    if(schedule.scheduleNo===undefined){
+    if (schedule.scheduleNo === undefined) {
       return;
     }
     console.log("수정 요청하려는 데이터:", formData);
 
     const requestData: ModifyScheduleRequest = {
       ...formData,
-      scheduleNo:schedule.scheduleNo,
+      scheduleNo: schedule.scheduleNo,
       scheduleStartAt: formData.scheduleStartAt,
       scheduleEndAt: formData.scheduleEndAt,
-      groupGenderType: formData.groupGenderType,
+      genderType: formData.genderType,
       busyLevel: formData.busyLevel,
       scheduleLocation: formData.scheduleLocation,
       scheduleName: formData.scheduleName,

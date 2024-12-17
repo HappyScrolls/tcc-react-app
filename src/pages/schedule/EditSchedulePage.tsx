@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import React, {Suspense, useEffect, useState} from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CoupleInfo } from "../../types/ICoupleInfo";
 import CoupleAndDateInfoHeader from "./components/CoupleAndDateInfoHeader";
@@ -7,7 +7,7 @@ import ScheduleForm from "./components/ScheduleForm";
 import { ModifyScheduleRequest, ScheduleData } from "../../types/ISchedule";
 import { formatDateHyphen } from "../../utils/date";
 import { useModifySchedule } from "../../hooks/useModifySchedule";
-import {fetchScheduleModifyRequest} from "../../api/schedule/scheduleAPI";
+import { fetchScheduleModifyRequest } from "../../api/schedule/scheduleAPI";
 
 const EditSchedulePage = () => {
   const location = useLocation();
@@ -21,7 +21,9 @@ const EditSchedulePage = () => {
   useEffect(() => {
     const updateScheduleFromNotification = async () => {
       if (fromNotification) {
-        const fetchedSchedule = await fetchScheduleModifyRequest(initialSchedule.scheduleNo);
+        const fetchedSchedule = await fetchScheduleModifyRequest(
+          initialSchedule.scheduleNo
+        );
         if (fetchedSchedule) {
           setSchedule(fetchedSchedule);
         }
@@ -29,7 +31,7 @@ const EditSchedulePage = () => {
     };
 
     updateScheduleFromNotification();
-  }, [fromNotification,initialSchedule]);
+  }, [fromNotification, initialSchedule]);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const coupleInfo = queryClient.getQueryData<CoupleInfo>(["coupleInfo"]);
@@ -45,7 +47,7 @@ const EditSchedulePage = () => {
           scheduleName: formData.scheduleName,
           scheduleLocation: formData.scheduleLocation,
           scheduleWith: formData.scheduleWith,
-          groupGenderType: formData.groupGenderType,
+          genderType: formData.genderType,
           scheduleStartAt: formData.scheduleStartAt,
           scheduleEndAt: formData.scheduleEndAt,
           isCommon: formData.isCommon,
