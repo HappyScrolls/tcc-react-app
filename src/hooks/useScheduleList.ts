@@ -5,6 +5,7 @@ import {
   fetchCommonScheduleList,
   fetchMyScheduleList,
   fetchPartnerScheduleList,
+  fetchScheduleByScheduleNo,
 } from "../api/schedule/scheduleAPI";
 
 // 내 일정 리스트
@@ -32,6 +33,16 @@ export const useFetchCommonScheduleList = (searchDate: string) => {
   const schedule = useSuspenseQuery<ScheduleData[]>({
     queryKey: ["commonScheduleList", searchDate],
     queryFn: () => fetchCommonScheduleList(searchDate),
+  });
+
+  return schedule;
+};
+
+// 일정 번호 일정 조회
+export const useFetchScheduleByScheduleNo = (scheduleNo: number) => {
+  const schedule = useSuspenseQuery<ScheduleData>({
+    queryKey: ["scheduleByNo", scheduleNo],
+    queryFn: () => fetchScheduleByScheduleNo(scheduleNo),
   });
 
   return schedule;

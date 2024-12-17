@@ -182,15 +182,34 @@ export const modifyScheduleRequest = async (
   }
 };
 
+// 일정 수정 요청
 export const fetchScheduleModifyRequest = async (
-    scheduleNo: number
+  scheduleNo: number
 ): Promise<ScheduleData | null> => {
   try {
     const response = await scheduleAxiosInstance.get(
-        `/schedule/modify-request/${scheduleNo}`
+      `/schedule/modify-request/${scheduleNo}`
     );
     return response.data;
   } catch (error) {
     return null;
+  }
+};
+
+// 일정 번호로 일정 조회
+export const fetchScheduleByScheduleNo = async (
+  scheduleNo: number
+): Promise<ScheduleData> => {
+  try {
+    const response = await scheduleAxiosInstance.get(
+      `/schedule/detail/${scheduleNo}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("일정번호로 일정 조회 중 오류 발생:", error);
+    if (axios.isAxiosError(error)) {
+      console.warn("일정을 가져올 수 없습니다.");
+    }
+    throw error;
   }
 };

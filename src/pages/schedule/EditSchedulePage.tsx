@@ -1,56 +1,71 @@
 import { useQueryClient } from "@tanstack/react-query";
 import React, { Suspense, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { CoupleInfo } from "../../types/ICoupleInfo";
 import CoupleAndDateInfoHeader from "./components/CoupleAndDateInfoHeader";
 import ScheduleForm from "./components/ScheduleForm";
 import { ModifyScheduleRequest, ScheduleData } from "../../types/ISchedule";
 import { formatDateHyphen } from "../../utils/date";
 import { useModifySchedule } from "../../hooks/useModifySchedule";
-import { fetchScheduleModifyRequest } from "../../api/schedule/scheduleAPI";
+import { useFetchScheduleByScheduleNo } from "../../hooks/useScheduleList";
 
 const EditSchedulePage = () => {
+  const { scheduleNo } = useParams();
   const location = useLocation();
-  const {
-    schedule: initialSchedule,
-    isCoupleSchedule,
-  }: { schedule: ScheduleData; isCoupleSchedule: boolean } = location.state;
-  const fromNotification = location.state?.fromNotification;
-  const [schedule, setSchedule] = useState<ScheduleData>(initialSchedule);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  // const fromNotification = location.state?.fromNotification;
+  const locationSchedule = location.state?.schedule;
+  const isCoupleSchedule = location.state?.isCoupleSchedule || false;
+
+  const { data: fetchedSchedule } = useFetchScheduleByScheduleNo(
+    Number(scheduleNo)
+  );
+
+  const [schedule, setSchedule] = useState<ScheduleData>(
+    locationSchedule || fetchedSchedule
+  );
 
   useEffect(() => {
-    const updateScheduleFromNotification = async () => {
-      if (fromNotification) {
-        const fetchedSchedule = await fetchScheduleModifyRequest(
-          initialSchedule.scheduleNo
-        );
-        if (fetchedSchedule) {
-          setSchedule(fetchedSchedule);
-        }
-      }
-    };
+    if (!locationSchedule && fetchedSchedule) {
+      setSchedule(fetchedSchedule);
+    }
+  }, [fetchedSchedule, locationSchedule]);
 
-    updateScheduleFromNotification();
-  }, [fromNotification, initialSchedule]);
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  // useEffect(() => {
+  //   const updateScheduleFromNotification = async () => {
+
+  //     if (fromNotification) {
+  //       const fetchedSchedule = await fetchScheduleModifyRequest(
+  //         initialSchedule.scheduleNo
+  //       );
+  //       if (fetchedSchedule) {
+  //         setSchedule(fetchedSchedule);
+  //       }
+  //     }
+  //   };
+
+  //   updateScheduleFromNotification();
+  // }, [fromNotification, initialSchedule]);
+
   const coupleInfo = queryClient.getQueryData<CoupleInfo>(["coupleInfo"]);
-
   const { mutate: modifySchedule } = useModifySchedule();
 
   const handleSave = (formData: ScheduleData) => {
     modifySchedule(
       {
-        scheduleNo: schedule.scheduleNo!,
+        scheduleNo: schedule?.scheduleNo!,
         formData: {
-          busyLevel: formData.busyLevel,
-          scheduleName: formData.scheduleName,
-          scheduleLocation: formData.scheduleLocation,
-          scheduleWith: formData.scheduleWith,
-          genderType: formData.genderType,
-          scheduleStartAt: formData.scheduleStartAt,
-          scheduleEndAt: formData.scheduleEndAt,
-          isCommon: formData.isCommon,
+          ...formData,
+          // busyLevel: formData.busyLevel,
+          // scheduleName: formData.scheduleName,
+          // scheduleLocation: formData.scheduleLocation,
+          // scheduleWith: formData.scheduleWith,
+          // genderType: formData.genderType,
+          // scheduleStartAt: formData.scheduleStartAt,
+          // scheduleEndAt: formData.scheduleEndAt,
+          // isCommon: formData.isCommon,
         } as ModifyScheduleRequest,
       },
       {
