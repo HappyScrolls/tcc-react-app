@@ -3,14 +3,18 @@ FROM node:18-alpine as build
 
 WORKDIR /app
 
-COPY package.json ./
-COPY yarn.lock ./
+# pnpm 설치
+RUN npm install -g pnpm
 
-RUN yarn install
+# 종속성 파일 복사
+COPY package.json pnpm-lock.yaml ./
+
+# 의존성 설치
+RUN pnpm install --frozen-lockfile
 
 COPY . ./
 
-RUN yarn build
+RUN pnpm build
 
 # Stage 2: Serve the app using nginx
 FROM nginx:alpine
