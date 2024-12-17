@@ -18,7 +18,7 @@ const ScheduleForm: React.FC<FormProps> = ({
 
   const [formData, setFormData] = useState<ScheduleData>(
     initialFormData || {
-        scheduleNo:1,
+      scheduleNo: 1,
       busyLevel: "여유",
       scheduleName: "",
       scheduleLocation: "",
@@ -296,9 +296,10 @@ const Input = styled.input`
 const TimeInputContainer = styled.div`
   display: flex;
   margin: 10px auto;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   width: 80%;
+  gap: 20px;
 `;
 
 const InputDesign = styled.div`
@@ -385,6 +386,7 @@ const CancelButton = styled.button`
   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
 
   text-align: center;
+  color: #3b3634;
   font-family: SUIT;
   font-size: 12px;
   font-style: normal;
