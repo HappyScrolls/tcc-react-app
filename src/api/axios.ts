@@ -16,9 +16,7 @@ export const refreshInstance = axios.create({
 
 scheduleAxiosInstance.interceptors.request.use(
   (config) => {
-    const memberCode =
-      localStorage.getItem("memberCode") ||
-      "eyJubyI6NSwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9";
+    const memberCode = localStorage.getItem("memberCode");
 
     config.headers["Member-Code"] = memberCode;
     // config.headers["Content-Type"] = "application/json";
@@ -48,8 +46,7 @@ export const memberAxiosInstance = axios.create({
 
 memberAxiosInstance.interceptors.request.use(
   (config) => {
-    const memberCode =
-      localStorage.getItem("memberCode");
+    const memberCode = localStorage.getItem("memberCode");
 
     config.headers["Member-Code"] = memberCode;
 
@@ -78,9 +75,7 @@ export const notificationAxiosInstance = axios.create({
 
 notificationAxiosInstance.interceptors.request.use(
   (config) => {
-    const memberCode =
-      localStorage.getItem("memberCode") ||
-      "eyJubyI6NSwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9";
+    const memberCode = localStorage.getItem("memberCode");
 
     config.headers["Member-Code"] = memberCode;
 
@@ -92,12 +87,12 @@ notificationAxiosInstance.interceptors.request.use(
 );
 
 notificationAxiosInstance.interceptors.response.use(
-    (config) => {
-        const memberCode = localStorage.getItem("memberCode");
-        config.headers["Member-Code"] = memberCode;
+  (config) => {
+    const memberCode = localStorage.getItem("memberCode");
+    config.headers["Member-Code"] = memberCode;
 
-        return config;
-    },
+    return config;
+  },
   (error) => {
     if (error.response && error.response.status === 401) {
       //

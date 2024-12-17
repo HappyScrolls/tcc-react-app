@@ -25,7 +25,12 @@ const ScheduleDetailModal: React.FC<IDetailModalProps> = ({
 
           <Details>
             <Text>{schedule.scheduleLocation}</Text>
-            <Text>{schedule.scheduleWith}</Text>
+
+            {!schedule.isCommon && (
+              <Text>
+                {schedule.scheduleWith} / {schedule.genderType}
+              </Text>
+            )}
             <Text>
               {new Date(schedule.scheduleStartAt).toLocaleTimeString()} ~{" "}
               {new Date(schedule.scheduleEndAt).toLocaleTimeString()}

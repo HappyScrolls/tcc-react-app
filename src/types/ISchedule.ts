@@ -4,7 +4,7 @@ export type ScheduleData = {
   scheduleName: string;
   scheduleLocation: string;
   scheduleWith: string;
-  genderType: "혼성" | "남성" | "여성";
+  genderType: "혼성" | "남성" | "여성" | "";
   scheduleStartAt: string;
   scheduleEndAt: string;
   isCommon: boolean;

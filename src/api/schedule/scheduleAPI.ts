@@ -85,6 +85,7 @@ export const fetchCommonScheduleList = async (
     const response = await scheduleAxiosInstance.get(
       `/schedule/common?searchDate=${searchDate}`
     );
+    console.log("공통일정 : ", response.data);
     return response.data;
   } catch (error) {
     console.error("공통 일정 조회 중 오류 발생:", error);
