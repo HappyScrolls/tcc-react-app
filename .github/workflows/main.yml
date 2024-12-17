@@ -105,10 +105,10 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
 
       - name: Build React app
-        run: pnpm run build
+        run: pnpm build
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
