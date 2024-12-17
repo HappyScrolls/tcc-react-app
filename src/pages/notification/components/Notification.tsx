@@ -1,19 +1,29 @@
 import React from "react";
 import notificationIcon from "../../../images/notification/notificationIcon.svg";
-import {INotification, NotificationTypeMessages} from "../../../types/INotification";
+import {
+  INotification,
+  NotificationTypeMessages,
+} from "../../../types/INotification";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import {readNotification} from "../../../api/query/get/useFetchNotification";
-const Notification = ({ notificationNo,type,message,path, messagedAt, isRead }: INotification) => {
+import { readNotification } from "../../../api/query/get/useFetchNotification";
+
+const Notification = ({
+  notificationNo,
+  type,
+  message,
+  path,
+  messagedAt,
+  isRead,
+}: INotification) => {
   const navigate = useNavigate();
   const handleClick = () => {
-    readNotification(notificationNo).then(()=>{
-          if (path) {
-            navigate(path, { state: { fromNotification: true } });
-          }
+    console.log("알림수정요청 : ", notificationNo, " ", path, " ");
+    readNotification(notificationNo).then(() => {
+      if (path) {
+        navigate(path, { state: { fromNotification: true } });
       }
-    )
-
+    });
   };
   return (
     <>

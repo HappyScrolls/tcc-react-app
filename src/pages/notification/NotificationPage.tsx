@@ -3,11 +3,10 @@ import Notification from "./components/Notification";
 import NotFoundNotification from "./components/NotFoundNotification";
 import { styled } from "styled-components";
 import { Container } from "../../components/layout/Layout";
-import {useFetchNotification} from "../../api/query/get/useFetchNotification";
+import { useFetchNotification } from "../../api/query/get/useFetchNotification";
 
 const NotificationPage = () => {
   const notificationList = useFetchNotification();
-
 
   const unreadNotifications = notificationList.filter(
     (notification) => !notification.isRead
@@ -27,15 +26,15 @@ const NotificationPage = () => {
             unreadNotifications
               .filter((notification) => !notification.isRead)
               .map((notification) => (
-                  <Notification
-                      key={notification.notificationNo}
-                      notificationNo={notification.notificationNo}
-                      type={notification.type}
-                      message={notification.message}
-                      messagedAt={notification.messagedAt}
-                      isRead={notification.isRead}
-                      path={notification.path}
-                  />
+                <Notification
+                  key={notification.notificationNo}
+                  notificationNo={notification.notificationNo}
+                  type={notification.type}
+                  message={notification.message}
+                  messagedAt={notification.messagedAt}
+                  isRead={notification.isRead}
+                  path={notification.path}
+                />
               ))
           )}
 
