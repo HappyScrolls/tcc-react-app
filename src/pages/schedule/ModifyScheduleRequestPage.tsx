@@ -7,11 +7,9 @@ import CoupleAndDateInfoHeader from "./components/CoupleAndDateInfoHeader";
 import { formatDateHyphen } from "../../utils/date";
 import ModifyScheduleForm from "../../components/form/ModifyScheduleForm";
 import {
-  useAcceptScheduleModifyRequest,
   useFetchScheduleByScheduleNo,
   useModifyScheduleRequest,
 } from "../../hooks/useModifySchedule";
-import { fetchScheduleModifyRequest } from "../../api/schedule/scheduleAPI";
 
 // 수정 요청 내용 작성, 수정 요청 확인
 const ModifyScheduleRequestPage = () => {
@@ -25,38 +23,25 @@ const ModifyScheduleRequestPage = () => {
   const isCoupleSchedule = location.state?.isCoupleSchedule || false;
   const coupleInfo = queryClient.getQueryData<CoupleInfo>(["coupleInfo"]);
 
-  console.log(
-    "수정요청 - location state 값 : ",
-    fromNotification,
-    " ",
-    locationSchedule,
-    " ",
-    isCoupleSchedule
-  );
-
   const { data: fetchedSchedule } = useFetchScheduleByScheduleNo(
     Number(scheduleNo)
   );
 
   const { mutate: requestModifySchedule } = useModifyScheduleRequest(); // 수정 요청 POST
-  const { mutate: acceptModifyRequest } = useAcceptScheduleModifyRequest(); // 수정 수락 PUT
+  // const { mutate: acceptModifyRequest } = useAcceptScheduleModifyRequest(); // 수정 수락 PUT
 
-  const [schedule, setSchedule] = useState<ScheduleData>(
-    fromNotification ? fetchedSchedule : locationSchedule
-  );
-
-  console.log("수정요청 - 스케줄 값 : ", schedule);
+  const [schedule, setSchedule] = useState<ScheduleData | null>(null);
 
   useEffect(() => {
-    if (fromNotification && scheduleNo) {
-      fetchScheduleModifyRequest(Number(scheduleNo)).then((data) => {
-        if (data) setSchedule(data);
-      });
+    if (fromNotification && fetchedSchedule) {
+      setSchedule(fetchedSchedule); // 알림에서 온 경우 fetchedSchedule 사용
+    } else if (!fromNotification && locationSchedule) {
+      setSchedule(locationSchedule); // 알림에서 오지 않은 경우 locationSchedule 사용
     }
-  }, [fromNotification, scheduleNo]);
+  }, [fromNotification, fetchedSchedule, locationSchedule]);
 
   const handleSave = (formData: ModifyScheduleRequest) => {
-    if (locationSchedule.scheduleNo === undefined) {
+    if (!schedule || !schedule.scheduleNo) {
       return;
     }
     console.log("수정 요청하려는 데이터:", formData);
@@ -84,6 +69,26 @@ const ModifyScheduleRequestPage = () => {
       },
     });
   };
+  console.log(
+    "수정요청 페이지 값 : ",
+    " ",
+    scheduleNo,
+    " ",
+
+    fromNotification,
+    " ",
+    locationSchedule,
+    " ",
+    isCoupleSchedule,
+    " ",
+    fetchedSchedule,
+    " ",
+    schedule
+  );
+
+  if (!schedule) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

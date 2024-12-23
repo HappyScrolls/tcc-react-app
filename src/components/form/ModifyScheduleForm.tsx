@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { ModifyScheduleRequest } from "../../types/ISchedule";
 import { ModifyFormProps } from "../../types/IFormProps";
 import { useNavigate } from "react-router-dom";
+import { getBusyBackgroundColor } from "../../utils/colors";
 
 // 수정 요청
 const ModifyScheduleForm: React.FC<ModifyFormProps> = ({
@@ -47,7 +48,7 @@ const ModifyScheduleForm: React.FC<ModifyFormProps> = ({
   };
 
   return (
-    <FormContainer>
+    <FormContainer backgroundcolor={getBusyBackgroundColor(formData.busyLevel)}>
       {/* 일정 이름 */}
       <InputContainer>
         <InfoText>{formData.scheduleName}</InfoText>
@@ -131,7 +132,7 @@ const ModifyScheduleForm: React.FC<ModifyFormProps> = ({
 
 export default ModifyScheduleForm;
 
-const FormContainer = styled.div`
+const FormContainer = styled.div<{ backgroundcolor: string }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -142,7 +143,7 @@ const FormContainer = styled.div`
 
   padding: 32px;
   border-radius: 20px;
-  background: #fff;
+  background: ${({ backgroundcolor }) => backgroundcolor};
   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
 `;
 
