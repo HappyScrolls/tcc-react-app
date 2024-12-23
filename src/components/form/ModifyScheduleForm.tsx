@@ -17,13 +17,13 @@ const ModifyScheduleForm: React.FC<ModifyFormProps> = ({
     scheduleName: initialFormData?.scheduleName || "",
     scheduleLocation: initialFormData?.scheduleLocation || "",
     scheduleWith: initialFormData?.scheduleWith || "",
-    genderType: initialFormData?.genderType || "혼성",
+    genderType: initialFormData?.genderType || "",
     scheduleStartAt: initialFormData?.scheduleStartAt || "",
     scheduleEndAt: initialFormData?.scheduleEndAt || "",
     isCommon: initialFormData?.isCommon || false,
   });
 
-  const [gender, setGender] = useState(formData.genderType || "혼성");
+  const [gender] = useState(formData.genderType || "혼성");
   const [startTime, setStartTime] = useState(
     formData.scheduleStartAt.split("T")[1] || ""
   );
@@ -66,47 +66,41 @@ const ModifyScheduleForm: React.FC<ModifyFormProps> = ({
       {/* 성별 */}
       <RadioGroup>
         <RadioWrapper>
-          <RadioButton
-            type="radio"
-            value="혼성"
-            checked={gender === "혼성"}
-            onChange={(e) =>
-              setGender(e.target.value as "혼성" | "남성" | "여성")
-            }
-          />
+          <RadioButton type="radio" value="혼성" checked={gender === "혼성"} />
           <SmallLabel>혼성</SmallLabel>
         </RadioWrapper>
         <RadioWrapper>
-          <RadioButton
-            type="radio"
-            value="남성"
-            checked={gender === "남성"}
-            onChange={(e) =>
-              setGender(e.target.value as "혼성" | "남성" | "여성")
-            }
-          />
+          <RadioButton type="radio" value="남성" checked={gender === "남성"} />
           <SmallLabel>남성</SmallLabel>
         </RadioWrapper>
         <RadioWrapper>
-          <RadioButton
-            type="radio"
-            value="여성"
-            checked={gender === "여성"}
-            onChange={(e) =>
-              setGender(e.target.value as "혼성" | "남성" | "여성")
-            }
-          />
+          <RadioButton type="radio" value="여성" checked={gender === "여성"} />
           <SmallLabel>여성</SmallLabel>
         </RadioWrapper>
       </RadioGroup>
 
+      {/* 수정 요청 전 시간 */}
+      <TimeInputContainer>
+        <Label>수정 전 시간</Label>
+        <TimeWrapper>
+          <Wrapper>
+            <StartEndLabel>시작</StartEndLabel>
+            <InputDesign>{formData.scheduleStartAt.split("T")[1]}</InputDesign>
+          </Wrapper>
+          <Wrapper>
+            <StartEndLabel>끝</StartEndLabel>
+            <InputDesign>{formData.scheduleEndAt.split("T")[1]}</InputDesign>
+          </Wrapper>
+        </TimeWrapper>
+      </TimeInputContainer>
+
       {/* 수정 요청 시간 */}
-      <InputContainer>
+      <TimeInputContainer>
         <Label>수정 요청 시간</Label>
         <TimeWrapper>
           <Wrapper>
-            <Label>시작</Label>
-            <InputDesign>
+            <StartEndLabel>시작</StartEndLabel>
+            <InputDesign backgroundColor="#FFCFC7">
               <TimeInput
                 type="time"
                 value={startTime}
@@ -115,8 +109,8 @@ const ModifyScheduleForm: React.FC<ModifyFormProps> = ({
             </InputDesign>
           </Wrapper>
           <Wrapper>
-            <Label>끝</Label>
-            <InputDesign>
+            <StartEndLabel>끝</StartEndLabel>
+            <InputDesign backgroundColor="#FFCFC7">
               <TimeInput
                 type="time"
                 value={endTime}
@@ -125,7 +119,7 @@ const ModifyScheduleForm: React.FC<ModifyFormProps> = ({
             </InputDesign>
           </Wrapper>
         </TimeWrapper>
-      </InputContainer>
+      </TimeInputContainer>
 
       <ButtonContainer>
         <CancelButton onClick={handleCancel}>이전</CancelButton>
@@ -146,7 +140,7 @@ const FormContainer = styled.div`
   width: 90%;
   gap: 30px;
 
-  padding: 30px;
+  padding: 32px;
   border-radius: 20px;
   background: #fff;
   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
@@ -158,6 +152,10 @@ const InputContainer = styled.div`
   gap: 5px;
 `;
 
+const TimeInputContainer = styled(InputContainer)`
+  padding: 0 20px;
+`;
+
 const Label = styled.div`
   color: #3b3634;
   font-family: SUIT;
@@ -165,6 +163,17 @@ const Label = styled.div`
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+`;
+
+const StartEndLabel = styled.div`
+  color: #3b3634;
+  font-family: SUIT;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+
+  margin-bottom: 3px;
 `;
 
 const InfoText = styled.div`
@@ -242,28 +251,39 @@ const TimeWrapper = styled.div`
   align-content: center;
 `;
 
-const InputDesign = styled.div`
-  display: inline-block;
-  margin-top: 3px;
-  padding: 15px 13px;
+const InputDesign = styled.div<{ backgroundColor?: string }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 120px;
+  height: 44px;
+  padding: 0 12px;
+  box-sizing: border-box;
   border-radius: 10px;
-  background: #fff;
+  background: ${({ backgroundColor }) => backgroundColor || "#fff"};
   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
+
+  color: var(--Black, #3b3634);
+  text-align: center;
+  font-family: SUIT;
+  font-size: 12px;
+  font-weight: 400;
 `;
 
 const TimeInput = styled.input`
-  width: 120px;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  box-sizing: border-box;
+
   background: transparent;
   color: var(--Black, #3b3634);
   text-align: center;
   font-family: SUIT;
   font-size: 12px;
-  font-style: normal;
   font-weight: 400;
   line-height: normal;
-  padding: 0;
 `;
 
 // const IconWrapper = styled.div`
@@ -300,7 +320,7 @@ const ButtonContainer = styled.div`
 
 const CancelButton = styled.button`
   padding: 13px 0px 12px 0px;
-  width: 40%;
+  width: 50%;
 
   justify-content: center;
   align-items: center;
@@ -320,7 +340,7 @@ const CancelButton = styled.button`
 
 const SaveButton = styled.button`
   padding: 13px 0px 12px 0px;
-  width: 40%;
+  width: 50%;
 
   justify-content: center;
   align-items: center;

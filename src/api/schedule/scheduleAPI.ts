@@ -163,7 +163,7 @@ export const modifySchedule = async (
   }
 };
 
-// 일정 수정 요청
+// 일정 수정 요청(post - 요청 보내기)
 export const modifyScheduleRequest = async (
   formData: ModifyScheduleRequest
 ) => {
@@ -183,12 +183,26 @@ export const modifyScheduleRequest = async (
   }
 };
 
-// 일정 수정 요청
+// 일정 수정 요청 (get - 수정 요청의 내용)
 export const fetchScheduleModifyRequest = async (
   scheduleNo: number
 ): Promise<ScheduleData | null> => {
   try {
     const response = await scheduleAxiosInstance.get(
+      `/schedule/modify-request/${scheduleNo}`
+    );
+    return response.data;
+  } catch (error) {
+    return null;
+  }
+};
+
+// 일정 수정 요청 (put - 수정 요청 수락)
+export const acceptScheduleModifyRequest = async (
+  scheduleNo: number
+): Promise<ScheduleData | null> => {
+  try {
+    const response = await scheduleAxiosInstance.put(
       `/schedule/modify-request/${scheduleNo}`
     );
     return response.data;
