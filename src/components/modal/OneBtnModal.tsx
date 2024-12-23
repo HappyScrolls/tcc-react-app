@@ -11,7 +11,6 @@ const OneBtnModal: React.FC<ISModalProps> = ({
 }) => {
   return (
     <>
-      {console.log("모달 열림")}
       <ModalOverlay>
         <ModalContent>
           {imageSrc && <ModalImage src={imageSrc} alt="modal image" />}
@@ -42,8 +41,8 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  width: 40%;
-  padding: 30px;
+  width: 250px;
+  padding: 20px;
   border-radius: 20px;
   background: #fff;
   display: flex;
@@ -86,7 +85,7 @@ const ModalButtonWrapper = styled.div`
 
 const ModalButton = styled.button`
   border-radius: 10px;
-  width: 90px;
+  width: 210px;
   padding: 9px 0px 8px 0px;
 
   border-radius: 10px;
