@@ -33,7 +33,7 @@ const Notification = ({
           <Title>{NotificationTypeMessages[type]}</Title>
           <Description>{message}</Description>
         </TextBox>
-        <TextSmall>{messagedAt}</TextSmall>
+        <TextSmall>{messagedAt.replace("T", " ")}</TextSmall>{" "}
       </NotificationBtn>
     </>
   );
