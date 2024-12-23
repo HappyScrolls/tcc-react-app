@@ -33,22 +33,6 @@ const EditSchedulePage = () => {
     }
   }, [fetchedSchedule, locationSchedule]);
 
-  // useEffect(() => {
-  //   const updateScheduleFromNotification = async () => {
-
-  //     if (fromNotification) {
-  //       const fetchedSchedule = await fetchScheduleModifyRequest(
-  //         initialSchedule.scheduleNo
-  //       );
-  //       if (fetchedSchedule) {
-  //         setSchedule(fetchedSchedule);
-  //       }
-  //     }
-  //   };
-
-  //   updateScheduleFromNotification();
-  // }, [fromNotification, initialSchedule]);
-
   const coupleInfo = queryClient.getQueryData<CoupleInfo>(["coupleInfo"]);
   const { mutate: modifySchedule } = useModifySchedule();
 
@@ -58,14 +42,6 @@ const EditSchedulePage = () => {
         scheduleNo: schedule?.scheduleNo!,
         formData: {
           ...formData,
-          // busyLevel: formData.busyLevel,
-          // scheduleName: formData.scheduleName,
-          // scheduleLocation: formData.scheduleLocation,
-          // scheduleWith: formData.scheduleWith,
-          // genderType: formData.genderType,
-          // scheduleStartAt: formData.scheduleStartAt,
-          // scheduleEndAt: formData.scheduleEndAt,
-          // isCommon: formData.isCommon,
         } as ModifyScheduleRequest,
       },
       {

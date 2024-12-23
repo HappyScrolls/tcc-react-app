@@ -9,7 +9,7 @@ export const scheduleModalButtons = (
     onDelete?: () => void;
     onEdit?: () => void;
     onCommon?: () => void;
-    onEmoji?: () => void;
+    // onEmoji?: () => void;
     onEditRequest?: () => void;
   }
 ) => {
@@ -20,7 +20,7 @@ export const scheduleModalButtons = (
     onDelete = () => {},
     onEdit = () => {},
     onCommon = () => {},
-    onEmoji = () => {},
+    // onEmoji = () => {},
     onEditRequest = () => {},
   } = options;
 
@@ -58,13 +58,13 @@ export const scheduleModalButtons = (
       type: "editRequest",
     });
 
-    if (onEmoji) {
-      buttons.push({
-        label: "이모지 남기기",
-        onClick: onEmoji,
-        type: "emoji",
-      });
-    }
+    // if (onEmoji) {
+    //   buttons.push({
+    //     label: "이모지 남기기",
+    //     onClick: onEmoji,
+    //     type: "emoji",
+    //   });
+    // }
 
     if (onCommon) {
       buttons.push({
@@ -90,13 +90,13 @@ export const scheduleModalButtons = (
       }
     );
 
-    if (onEmoji) {
-      buttons.push({
-        label: "이모지 남기기",
-        onClick: onEmoji,
-        type: "emoji",
-      });
-    }
+    // if (onEmoji) {
+    //   buttons.push({
+    //     label: "이모지 남기기",
+    //     onClick: onEmoji,
+    //     type: "emoji",
+    //   });
+    // }
   }
 
   return buttons;

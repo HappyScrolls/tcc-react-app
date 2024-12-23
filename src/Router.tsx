@@ -76,6 +76,10 @@ const router = createBrowserRouter([
         path: "/modify-schedule/:scheduleNo",
         element: <ModifyScheduleRequestPage />,
       },
+      {
+        path: "/modify-request/:scheduleNo",
+        element: <ModifyScheduleRequestPage />,
+      },
     ],
   },
 ]);

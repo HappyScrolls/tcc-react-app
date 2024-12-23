@@ -3,10 +3,22 @@ import { styled } from "styled-components";
 import { useMemberInfoQuery } from "../../../hooks/useMemberInfo";
 import { useFetchMyLoverInfo } from "../../../hooks/useCoupleInfo";
 import defaultCat from "../../../images/signup/defaultCat.svg";
+import { useQueryClient } from "@tanstack/react-query";
+import { CoupleInfo } from "../../../types/ICoupleInfo";
+import { getNickNames } from "../../../utils/getNickNames";
 
 const TimeTableHeader = () => {
+  const queryClient = useQueryClient();
+
   const { data: myInfo } = useMemberInfoQuery();
   const { data: loverInfo } = useFetchMyLoverInfo();
+  const coupleInfo = queryClient.getQueryData<CoupleInfo>(["coupleInfo"]);
+
+  const { myNickName, loverNickName } = getNickNames(
+    coupleInfo || null,
+    myInfo?.no || 0,
+    loverInfo?.no || 0
+  );
 
   return (
     <>
@@ -16,12 +28,16 @@ const TimeTableHeader = () => {
             src={myInfo.profilePhoto ? myInfo.profilePhoto : defaultCat}
             alt="프로필"
           />
-          <Name>{myInfo.name}의 일정 </Name>
+          <Name>{myNickName || myInfo?.name || "내 이름"}의 일정</Name>
         </Wrapper>
 
         <Wrapper>
           <Name>
-            {loverInfo ? `${loverInfo?.name}의 일정` : "커플로 등록해주세요!"}
+            {loverNickName
+              ? `${loverNickName}의 일정`
+              : loverInfo
+              ? `${loverInfo.name}의 일정`
+              : "커플로 등록해주세요!"}
           </Name>
           <ProfileImage
             src={loverInfo?.profilePhoto ? loverInfo.profilePhoto : defaultCat}

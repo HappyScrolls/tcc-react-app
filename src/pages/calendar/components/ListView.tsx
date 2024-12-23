@@ -13,6 +13,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { CoupleInfo } from "../../../types/ICoupleInfo";
 import { IMemberInfo } from "../../../types/IMemberInfo";
 import { LoverInfo } from "../../../types/ILoverInfo";
+import { getNickNames } from "../../../utils/getNickNames";
 
 const ListView: React.FC<{ date: string }> = ({ date }) => {
   // API 호출
@@ -26,9 +27,11 @@ const ListView: React.FC<{ date: string }> = ({ date }) => {
   const myInfo = queryClient.getQueryData<IMemberInfo>(["memberInfo"]);
   const loverInfo = queryClient.getQueryData<LoverInfo>(["myLoverInfo"]);
 
-  // 커플 정보 유효성 검사
-  const isValidCoupleInfo =
-    coupleInfo && coupleInfo.nickNameA && coupleInfo.nickNameB;
+  const { myNickName, loverNickName } = getNickNames(
+    coupleInfo || null,
+    myInfo?.no || 0,
+    loverInfo?.no || 0
+  );
 
   // 상태 초기화
   const [mySchedules, setMySchedules] = useState<ScheduleData[]>([]);
@@ -141,9 +144,7 @@ const ListView: React.FC<{ date: string }> = ({ date }) => {
           <ProfileImage src={defaultCat} alt="내 프로필" />
           <Wrapper>
             <Name>
-              {isValidCoupleInfo
-                ? `${coupleInfo.nickNameA}`
-                : `${myInfo?.name}`}
+              {myNickName || myInfo?.name}
               &nbsp;일정
             </Name>
             <StatusContainer>
@@ -187,9 +188,7 @@ const ListView: React.FC<{ date: string }> = ({ date }) => {
             <ProfileImage src={defaultCat} alt="애인 프로필" />
             <Wrapper>
               <Name>
-                {isValidCoupleInfo
-                  ? `${coupleInfo.nickNameB}`
-                  : `${loverInfo?.name}`}
+                {loverNickName || loverInfo?.name}
                 &nbsp;일정
               </Name>
               <StatusContainer>
@@ -214,16 +213,7 @@ const ListView: React.FC<{ date: string }> = ({ date }) => {
                   <ScheduleColor color={getBusyColor(schedule.busyLevel)} />
                   <ScheduleTitle>{schedule.scheduleName}</ScheduleTitle>
                 </ScheduleInfo>
-                <StatusButton
-                  status={schedule.status}
-                  onClick={() =>
-                    toggleCompletion(
-                      partnerSchedules,
-                      setPartnerSchedules,
-                      index
-                    )
-                  }
-                >
+                <StatusButton status={schedule.status} disabled>
                   {schedule.status === "완료" ? "완료" : "미완료"}
                 </StatusButton>
               </ScheduleItem>
@@ -357,7 +347,7 @@ const ScheduleTitle = styled.div`
   line-height: normal;
 `;
 
-const StatusButton = styled.div<{ status: string }>`
+const StatusButton = styled.div<{ status: string; disabled?: boolean }>`
   padding: 2px 16px 1px 14px;
   border-radius: 10px;
   box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.25);
@@ -370,5 +360,6 @@ const StatusButton = styled.div<{ status: string }>`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
 `;

@@ -20,12 +20,16 @@ const ScheduleDetailModal: React.FC<IDetailModalProps> = ({
           <Wrap>
             <BusyTag backgroundColor={getBusyColor(schedule.busyLevel)} />
             <Title>{schedule.scheduleName}</Title>
-            <Phone src={phone} />
           </Wrap>
 
           <Details>
             <Text>{schedule.scheduleLocation}</Text>
-            <Text>{schedule.scheduleWith}</Text>
+
+            {!schedule.isCommon && (
+              <Text>
+                {schedule.scheduleWith} / {schedule.genderType}
+              </Text>
+            )}
             <Text>
               {new Date(schedule.scheduleStartAt).toLocaleTimeString()} ~{" "}
               {new Date(schedule.scheduleEndAt).toLocaleTimeString()}

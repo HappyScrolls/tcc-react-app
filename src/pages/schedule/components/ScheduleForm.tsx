@@ -23,7 +23,7 @@ const ScheduleForm: React.FC<FormProps> = ({
       scheduleName: "",
       scheduleLocation: "",
       scheduleWith: "",
-      genderType: "혼성",
+      genderType: isCoupleSchedule ? "" : "혼성",
       scheduleStartAt: `${date}T00:00:00`,
       scheduleEndAt: `${date}T00:00:00`,
       isCommon: isCoupleSchedule || false,
