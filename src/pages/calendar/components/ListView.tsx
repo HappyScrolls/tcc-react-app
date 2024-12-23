@@ -27,10 +27,6 @@ const ListView: React.FC<{ date: string }> = ({ date }) => {
   const myInfo = queryClient.getQueryData<IMemberInfo>(["memberInfo"]);
   const loverInfo = queryClient.getQueryData<LoverInfo>(["myLoverInfo"]);
 
-  // 커플 정보 유효성 검사
-  const isValidCoupleInfo =
-    coupleInfo && coupleInfo.nickNameA && coupleInfo.nickNameB;
-
   const { myNickName, loverNickName } = getNickNames(
     coupleInfo || null,
     myInfo?.no || 0,
