@@ -211,6 +211,20 @@ export const acceptScheduleModifyRequest = async (
   }
 };
 
+// 일정 수정 거절 (put - 수정 요청 수락)
+export const rejectScheduleModifyRequest = async (
+  scheduleNo: number
+): Promise<ScheduleData | null> => {
+  try {
+    const response = await scheduleAxiosInstance.put(
+      `/schedule/modify-request/${scheduleNo}/reject`
+    );
+    return response.data;
+  } catch (error) {
+    return null;
+  }
+};
+
 // 일정 번호로 일정 조회
 export const fetchScheduleByScheduleNo = async (
   scheduleNo: number

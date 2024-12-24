@@ -9,7 +9,11 @@ import { useNavigate } from "react-router-dom";
 import { readNotification } from "../../../api/query/get/useFetchNotification";
 import TwoBtnModal from "../../../components/modal/TwoBtnModal";
 import modalCat from "../../../images/emoji/이모지_사랑해.png";
-import { useFetchScheduleModifyRequest } from "../../../hooks/useModifySchedule";
+import {
+  useAcceptScheduleModifyRequest,
+  useFetchScheduleModifyRequest,
+  useRejectScheduleModifyRequest,
+} from "../../../hooks/useModifySchedule";
 
 const Notification = ({
   notificationNo,
@@ -30,15 +34,23 @@ const Notification = ({
     Number(scheduleNo)
   );
 
+  const { mutate: acceptScheduleModifyRequest } =
+    useAcceptScheduleModifyRequest();
+
+  const { mutate: rejectScheduleModifyRequest } =
+    useRejectScheduleModifyRequest();
+
   console.log("수정요처내용: ", scheduleModifyRequest);
 
   const handleAccept = () => {
     console.log("수락 처리");
+    acceptScheduleModifyRequest(Number(scheduleNo));
     handleModalClose();
   };
 
   const handleReject = () => {
     console.log("거절 처리");
+    rejectScheduleModifyRequest(Number(scheduleNo));
     handleModalClose();
   };
 
