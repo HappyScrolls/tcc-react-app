@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { IDetailModalProps } from "../../../types/IDetailModalProps";
 import { getBusyColor } from "../../../utils/colors";
-import phone from "../../../images/calendar/phone.svg";
 
 const ScheduleDetailModal: React.FC<IDetailModalProps> = ({
   schedule,
@@ -119,11 +118,6 @@ const Text = styled.div`
   font-style: normal;
   font-weight: 500;
   line-height: normal;
-`;
-
-const Phone = styled.img`
-  width: 20.299px;
-  height: 27.463px;
 `;
 
 const ActionButton = styled.button`
