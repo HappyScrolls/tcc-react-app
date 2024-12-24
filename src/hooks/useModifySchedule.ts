@@ -5,6 +5,7 @@ import {
   fetchScheduleModifyRequest,
   acceptScheduleModifyRequest,
   fetchScheduleByScheduleNo,
+  rejectScheduleModifyRequest,
 } from "../api/schedule/scheduleAPI";
 import { AxiosError } from "axios";
 import { ModifyScheduleRequest, ScheduleData } from "../types/ISchedule";
@@ -53,7 +54,7 @@ export const useAcceptScheduleModifyRequest = () => {
   return useMutation({
     mutationFn: (scheduleNo: number) => acceptScheduleModifyRequest(scheduleNo),
     onSuccess: () => {
-      alert("수정 요청이 수락되었습니다.");
+      alert("수정 요청이 수락되었습니다 !");
     },
     onError: (error: AxiosError) => {
       handleAxiosError(error, "수정 요청 수락 실패");
@@ -61,7 +62,20 @@ export const useAcceptScheduleModifyRequest = () => {
   });
 };
 
-// 5. 일정 번호로 일정 조회
+// 5. 수정 요청 거절 (PUT)
+export const useRejectScheduleModifyRequest = () => {
+  return useMutation({
+    mutationFn: (scheduleNo: number) => rejectScheduleModifyRequest(scheduleNo),
+    onSuccess: () => {
+      alert("수정 요청이 거절되었습니다 ㅜㅜ");
+    },
+    onError: (error: AxiosError) => {
+      handleAxiosError(error, "수정 요청 수락 실패");
+    },
+  });
+};
+
+// 6. 일정 번호로 일정 조회
 export const useFetchScheduleByScheduleNo = (scheduleNo: number) => {
   return useQuery<ScheduleData, AxiosError>({
     queryKey: ["scheduleDetail", scheduleNo],

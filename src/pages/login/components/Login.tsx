@@ -1,7 +1,6 @@
 import React from "react";
 import KakaoLogin from "./KakaoLogin";
-import NaverLogin from "./NaverLogin";
-import GoogleLogin from "./GoogleLogin";
+
 import logoImg from "../../../images/logo.svg";
 import logoText from "../../../images/logotext.svg";
 import * as L from "./Login.style";
@@ -53,8 +52,9 @@ export const Login = () => {
         </L.LoginText>
         <L.LoginBtnWrapper>
           <KakaoLogin />
-          <NaverLogin />
-          <GoogleLogin />
+          {/* <NaverLogin />
+          <GoogleLogin /> */}
+          <br />
           <Buttons>
             <button onClick={handle1}>예지</button>
             <button onClick={handle2}>혜진</button>
