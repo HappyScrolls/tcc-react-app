@@ -17,11 +17,11 @@ export const useFetchNotification = (): INotification[] => {
 
   return notifications;
 };
-export const readNotification = async (notificationNo: number)  => {
+
+// 알림 가져오기
+export const readNotification = async (notificationNo: number) => {
   try {
-    await notificationAxiosInstance.delete(
-        `/notification/${notificationNo}`
-    );
+    await notificationAxiosInstance.delete(`/notification/${notificationNo}`);
     return;
   } catch (error) {
     console.error("메뉴를 읽는데 실패하였습니다.", error);

@@ -73,11 +73,13 @@ const ModalDescription = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  text-align: center;
 `;
 
 const ModalImage = styled.img`
   width: 100px;
   height: 100px;
+  object-fit: fill;
 `;
 
 const ModalButtonWrapper = styled.div`

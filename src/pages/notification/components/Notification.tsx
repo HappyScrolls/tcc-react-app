@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import notificationIcon from "../../../images/notification/notificationIcon.svg";
 import {
   INotification,
@@ -7,6 +7,9 @@ import {
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { readNotification } from "../../../api/query/get/useFetchNotification";
+import TwoBtnModal from "../../../components/modal/TwoBtnModal";
+import modalCat from "../../../images/emoji/이모지_사랑해.png";
+import { useFetchScheduleModifyRequest } from "../../../hooks/useModifySchedule";
 
 const Notification = ({
   notificationNo,
@@ -17,17 +20,88 @@ const Notification = ({
   isRead,
 }: INotification) => {
   const navigate = useNavigate();
-  const handleClick = () => {
-    console.log("알림수정요청 : ", notificationNo, " ", path, " ");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const scheduleNo = path?.split("/")[2];
+
+  // 수정 요청 내용
+  console.log(scheduleNo);
+  const { data: scheduleModifyRequest } = useFetchScheduleModifyRequest(
+    Number(scheduleNo)
+  );
+
+  console.log("수정요처내용: ", scheduleModifyRequest);
+
+  const handleAccept = () => {
+    console.log("수락 처리");
+    handleModalClose();
+  };
+
+  const handleReject = () => {
+    console.log("거절 처리");
+    handleModalClose();
+  };
+
+  const handleModalOpen = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleConfirm = () => {
     readNotification(notificationNo).then(() => {
       if (path) {
         navigate(path, { state: { fromNotification: true } });
       }
     });
   };
+
+  const renderModalContent = () => {
+    if (type === "SCHEDULE_CREATE") {
+      return (
+        <TwoBtnModal
+          title={`${NotificationTypeMessages[type]}을 확인할까요?`}
+          description={""}
+          imageSrc={modalCat}
+          confirmText="예"
+          cancelText="아니요"
+          onConfirm={() => {
+            handleConfirm();
+            handleModalClose();
+          }}
+          onCancel={handleModalClose}
+        />
+      );
+    } else if (
+      type === "SCHEDULE_MODIFY_REQUEST" ||
+      type === "SCHEDULE_MODIFY_REQUEST_ACCEPTED"
+    ) {
+      return (
+        <TwoBtnModal
+          title={`${scheduleModifyRequest?.scheduleName}의 ${NotificationTypeMessages[type]}`}
+          description={`${scheduleModifyRequest?.scheduleStartAt.replace(
+            "T",
+            " "
+          )} ~ ${scheduleModifyRequest?.scheduleEndAt.replace(
+            "T",
+            " "
+          )}으로 바꿔줘잉`}
+          imageSrc={modalCat}
+          confirmText="수락"
+          cancelText="거절"
+          onConfirm={handleAccept}
+          onCancel={handleReject}
+        />
+      );
+    }
+    return null;
+  };
+
   return (
     <>
-      <NotificationBtn isRead={isRead} onClick={handleClick}>
+      <NotificationBtn isRead={isRead} onClick={handleModalOpen}>
         <img src={notificationIcon} alt="icon" />
         <TextBox>
           <Title>{NotificationTypeMessages[type]}</Title>
@@ -35,6 +109,8 @@ const Notification = ({
         </TextBox>
         <TextSmall>{messagedAt.replace("T", " ")}</TextSmall>{" "}
       </NotificationBtn>
+
+      {isModalOpen && renderModalContent()}
     </>
   );
 };
