@@ -57,6 +57,8 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 6px;
+  margin-left: -10px;
 `;
 
 const BackButton = styled.img`
