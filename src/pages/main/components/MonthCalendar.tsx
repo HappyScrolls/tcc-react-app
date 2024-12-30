@@ -48,22 +48,30 @@ const MonthCalendar = () => {
   const isAnniversary = (day: number) => {
     if (!coupleInfo) return false;
 
-    const startDate = new Date(coupleInfo.startedAt);
-    const today = new Date(currentYear, currentMonth, day);
+    const startDate = removeTime(new Date(coupleInfo.startedAt));
+    const currentDate = removeTime(new Date(currentYear, currentMonth, day));
 
-    const daysTogether = Math.floor(
-      (today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
-    );
+    const daysTogether =
+      Math.floor(
+        (currentDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
+      ) + 1;
 
     return (
-      (daysTogether % 100 === 0 && daysTogether !== 0) ||
-      (daysTogether % 365 === 0 && daysTogether !== 0) //
+      (daysTogether > 0 && daysTogether % 100 === 0) ||
+      (daysTogether > 0 && daysTogether % 365 === 0)
     );
+  };
+
+  const removeTime = (date: Date) => {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
   };
 
   // 날짜 이동
   const handleDateClick = (year: number, month: number, day: number) => {
-    const selectedDate = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    const selectedDate = `${year}-${String(month + 1).padStart(
+      2,
+      "0"
+    )}-${String(day).padStart(2, "0")}`;
     navigate(`/calendar/${selectedDate}`);
   };
 
@@ -157,7 +165,9 @@ const MonthCalendar = () => {
     },
   ];
 
-  const getEventIcons = (day: number) => {
+  const getEventIcons = (day: number, isCurrentMonth: boolean) => {
+    if (!isCurrentMonth) return [];
+
     return iconConditions
       .filter(({ condition }) => condition(day))
       .map(({ icon }) => icon);
@@ -193,7 +203,7 @@ const MonthCalendar = () => {
             onClick={() => handleDateClick(currentYear, currentMonth, date.day)}
           >
             {date.day}
-            {getEventIcons(date.day)?.map((icon, idx) => (
+            {getEventIcons(date.day, date.isCurrentMonth)?.map((icon, idx) => (
               <Icon
                 key={idx}
                 src={icon.src}
