@@ -23,6 +23,7 @@ const AddMySchedulePage = () => {
     saveSchedule(formData, {
       onSuccess: () => {
         navigate(`/calendar/${date}`, { state: { refetch: true } });
+        showToast("success", "일정이 등록되었습니다.");
       },
       onError: (error: any) => {
         const statusCode = error.response.status;
@@ -31,7 +32,7 @@ const AddMySchedulePage = () => {
           "error",
           statusCode === 400
             ? "이미 일정이 등록된 시간입니다."
-            : "일정 저장 중 오류가 발생했습니다."
+            : "일정 등록을 실패했습니다."
         );
       },
     });

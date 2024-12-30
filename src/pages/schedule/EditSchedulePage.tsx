@@ -8,12 +8,14 @@ import { ModifyScheduleRequest, ScheduleData } from "../../types/ISchedule";
 import { formatDateHyphen } from "../../utils/date";
 import { useModifySchedule } from "../../hooks/useModifySchedule";
 import { useFetchScheduleByScheduleNo } from "../../hooks/useScheduleList";
+import { useToastStore } from "../../store/toastStore";
 
 const EditSchedulePage = () => {
   const { scheduleNo } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const showToast = useToastStore((state) => state.showToast);
 
   // const fromNotification = location.state?.fromNotification;
   const locationSchedule = location.state?.schedule;
@@ -47,10 +49,11 @@ const EditSchedulePage = () => {
       {
         onSuccess: () => {
           navigate(-1);
+          showToast("success", "일정이 수정되었습니다.");
         },
         onError: (error) => {
           console.error("수정 중 오류 발생:", error);
-          alert("수정 실패");
+          showToast("error", "일정 수정에 실패했습니다.");
         },
       }
     );
