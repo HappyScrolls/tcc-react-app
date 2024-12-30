@@ -50,9 +50,6 @@ export const useFetchScheduleModifyRequest = (scheduleNo: number) => {
 export const useAcceptScheduleModifyRequest = () => {
   return useMutation({
     mutationFn: (scheduleNo: number) => acceptScheduleModifyRequest(scheduleNo),
-    onSuccess: () => {
-      alert("수정 요청이 수락되었습니다 !");
-    },
     onError: (error: AxiosError) => {
       handleAxiosError(error, "수정 요청 수락 실패");
     },
@@ -63,9 +60,7 @@ export const useAcceptScheduleModifyRequest = () => {
 export const useRejectScheduleModifyRequest = () => {
   return useMutation({
     mutationFn: (scheduleNo: number) => rejectScheduleModifyRequest(scheduleNo),
-    onSuccess: () => {
-      alert("수정 요청이 거절되었습니다 ㅜㅜ");
-    },
+
     onError: (error: AxiosError) => {
       handleAxiosError(error, "수정 요청 수락 실패");
     },

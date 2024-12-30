@@ -6,12 +6,14 @@ import { ScheduleData } from "../../types/ISchedule";
 import CoupleAndDateInfoHeader from "./components/CoupleAndDateInfoHeader";
 import { useQueryClient } from "@tanstack/react-query";
 import { CoupleInfo } from "../../types/ICoupleInfo";
+import { useToastStore } from "../../store/toastStore";
 
 const AddCoupleSchedule = () => {
   const queryClient = useQueryClient();
   const { date } = useParams<{ date: string }>();
   const navigate = useNavigate();
   const coupleInfo = queryClient.getQueryData<CoupleInfo>(["coupleInfo"]);
+  const showToast = useToastStore((state) => state.showToast);
 
   const { mutate: saveSchedule } = useSaveSchedule();
 
@@ -20,10 +22,11 @@ const AddCoupleSchedule = () => {
     saveSchedule(formData, {
       onSuccess: () => {
         navigate(`/calendar/${date}`);
+        showToast("success", "공통 일정을 저장하였습니다.");
       },
       onError: (error: any) => {
         console.error("저장 실패:", error);
-        alert("일정 저장 중 오류가 발생했습니다. 다시 시도해주세요.");
+        showToast("error", "공통 일정 저장을 실패하였습니다");
       },
     });
   };

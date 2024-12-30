@@ -14,6 +14,8 @@ import {
   useFetchScheduleModifyRequest,
   useRejectScheduleModifyRequest,
 } from "../../../hooks/useModifySchedule";
+import { useToastStore } from "../../../store/toastStore";
+import OneBtnModal from "../../../components/modal/OneBtnModal";
 
 const Notification = ({
   notificationNo,
@@ -23,13 +25,13 @@ const Notification = ({
   messagedAt,
   isRead,
 }: INotification) => {
+  const showToast = useToastStore((state) => state.showToast);
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const scheduleNo = path?.split("/")[2];
 
   // 수정 요청 내용
-  console.log(scheduleNo);
   const { data: scheduleModifyRequest } = useFetchScheduleModifyRequest(
     Number(scheduleNo)
   );
@@ -40,18 +42,20 @@ const Notification = ({
   const { mutate: rejectScheduleModifyRequest } =
     useRejectScheduleModifyRequest();
 
-  console.log("수정요처내용: ", scheduleModifyRequest);
+  console.log("수정 요청 내용: ", scheduleModifyRequest);
 
   const handleAccept = () => {
     console.log("수락 처리");
     acceptScheduleModifyRequest(Number(scheduleNo));
     handleModalClose();
+    showToast("success", "일정 수정 요청을 수락하였습니다.");
   };
 
   const handleReject = () => {
     console.log("거절 처리");
     rejectScheduleModifyRequest(Number(scheduleNo));
     handleModalClose();
+    showToast("error", "일정 수정 요청을 거절하였습니다.");
   };
 
   const handleModalOpen = () => {
@@ -86,10 +90,7 @@ const Notification = ({
           onCancel={handleModalClose}
         />
       );
-    } else if (
-      type === "SCHEDULE_MODIFY_REQUEST" ||
-      type === "SCHEDULE_MODIFY_REQUEST_ACCEPTED"
-    ) {
+    } else if (type === "SCHEDULE_MODIFY_REQUEST") {
       return (
         <TwoBtnModal
           title={`${scheduleModifyRequest?.scheduleName}의 ${NotificationTypeMessages[type]}`}
@@ -105,6 +106,18 @@ const Notification = ({
           cancelText="거절"
           onConfirm={handleAccept}
           onCancel={handleReject}
+        />
+      );
+    } else if (
+      type === "SCHEDULE_MODIFY_REQUEST_ACCEPTED" ||
+      type === "SCHEDULE_MODIFY_REQUEST_REJECTED"
+    ) {
+      return (
+        <OneBtnModal
+          title={`${NotificationTypeMessages[type]} 완료`}
+          imageSrc={modalCat}
+          confirmText="확인"
+          onConfirm={handleModalClose}
         />
       );
     }

@@ -115,7 +115,6 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
         },
         onError: (error) => {
           console.log("변경 오류 : ", error);
-          alert("공통일정 변경 중 오류가 발생했습니다:");
         },
       });
     }
