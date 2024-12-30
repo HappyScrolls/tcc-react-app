@@ -6,12 +6,14 @@ import BusyLevelSelector from "./BusyLevelSelector";
 import { ScheduleData } from "../../../types/ISchedule";
 import { formatDateAndTime, formatToTime } from "../../../utils/date";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useToastStore } from "../../../store/toastStore";
 
 const ScheduleForm: React.FC<FormProps> = ({
   onSave,
   initialFormData,
   isCoupleSchedule,
 }) => {
+  const showToast = useToastStore((state) => state.showToast);
   const navigate = useNavigate();
   const location = useLocation();
   const date = location.pathname.split("/")[2];
@@ -65,12 +67,26 @@ const ScheduleForm: React.FC<FormProps> = ({
   };
 
   const handleSave = () => {
+    const requiredFields = [
+      "scheduleName",
+      "scheduleLocation",
+      ...(isCoupleSchedule ? [] : ["scheduleWith"]),
+    ];
+
+    const emptyFields = requiredFields.filter(
+      (field) => !formData[field as keyof ScheduleData]
+    );
+
+    if (emptyFields.length > 0) {
+      showToast("error", "모든 필드를 입력해주세요.");
+      return;
+    }
+
     const requestBody = {
       ...formData,
       isCommon: isCoupleSchedule ? true : false,
     };
 
-    console.log("입력한 데이터:", requestBody);
     onSave(requestBody);
   };
 

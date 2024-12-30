@@ -56,7 +56,7 @@ const Header = styled.div`
   width: 90%;
   justify-content: space-between;
 
-  margin-top: 3px;
+  margin-top: 4px;
 `;
 
 const Name = styled.div`
@@ -76,7 +76,7 @@ const ProfileImage = styled.img`
   padding: 11px 10px 12px 11px;
   border-radius: 50%;
   background: #fff;
-  box-shadow: 0px 0px 5.7px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 
   object-fit: cover;
 `;

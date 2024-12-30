@@ -12,6 +12,7 @@ import {
 } from "../../../hooks/useCoupleInfo";
 import copy from "../../../images/mypage/copy.svg";
 import InviteCodeModal from "../../../components/modal/InviteCodeModal";
+import { useToastStore } from "../../../store/toastStore";
 
 const PersonalProfile = ({
   isMyProfile,
@@ -33,12 +34,14 @@ const PersonalProfile = ({
     navigate("/profile/edit");
   };
 
+  const showToast = useToastStore((state) => state.showToast);
+
   // 초대코드 생성
   const handleInviteButton = () => {
     if (fetchedInviteCode) {
       setInviteCode(fetchedInviteCode);
     } else {
-      alert("초대 코드를 생성할 수 없습니다.");
+      showToast("error", "초대 코드를 생성할 수 없습니다.");
     }
   };
 
@@ -70,8 +73,8 @@ ${inviteCode}
   const handleModalConfirm = (code: string): Promise<boolean> => {
     return new Promise((resolve) => {
       registerInviteCode(code, {
-        onSuccess: () => resolve(true), 
-        onError: () => resolve(false), 
+        onSuccess: () => resolve(true),
+        onError: () => resolve(false),
       });
     });
   };

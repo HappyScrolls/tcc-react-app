@@ -10,6 +10,7 @@ import {
   useFetchScheduleByScheduleNo,
   useModifyScheduleRequest,
 } from "../../hooks/useModifySchedule";
+import { useToastStore } from "../../store/toastStore";
 
 // 수정 요청 내용 작성, 수정 요청 확인
 const ModifyScheduleRequestPage = () => {
@@ -17,6 +18,7 @@ const ModifyScheduleRequestPage = () => {
   const location = useLocation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const showToast = useToastStore((state) => state.showToast);
 
   const fromNotification = location.state?.fromNotification;
   const locationSchedule = location.state?.schedule; // 수정 요청 하는 경우
@@ -61,30 +63,14 @@ const ModifyScheduleRequestPage = () => {
 
     requestModifySchedule(requestData, {
       onSuccess: () => {
-        alert("수정 요청에 성공했습니다.");
+        showToast("success", "일정 수정을 요청했습니다.");
         navigate(-1);
       },
       onError: () => {
-        alert("수정 요청 실패했습니다.");
+        showToast("error", "일정 수정 요청을 실패했습니다.");
       },
     });
   };
-  console.log(
-    "수정요청 페이지 값 : ",
-    " ",
-    scheduleNo,
-    " ",
-
-    fromNotification,
-    " ",
-    locationSchedule,
-    " ",
-    isCoupleSchedule,
-    " ",
-    fetchedSchedule,
-    " ",
-    schedule
-  );
 
   if (!schedule) {
     return <div>Loading...</div>;

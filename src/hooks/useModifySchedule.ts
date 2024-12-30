@@ -31,9 +31,6 @@ export const useModifyScheduleRequest = () => {
   return useMutation({
     mutationFn: (formData: ModifyScheduleRequest) =>
       modifyScheduleRequest(formData),
-    onSuccess: () => {
-      alert("일정 수정 요청이 성공적으로 완료되었습니다.");
-    },
     onError: (error: AxiosError) => {
       handleAxiosError(error, "수정 요청 실패");
     },
@@ -53,9 +50,6 @@ export const useFetchScheduleModifyRequest = (scheduleNo: number) => {
 export const useAcceptScheduleModifyRequest = () => {
   return useMutation({
     mutationFn: (scheduleNo: number) => acceptScheduleModifyRequest(scheduleNo),
-    onSuccess: () => {
-      alert("수정 요청이 수락되었습니다 !");
-    },
     onError: (error: AxiosError) => {
       handleAxiosError(error, "수정 요청 수락 실패");
     },
@@ -66,9 +60,7 @@ export const useAcceptScheduleModifyRequest = () => {
 export const useRejectScheduleModifyRequest = () => {
   return useMutation({
     mutationFn: (scheduleNo: number) => rejectScheduleModifyRequest(scheduleNo),
-    onSuccess: () => {
-      alert("수정 요청이 거절되었습니다 ㅜㅜ");
-    },
+
     onError: (error: AxiosError) => {
       handleAxiosError(error, "수정 요청 수락 실패");
     },
@@ -87,12 +79,9 @@ export const useFetchScheduleByScheduleNo = (scheduleNo: number) => {
 const handleAxiosError = (error: AxiosError, defaultMessage: string) => {
   if (error.response) {
     console.error("서버 에러:", error.response.status, error.response.data);
-    alert(`${defaultMessage}: ${error.response.data || "알 수 없는 오류"}`);
   } else if (error.request) {
     console.error("요청 실패:", error.request);
-    alert(`${defaultMessage}: 서버로 요청이 전달되지 않았습니다.`);
   } else {
     console.error("에러 메시지:", error.message);
-    alert(`${defaultMessage}: ${error.message}`);
   }
 };

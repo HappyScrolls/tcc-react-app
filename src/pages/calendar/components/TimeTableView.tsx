@@ -14,6 +14,7 @@ import { useDeleteSchedule } from "../../../hooks/useDeleteSchedule";
 import { useChangeCommonSchedule } from "../../../hooks/useChangeCoupleSchedule";
 import { timeToPosition } from "../../../utils/timePosition";
 import TimeTableModals from "./TimeTableModals";
+import { useToastStore } from "../../../store/toastStore";
 
 // 타입 정의
 interface ScheduleItemProps {
@@ -48,6 +49,8 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
   const [selectedSchedule, setSelectedSchedule] = useState<ScheduleData | null>(
     null
   );
+
+  const showToast = useToastStore((state) => state.showToast);
 
   // const [isEmojiModalOpen, setIsEmojiModalOpen] = useState(false);
   // const [, setSelectedEmoji] = useState<string | null>(null);
@@ -85,10 +88,11 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
           closeModal();
           refetchMyScheduleList();
           console.log("일정이 성공적으로 삭제되었습니다.");
+          showToast("success", "일정이 삭제되었습니다.");
         },
         onError: (error) => {
           console.log("삭제 오류 : ", error);
-          alert("삭제 중 오류가 발생했습니다:");
+          showToast("error", "일정 삭제 중 오류가 발생했습니다.");
         },
       });
     }
@@ -111,7 +115,6 @@ const TimeTableView: React.FC<{ date: string }> = ({ date }) => {
         },
         onError: (error) => {
           console.log("변경 오류 : ", error);
-          alert("공통일정 변경 중 오류가 발생했습니다:");
         },
       });
     }
