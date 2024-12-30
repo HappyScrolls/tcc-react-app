@@ -12,7 +12,7 @@ const App = () => {
       <Suspense fallback={<div>로딩 중...</div>}>
         <Layout>
           {!hidePage && <Header />}
-          <MainContent>
+          <MainContent className={hidePage ? "no-padding" : ""}>
             <Outlet />
           </MainContent>
           {!hidePage && <Footer />}

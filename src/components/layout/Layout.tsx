@@ -26,5 +26,9 @@ export const Container = styled.div`
 
 export const MainContent = styled.div`
   flex-grow: 1;
-  /* padding-bottom: 80px; */
+  padding-bottom: 80px;
+
+  &.no-padding {
+    padding-bottom: 0;
+  }
 `;

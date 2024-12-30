@@ -60,6 +60,4 @@ const CalendarPage = () => {
 
 export default CalendarPage;
 
-const CalendarContainer = styled(Container)`
-  padding-bottom: 100px;
-`;
+const CalendarContainer = styled(Container)``;
