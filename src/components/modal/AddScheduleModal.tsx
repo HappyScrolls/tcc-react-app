@@ -1,5 +1,7 @@
+import { motion } from "framer-motion";
 import React from "react";
 import styled from "styled-components";
+import { modalAnimations } from "./modalAnimation";
 
 interface AddScheduleModalProps {
   onClose: () => void;
@@ -13,8 +15,20 @@ const AddScheduleModal: React.FC<AddScheduleModalProps> = ({
   openAddCoupleSchedule,
 }) => {
   return (
-    <Overlay onClick={onClose}>
-      <BottomSheet onClick={(e) => e.stopPropagation()}>
+    <Overlay
+      as={motion.div}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+    >
+      <BottomSheet
+        variants={modalAnimations["bottom"]}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        onClick={(e) => e.stopPropagation()}
+      >
         <SheetContent>
           <Line />
           <Button onClick={openAddSchedule}>내 일정 추가</Button>
@@ -29,8 +43,7 @@ const AddScheduleModal: React.FC<AddScheduleModalProps> = ({
 
 export default AddScheduleModal;
 
-// 스타일 정의
-const BottomSheet = styled.div`
+const BottomSheet = styled(motion.div)`
   position: fixed;
   bottom: 0;
   width: 85%;
@@ -43,7 +56,7 @@ const BottomSheet = styled.div`
   height: 270px;
 `;
 
-const Overlay = styled.div`
+const Overlay = styled(motion.div)`
   position: fixed;
   top: 0;
   left: 0;

@@ -1,6 +1,8 @@
 import React from "react";
 import { ISModalProps } from "../../types/ISModalProps";
 import { styled } from "styled-components";
+import { motion } from "framer-motion";
+import { modalAnimations } from "./modalAnimation";
 
 const OneBtnModal: React.FC<ISModalProps> = ({
   title,
@@ -11,8 +13,19 @@ const OneBtnModal: React.FC<ISModalProps> = ({
 }) => {
   return (
     <>
-      <ModalOverlay>
-        <ModalContent>
+      <ModalOverlay
+        as={motion.div}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <ModalContent
+          as={motion.div}
+          variants={modalAnimations["center"]}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+        >
           {imageSrc && <ModalImage src={imageSrc} alt="modal image" />}
           <ModalTitle>{title}</ModalTitle>
           {description && <ModalDescription>{description}</ModalDescription>}
@@ -40,7 +53,7 @@ const ModalOverlay = styled.div`
   z-index: 10;
 `;
 
-const ModalContent = styled.div`
+const ModalContent = styled(motion.div)`
   width: 250px;
   padding: 20px;
   border-radius: 20px;
