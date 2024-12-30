@@ -7,12 +7,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import CoupleAndDateInfoHeader from "./components/CoupleAndDateInfoHeader";
 import { useQueryClient } from "@tanstack/react-query";
 import { CoupleInfo } from "../../types/ICoupleInfo";
+import { useToastStore } from "../../store/toastStore";
 
 const AddMySchedulePage = () => {
   const queryClient = useQueryClient();
   const { date } = useParams<{ date: string }>();
   const navigate = useNavigate();
   const coupleInfo = queryClient.getQueryData<CoupleInfo>(["coupleInfo"]);
+  const showToast = useToastStore((state) => state.showToast);
 
   const { mutate: saveSchedule } = useSaveSchedule();
 
@@ -23,8 +25,14 @@ const AddMySchedulePage = () => {
         navigate(`/calendar/${date}`, { state: { refetch: true } });
       },
       onError: (error: any) => {
-        console.error("저장 실패:", error);
-        alert("일정 저장 중 오류가 발생했습니다. 다시 시도해주세요.");
+        const statusCode = error.response.status;
+
+        showToast(
+          "error",
+          statusCode === 400
+            ? "이미 일정이 등록된 시간입니다."
+            : "일정 저장 중 오류가 발생했습니다."
+        );
       },
     });
   };

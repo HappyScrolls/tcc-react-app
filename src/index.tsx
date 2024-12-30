@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider } from "react-router-dom";
 import router from "./Router";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import Toast from "./components/toast/ToastContainer";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,6 +25,7 @@ root.render(
     <QueryClientProvider client={queryClient}>
       <GlobalStyle />
       <RouterProvider router={router} />
+      <Toast />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </React.StrictMode>
