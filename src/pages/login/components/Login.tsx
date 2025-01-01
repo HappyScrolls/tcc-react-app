@@ -10,27 +10,27 @@ import { useNavigate } from "react-router-dom";
 export const Login = () => {
   const navigate = useNavigate();
 
-  const handle1 = () => {
-    localStorage.setItem(
-      "memberCode",
-      "eyJubyI6MiwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9"
-    );
-    navigate("/main");
-  };
-  const handle2 = () => {
-    localStorage.setItem(
-      "memberCode",
-      "eyJubyI6MSwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9"
-    );
-    navigate("/main");
-  };
-  const handle3 = () => {
-    localStorage.setItem(
-      "memberCode",
-      "eyJubyI6MywibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9"
-    );
-    navigate("/main");
-  };
+  // const handle1 = () => {
+  //   localStorage.setItem(
+  //     "memberCode",
+  //     "eyJubyI6MiwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9"
+  //   );
+  //   navigate("/main");
+  // };
+  // const handle2 = () => {
+  //   localStorage.setItem(
+  //     "memberCode",
+  //     "eyJubyI6MSwibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9"
+  //   );
+  //   navigate("/main");
+  // };
+  // const handle3 = () => {
+  //   localStorage.setItem(
+  //     "memberCode",
+  //     "eyJubyI6MywibmFtZSI6Im5hbWUiLCJhY2NvdW50IjoiYWNjb3VudCJ9"
+  //   );
+  //   navigate("/main");
+  // };
   return (
     <>
       <L.ColorContainer>
