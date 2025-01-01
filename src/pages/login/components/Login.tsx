@@ -55,11 +55,11 @@ export const Login = () => {
           {/* <NaverLogin />
           <GoogleLogin /> */}
           <br />
-          <Buttons>
-            <button onClick={handle1}>예지</button>
-            <button onClick={handle2}>혜진</button>
-            <button onClick={handle3}>혁순</button>
-          </Buttons>
+          {/*<Buttons>*/}
+          {/*  <button onClick={handle1}>예지</button>*/}
+          {/*  <button onClick={handle2}>혜진</button>*/}
+          {/*  <button onClick={handle3}>혁순</button>*/}
+          {/*</Buttons>*/}
         </L.LoginBtnWrapper>
         <BackgroundDesign />
       </L.ColorContainer>
