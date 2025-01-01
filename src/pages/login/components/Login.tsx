@@ -6,9 +6,9 @@ import logoText from "../../../images/logotext.svg";
 import * as L from "./Login.style";
 import BackgroundDesign from "./BackgroundDesign";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 export const Login = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // const handle1 = () => {
   //   localStorage.setItem(
