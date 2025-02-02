@@ -4,7 +4,9 @@ import { KakaoBtn } from "./Login.style";
 
 const KakaoLogin = () => {
   const KakaoLogin = () => {
-    window.Kakao.Auth.login();
+      window.Kakao.Auth.authorize({
+          redirectUri: 'https://accounts.togethery.store/login/oauth2/code/kakao',
+      });
   }
   return (
     <>
